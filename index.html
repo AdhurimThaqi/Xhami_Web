@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kulturzentrum Haus des Friedens – Qendra Kulturore Shtëpia e Paqës. Xhamia islame shqiptare në Zürich Schwamendingen.">
+<title>Haus des Friedens – Shtëpia e Paqës</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1a4a2e;--green-mid:#2d7a4f;--green-lt:#e8f5ee;
+  --gold:#c8a84b;--gold-lt:#fdf6e3;--cream:#faf8f4;
+  --ink:#1c1c1c;--ink-mid:#4a4a4a;--ink-lt:#8a8a8a;
+  --border:#e0dbd0;--white:#ffffff;
+  --radius:12px;--shadow:0 2px 20px rgba(0,0,0,.08);--shadow-lg:0 8px 40px rgba(0,0,0,.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);line-height:1.6}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;line-height:1.2}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+.container{max-width:1140px;margin:0 auto;padding:0 24px}
+.badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-lt);color:var(--green);font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:8px;font-size:14px;font-weight:600;transition:all .2s;cursor:pointer}
+.btn-primary{background:var(--green);color:var(--white)}
+.btn-primary:hover{background:var(--green-mid);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,74,46,.3)}
+.btn-outline{border:1.5px solid var(--green);color:var(--green);background:transparent}
+.btn-outline:hover{background:var(--green-lt)}
+.btn-gold{background:var(--gold);color:var(--white)}
+.btn-gold:hover{background:#b8943b;transform:translateY(-1px)}
+.section{padding:80px 0}
+.section-header{text-align:center;margin-bottom:48px}
+.section-header h2{font-size:clamp(28px,4vw,40px);color:var(--green);margin-bottom:12px}
+.section-header p{color:var(--ink-mid);max-width:560px;margin:0 auto;font-size:15px}
+.divider{width:60px;height:3px;background:var(--gold);border-radius:2px;margin:16px auto}
+.hidden{display:none!important}
+.page{display:none}.page.active{display:block}
+
+/* TOAST */
+#toast-container{position:fixed;top:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--white);padding:12px 20px;border-radius:10px;font-size:14px;animation:slideIn .3s ease;min-width:260px;box-shadow:var(--shadow-lg);transition:opacity .35s}
+.toast.success{background:var(--green)}.toast.error{background:#c0392b}
+@keyframes slideIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal{background:var(--white);border-radius:16px;padding:36px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(24px);transition:transform .28s cubic-bezier(.4,0,.2,1);position:relative}
+.modal-overlay.active .modal{transform:translateY(0)}
+.modal h2{font-size:24px;color:var(--green);margin-bottom:6px}
+.modal p.sub{color:var(--ink-mid);font-size:14px;margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;color:var(--ink-mid);transition:all .2s}
+.modal-close:hover{background:var(--ink);color:white;transform:rotate(90deg)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--ink);background:var(--white);transition:border-color .2s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--green-mid)}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-divider{text-align:center;color:var(--ink-lt);font-size:13px;margin:16px 0;position:relative}
+.form-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+.form-divider span{background:var(--white);padding:0 12px;position:relative}
+.tab-btns{display:flex;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:24px}
+.tab-btn{flex:1;padding:10px;font-size:14px;font-weight:600;color:var(--ink-mid);background:var(--white);transition:all .2s;border:none;cursor:pointer}
+.tab-btn.active{background:var(--green);color:var(--white)}
+
+/* ═══ NAVBAR ═══ */
+#navbar{position:sticky;top:0;z-index:500;background:rgba(250,248,244,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid transparent;transition:border-color .35s,box-shadow .35s}
+#navbar.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.1);border-color:var(--border)}
+.nav-inner{display:flex;align-items:center;height:68px;gap:16px}
+/* Logo with mosque icon */
+.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer}
+.nav-logo-icon{width:42px;height:42px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:transform .25s,box-shadow .25s;overflow:hidden}
+.nav-logo:hover .nav-logo-icon{transform:rotate(-5deg) scale(1.08);box-shadow:0 4px 16px rgba(26,74,46,.35)}
+.nav-logo-icon svg{width:28px;height:28px}
+.nav-logo-text{line-height:1.15}
+.nav-logo-text .top{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--green);white-space:nowrap}
+.nav-logo-text .btm{font-size:9.5px;color:var(--ink-lt);text-transform:uppercase;letter-spacing:1.2px;white-space:nowrap}
+/* Main nav — tighter to stay one line */
+#main-nav{display:flex;align-items:center;gap:0;margin:0 auto;flex-wrap:nowrap;white-space:nowrap}
+#main-nav > a,.nav-dropdown > a{
+  display:inline-flex;align-items:center;gap:3px;
+  font-size:12.5px;font-weight:500;color:var(--ink-mid);
+  padding:7px 9px;border-radius:6px;cursor:pointer;
+  position:relative;overflow:hidden;user-select:none;
+  transition:color .2s,background .2s;white-space:nowrap;
+}
+#main-nav > a::after,.nav-dropdown > a::after{
+  content:'';position:absolute;bottom:3px;left:9px;right:9px;
+  height:2px;background:var(--green);border-radius:2px;
+  transform:scaleX(0);transform-origin:center;
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+#main-nav > a:hover,.nav-dropdown > a:hover{color:var(--green);background:var(--green-lt)}
+#main-nav > a.active,.nav-dropdown > a.active{color:var(--green);background:var(--green-lt)}
+#main-nav > a.active::after,.nav-dropdown > a.active::after{transform:scaleX(1)}
+
+/* Ripple */
+.ripple{position:absolute;border-radius:50%;background:rgba(26,74,46,.18);transform:scale(0);animation:rippleAnim .55s linear;pointer-events:none}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+
+/* Dropdown */
+.nav-dropdown{position:relative}
+.nav-dropdown-menu{
+  position:absolute;top:calc(100% + 10px);left:0;
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  padding:6px;min-width:230px;
+  box-shadow:0 16px 48px rgba(0,0,0,.13);
+  opacity:0;pointer-events:none;
+  transform:translateY(10px) scale(.96);transform-origin:top left;
+  transition:opacity .22s cubic-bezier(.4,0,.2,1),transform .22s cubic-bezier(.4,0,.2,1);
+  z-index:200;
+}
+.nav-dropdown.open .nav-dropdown-menu{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.nav-dropdown-menu a{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;border-radius:7px;font-size:13px;color:var(--ink);
+  white-space:nowrap;transition:background .15s,color .15s,padding-left .18s;
+}
+.nav-dropdown-menu a:hover{background:var(--green-lt);color:var(--green);padding-left:20px}
+.nav-dropdown-menu .sep{height:1px;background:var(--border);margin:4px 6px}
+.chevron{width:13px;height:13px;fill:currentColor;transition:transform .22s}
+.nav-dropdown.open .chevron{transform:rotate(180deg)}
+
+/* Lang switcher with flags */
+.nav-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.lang-switch{display:flex;gap:2px;background:var(--cream);border:1px solid var(--border);border-radius:9px;padding:3px}
+.lang-btn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;color:var(--ink-mid);cursor:pointer;transition:all .2s;background:none;border:none;white-space:nowrap}
+.lang-btn .flag{font-size:16px;line-height:1}
+.lang-btn:hover{background:var(--border)}
+.lang-btn.active{background:var(--green);color:var(--white);box-shadow:0 1px 6px rgba(26,74,46,.3)}
+
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--green);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s}
+.user-avatar:hover{transform:scale(1.08);box-shadow:0 2px 8px rgba(26,74,46,.3)}
+
+/* Hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer;border-radius:7px;transition:background .2s}
+.hamburger:hover{background:var(--green-lt)}
+.hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:all .3s cubic-bezier(.4,0,.2,1);transform-origin:center}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* Mobile menu */
+#mobile-menu{display:none;position:fixed;inset:0;background:var(--white);z-index:499;padding:80px 24px 32px;overflow-y:auto}
+#mobile-menu.open{display:block;animation:menuIn .28s cubic-bezier(.4,0,.2,1)}
+@keyframes menuIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
+#mobile-menu nav{display:flex;flex-direction:column}
+#mobile-menu nav a{font-size:17px;padding:15px 0;border-bottom:1px solid var(--border);color:var(--ink);display:block;transition:color .2s,padding-left .2s;cursor:pointer}
+#mobile-menu nav a:hover{color:var(--green);padding-left:8px}
+#mobile-menu .mob-sub a{font-size:15px;color:var(--ink-mid);padding:12px 0 12px 20px}
+.mob-lang{display:flex;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.mob-lang .lang-btn{flex:1;justify-content:center;padding:11px;border-radius:8px;border:1.5px solid var(--border);font-size:13px}
+.mob-lang .lang-btn.active{background:var(--green);color:white;border-color:var(--green)}
+
+/* ═══ HERO — fixed layout, buttons always visible ═══ */
+#hero{position:relative;min-height:86vh;display:flex;flex-direction:column;overflow:hidden;background:var(--green)}
+.hero-slides{position:absolute;inset:0;z-index:0}
+.hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out;background-size:cover;background-position:center}
+.hero-slide.active{opacity:1}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(125deg,rgba(5,25,15,.9) 0%,rgba(10,35,20,.68) 55%,rgba(10,35,20,.28) 100%)}
+.slide-dots{position:absolute;top:50%;transform:translateY(-50%);right:28px;z-index:3;display:flex;flex-direction:column;gap:8px}
+.slide-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.32);cursor:pointer;transition:all .3s;border:none}
+.slide-dot.active{background:var(--gold);transform:scale(1.35)}
+.slide-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);color:white;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px)}
+.slide-arrow:hover{background:rgba(255,255,255,.28)}
+.slide-arrow.prev{left:24px}.slide-arrow.next{right:24px}
+.hero-pattern{position:absolute;inset:0;z-index:1;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")}
+/* Hero body flex-grows to push stats to bottom */
+.hero-body{flex:1;display:flex;align-items:center;padding:80px 0 48px;position:relative;z-index:2}
+.hero-content{max-width:680px}
+.hero-badge-wrap{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.9);border:1px solid rgba(255,255,255,.25);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;margin-bottom:24px;backdrop-filter:blur(4px)}
+#hero h1{font-size:clamp(32px,5vw,60px);color:var(--white);margin-bottom:18px;line-height:1.06;text-shadow:0 2px 20px rgba(0,0,0,.4)}
+#hero h1 em{color:var(--gold);font-style:normal}
+.hero-quote{border-left:3px solid var(--gold);padding:12px 18px;margin:18px 0;background:rgba(0,0,0,.18);border-radius:0 8px 8px 0;backdrop-filter:blur(4px);max-width:540px}
+.hero-quote p{color:rgba(255,255,255,.88);font-size:13.5px;font-style:italic;line-height:1.65}
+.hero-quote cite{color:var(--gold);font-size:12px;font-style:normal;display:block;margin-top:8px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;align-items:center}
+.hero-btn-gold{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:10px;font-size:14px;font-weight:700;background:var(--gold);color:#fff;border:2px solid var(--gold);cursor:pointer;font-family:inherit;transition:all .22s;box-shadow:0 4px 20px rgba(200,168,75,.4)}
+.hero-btn-gold:hover{background:#b8943b;border-color:#b8943b;transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,168,75,.5)}
+.hero-btn-outline{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:10px;font-size:14px;font-weight:700;background:rgba(255,255,255,.1);color:#fff;border:2px solid rgba(255,255,255,.5);cursor:pointer;font-family:inherit;transition:all .22s;backdrop-filter:blur(4px)}
+.hero-btn-outline:hover{background:rgba(255,255,255,.2);border-color:#fff;transform:translateY(-2px)}
+/* Stats bar — pinned at very bottom of hero inside flex */
+.hero-stats{position:relative;z-index:2;background:rgba(0,0,0,.4);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.1)}
+.hero-stats-inner{display:flex;max-width:580px}
+.stat-item{flex:1;padding:14px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);font-weight:700}
+.stat-lbl{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+
+/* PRAYER STRIP */
+#prayer-strip{background:var(--gold);padding:12px 0}
+.prayer-inner{display:flex;align-items:center;justify-content:center;flex-wrap:wrap}
+.prayer-item{display:flex;flex-direction:column;align-items:center;padding:4px 20px;border-right:1px solid rgba(255,255,255,.3);color:var(--white)}
+.prayer-item:last-child{border-right:none}
+.prayer-name{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;opacity:.8}
+.prayer-time{font-size:16px;font-weight:700;font-family:'Playfair Display',serif}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.about-image{position:relative}
+.about-image-main{width:100%;height:420px;object-fit:cover;border-radius:16px;background:var(--green-lt)}
+.about-image-card{position:absolute;bottom:-24px;right:-24px;background:var(--green);color:var(--white);border-radius:12px;padding:20px 24px;box-shadow:var(--shadow-lg)}
+.about-image-card .num{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--gold)}
+.about-image-card .lbl{font-size:12px;opacity:.8}
+.about-content h2{font-size:clamp(26px,3.5vw,38px);color:var(--green);margin-bottom:16px}
+.about-content p{color:var(--ink-mid);font-size:15px;margin-bottom:16px;line-height:1.75}
+.about-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.about-tag{background:var(--green-lt);color:var(--green);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500}
+
+/* NEWS */
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.news-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;transition:all .25s;display:flex;flex-direction:column;cursor:pointer}
+.news-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
+.news-card-img{height:200px;background:linear-gradient(135deg,var(--green-lt),var(--green));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.news-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transition:transform .4s}
+.news-card:hover .news-card-img img{transform:scale(1.04)}
+.news-card-img-placeholder{font-size:40px;opacity:.25}
+.news-card-body{padding:20px;flex:1;display:flex;flex-direction:column}
+.news-card-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.news-card-date{font-size:12px;color:var(--ink-lt)}
+.news-card-cat{font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.6px}
+.news-card h3{font-size:18px;color:var(--ink);margin-bottom:10px;line-height:1.3}
+.news-card p{font-size:14px;color:var(--ink-mid);flex:1;line-height:1.6}
+.news-card-footer{margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.read-more{font-size:13px;font-weight:600;color:var(--green);display:inline-flex;align-items:center;gap:4px;transition:gap .2s}
+.news-card:hover .read-more{gap:8px}
+
+/* ACTIVITIES */
+.activities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px}
+.activity-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--radius);padding:28px 24px;transition:all .25s;color:var(--white)}
+.activity-card:hover{background:rgba(255,255,255,.14);transform:translateY(-3px)}
+.activity-icon{width:52px;height:52px;background:var(--gold);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+.activity-card h3{font-size:17px;margin-bottom:8px}
+.activity-card p{font-size:13px;opacity:.75;line-height:1.6}
+
+/* PRAYER DOWNLOADS */
+.prayer-download-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.prayer-dl-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;background:var(--white);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:500;color:var(--green);transition:all .2s;text-align:center}
+.prayer-dl-btn:hover{background:var(--green-lt);border-color:var(--green);transform:translateY(-2px)}
+.prayer-dl-btn svg{width:20px;height:20px;fill:var(--gold)}
+.prayer-steps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-top:32px}
+.prayer-step{display:flex;align-items:flex-start;gap:14px;padding:16px;background:var(--white);border-radius:10px;border:1px solid var(--border)}
+.prayer-step .step-icon{font-size:22px;flex-shrink:0}
+.prayer-step a{font-size:14px;font-weight:600;color:var(--green)}
+.prayer-step small{display:block;font-size:12px;color:var(--ink-lt)}
+
+/* Live dot */
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 3px rgba(34,197,94,.2)}50%{box-shadow:0 0 0 8px rgba(34,197,94,.04)}}
+.live-dot{width:10px;height:10px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 3px rgba(34,197,94,.2);animation:livePulse 2s infinite;flex-shrink:0}
+
+/* DONATIONS */
+.donations-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.donations-content h2{font-size:clamp(24px,3vw,34px);color:var(--green);margin-bottom:12px}
+.donations-content p{color:var(--ink-mid);font-size:15px;margin-bottom:20px}
+.bank-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:24px}
+.bank-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.bank-row:last-child{border-bottom:none}
+.bank-row .lbl{color:var(--ink-lt);font-weight:500}
+.bank-row .val{font-weight:600;font-family:monospace;letter-spacing:.5px}
+.donations-visual{display:flex;align-items:center;justify-content:center}
+.donation-circle{width:220px;height:220px;border-radius:50%;background:var(--green);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-shadow:0 8px 32px rgba(26,74,46,.25)}
+.donation-circle p{color:rgba(255,255,255,.8);font-size:14px;margin-bottom:8px}
+.donation-circle strong{font-family:'Playfair Display',serif;color:var(--gold);font-size:28px}
+.donation-circle small{color:rgba(255,255,255,.6);font-size:11px;margin-top:4px}
+
+/* GALLERY */
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:180px;gap:12px}
+.g-item{border-radius:10px;overflow:hidden;cursor:pointer;position:relative;background:var(--green-lt)}
+.g-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.g-item:hover img{transform:scale(1.06)}
+/* First item spans 2 cols × 2 rows */
+.g-item:first-child{grid-column:span 2;grid-row:span 2}
+/* 5th item spans 2 cols */
+.g-item:nth-child(5){grid-column:span 2}
+/* 9th item spans 2 cols */
+.g-item:nth-child(9){grid-column:span 2}
+.g-overlay{position:absolute;inset:0;background:rgba(26,74,46,0);display:flex;align-items:center;justify-content:center;transition:background .3s}
+.g-overlay svg{width:32px;height:32px;fill:white;opacity:0;transition:opacity .3s}
+.g-item:hover .g-overlay{background:rgba(26,74,46,.4)}
+.g-item:hover .g-overlay svg{opacity:1}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.contact-info h3{font-size:22px;color:var(--green);margin-bottom:20px}
+.contact-item{display:flex;gap:14px;margin-bottom:20px;align-items:flex-start}
+.contact-icon{width:40px;height:40px;border-radius:10px;background:var(--green-lt);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.contact-item h4{font-size:13px;font-weight:600;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+.contact-item p{font-size:14px;color:var(--ink)}
+.contact-social{display:flex;gap:10px;margin-top:24px}
+.social-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;border:1.5px solid var(--border);font-size:13px;font-weight:600;color:var(--ink);transition:all .2s}
+.social-btn:hover{border-color:var(--green);color:var(--green);background:var(--green-lt)}
+.contact-form-card{background:var(--white);border-radius:14px;padding:32px;border:1px solid var(--border)}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.7)}
+.footer-top{padding:56px 0 40px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer-brand p{font-size:14px;line-height:1.7;margin-top:12px;max-width:260px}
+.footer-col h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--white);margin-bottom:16px}
+.footer-col a{display:block;font-size:13px;margin-bottom:10px;color:rgba(255,255,255,.6);transition:color .2s;cursor:pointer}
+.footer-col a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding:20px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px}
+.footer-bottom span{color:var(--gold)}
+
+/* MEMBER */
+.member-hero{background:linear-gradient(135deg,var(--green),#1e5c38);border-radius:16px;padding:48px;color:white;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.member-hero h2{font-size:28px;margin-bottom:8px}
+.profile-card{background:var(--cream);border-radius:12px;padding:28px;border:1px solid var(--border)}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--green);color:white;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-family:'Playfair Display',serif}
+.member-grid{display:grid;grid-template-columns:240px 1fr;gap:28px}
+.member-sidebar{display:flex;flex-direction:column;gap:6px}
+.sidebar-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--ink-mid);cursor:pointer;transition:all .2s}
+.sidebar-item:hover,.sidebar-item.active{background:var(--green-lt);color:var(--green)}
+.sidebar-item svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
+.member-content{background:var(--cream);border-radius:12px;padding:28px;border:1px solid var(--border);min-height:400px}
+.member-tab{display:none}.member-tab.active{display:block}
+.admin-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.admin-table{width:100%;border-collapse:collapse;font-size:14px}
+.admin-table th{text-align:left;padding:10px 14px;font-size:12px;font-weight:600;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border)}
+.admin-table td{padding:12px 14px;border-bottom:1px solid var(--border)}
+.admin-table tr:hover td{background:var(--green-lt)}
+.status-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.status-badge.active{background:#e8f5ee;color:var(--green)}
+.status-badge.admin-role{background:#e8e4ff;color:#4a3aaa}
+
+/* PAGE HERO */
+.page-hero{background:var(--green);padding:60px 0 48px;color:white}
+.page-hero h1{font-size:clamp(28px,4vw,44px);margin-bottom:8px}
+.page-hero p{opacity:.75;font-size:15px}
+.breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:16px;opacity:.7}
+.page-content{padding:64px 0}
+.prose{max-width:780px}
+.prose h2{font-size:26px;color:var(--green);margin:32px 0 12px}
+.prose h3{font-size:20px;color:var(--ink);margin:24px 0 10px}
+.prose p{font-size:15px;color:var(--ink-mid);line-height:1.8;margin-bottom:16px}
+.prose ul{padding-left:20px;margin-bottom:16px}
+.prose li{font-size:15px;color:var(--ink-mid);margin-bottom:6px;line-height:1.7}
+.quran-card{background:var(--green);color:white;border-radius:14px;padding:32px;text-align:center;margin-bottom:28px}
+.quran-card .arabic{font-size:24px;line-height:2;direction:rtl;margin-bottom:16px;opacity:.9}
+.quran-card .trans{font-size:14px;opacity:.75;font-style:italic}
+.quran-card .ref{margin-top:12px;color:var(--gold);font-size:13px;font-weight:600}
+.search-bar{display:flex;gap:10px;margin-bottom:28px}
+.search-bar input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:10px 16px;font-size:14px;font-family:inherit;color:var(--ink)}
+.search-bar input:focus{outline:none;border-color:var(--green)}
+.filter-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.filter-pill{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:13px;font-weight:500;color:var(--ink-mid);cursor:pointer;transition:all .2s}
+.filter-pill.active,.filter-pill:hover{border-color:var(--green);background:var(--green-lt);color:var(--green)}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.footer-top{grid-template-columns:1fr 1fr}.about-grid{gap:40px}.donations-inner{gap:32px}}
+@media(max-width:768px){
+  #main-nav{display:none}.hamburger{display:flex}
+  .about-grid,.donations-inner,.contact-grid,.member-grid{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}
+  .g-item:first-child{grid-column:span 2}
+  .g-item:nth-child(5){grid-column:span 1}
+  .g-item:nth-child(9){grid-column:span 1}
+  .hero-stats-inner{display:none}.about-image-card{display:none}
+  #hero{min-height:70vh}.member-hero{padding:28px}
+  .prayer-inner{justify-content:flex-start;overflow-x:auto}
+}
+@media(max-width:480px){
+  .gallery-grid{grid-template-columns:1fr}.g-item:first-child{grid-column:span 1}
+  .footer-top{grid-template-columns:1fr}.hero-actions{flex-direction:column}
+}
+
+/* ── ADMIN DASHBOARD ── */
+.admin-tab-pill{padding:14px 18px;font-size:13px;font-weight:600;color:var(--ink-mid);background:none;border:none;border-bottom:3px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit}
+.admin-tab-pill:hover{color:var(--green)}
+.admin-tab-pill.active{color:var(--green);border-bottom-color:var(--green)}
+.admin-panel{display:none}
+.admin-panel.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.dash-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:6px;transition:box-shadow .2s,transform .2s;cursor:default}
+.dash-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.08);transform:translateY(-2px)}
+.dash-card-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:6px}
+.dash-card-num{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:var(--green)}
+.dash-card-lbl{font-size:12px;color:var(--ink-lt);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.quick-action-btn{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:22px 18px;background:var(--white);border:1.5px solid var(--border);border-radius:14px;cursor:pointer;font-family:inherit;transition:all .22s;text-align:left;width:100%}
+.quick-action-btn:hover{border-color:var(--green);background:var(--green-lt);transform:translateY(-3px);box-shadow:0 6px 20px rgba(26,74,46,.1)}
+.quick-action-btn strong{font-size:14px;font-weight:700;color:var(--ink)}
+.quick-action-btn small{font-size:12px;color:var(--ink-lt)}
+.admin-post-card{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:box-shadow .2s,transform .2s}
+.admin-post-card:hover{box-shadow:0 6px 24px rgba(0,0,0,.1);transform:translateY(-2px)}
+.admin-post-card-img{height:140px;background:linear-gradient(135deg,var(--green-lt),#2d7a4f);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.admin-post-card-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.admin-post-card-img-placeholder{font-size:40px;opacity:.3;position:relative;z-index:1}
+.admin-post-card-body{padding:16px}
+.admin-post-card-body h4{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.35}
+.admin-post-card-body p{font-size:12px;color:var(--ink-lt);margin-bottom:14px;line-height:1.5}
+.admin-post-card-actions{display:flex;gap:8px}
+.admin-post-card-actions button{flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .18s;border:none}
+.btn-edit{background:var(--green-lt);color:var(--green)}
+.btn-edit:hover{background:var(--green);color:white}
+.btn-del{background:#fee2e2;color:#c0392b}
+.btn-del:hover{background:#c0392b;color:white}
+.member-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;align-items:center;gap:14px;transition:box-shadow .2s}
+.member-card:hover{box-shadow:var(--shadow)}
+.member-card-avatar{width:48px;height:48px;border-radius:50%;background:var(--green);color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif}
+.member-card-info h4{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.member-card-info p{font-size:12px;color:var(--ink-lt)}
+.member-card-role{margin-left:auto;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;flex-shrink:0}
+.role-admin{background:#e8e4ff;color:#4a3aaa}
+.role-member{background:var(--green-lt);color:var(--green)}
+.prayer-time-edit-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;transition:box-shadow .2s}
+.prayer-time-edit-card:hover{box-shadow:var(--shadow)}
+.pt-icon{font-size:30px;margin-bottom:10px}
+.prayer-time-edit-card label{display:block;font-size:11px;font-weight:700;color:var(--ink-lt);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
+.prayer-time-edit-card input[type=time]{width:100%;border:2px solid var(--border);border-radius:10px;padding:12px;font-size:22px;font-family:'Playfair Display',serif;text-align:center;color:var(--green);font-weight:700;transition:border-color .2s}
+.prayer-time-edit-card input[type=time]:focus{outline:none;border-color:var(--green)}
+.media-thumb{position:relative;border-radius:10px;overflow:hidden;background:var(--green-lt);aspect-ratio:1}
+.media-thumb img{width:100%;height:100%;object-fit:cover}
+.media-thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,0);display:flex;align-items:flex-end;padding:8px;transition:background .2s;gap:6px}
+.media-thumb:hover .media-thumb-overlay{background:rgba(0,0,0,.55)}
+.media-thumb-del{opacity:0;background:#c0392b;color:white;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .2s;font-family:inherit}
+.media-thumb:hover .media-thumb-del{opacity:1}
+.dash-post-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px;transition:all .2s;cursor:pointer}
+.dash-post-row:hover{box-shadow:var(--shadow);transform:translateX(4px)}
+.dash-post-thumb{width:48px;height:48px;border-radius:8px;background:var(--green-lt);object-fit:cover;flex-shrink:0;font-size:22px;display:flex;align-items:center;justify-content:center}
+.dash-post-info{flex:1;min-width:0}
+.dash-post-info h4{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-post-info p{font-size:11px;color:var(--ink-lt);margin-top:2px}
+.profile-card{background:var(--cream);border-radius:14px;padding:28px;border:1px solid var(--border)}
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--green);color:white;font-size:28px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif}
+/* ── ACTIVITIES ACCORDION ── */
+.activities-accordion{display:grid;gap:14px}
+.acc-item{background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:box-shadow .3s,border-color .3s}
+.acc-item:hover{box-shadow:var(--shadow-lg);border-color:var(--green)}
+.acc-item.open{border-color:var(--green);box-shadow:var(--shadow-lg)}
+.acc-header{display:flex;align-items:center;gap:16px;padding:22px 24px;cursor:pointer;user-select:none}
+.acc-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;transition:transform .3s}
+.acc-item.open .acc-icon{transform:scale(1.1)}
+.acc-title{flex:1}
+.acc-title h3{font-size:18px;color:var(--ink);margin-bottom:3px;transition:color .2s}
+.acc-item:hover .acc-title h3,.acc-item.open .acc-title h3{color:var(--green)}
+.acc-title p{font-size:13px;color:var(--ink-lt)}
+.acc-chevron{font-size:20px;color:var(--ink-lt);transition:transform .35s cubic-bezier(.4,0,.2,1);flex-shrink:0}
+.acc-item.open .acc-chevron{transform:rotate(180deg);color:var(--green)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.4,0,.2,1)}
+.acc-item.open .acc-body{max-height:900px}
+.acc-body-inner{padding:0 24px 28px}
+.acc-img-gallery{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.acc-img-gallery img{width:140px;height:100px;object-fit:cover;border-radius:10px;transition:transform .25s}
+.acc-img-gallery img:hover{transform:scale(1.04)}
+.acc-img-upload{width:100px;height:100px;border:2px dashed var(--border);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:22px;color:var(--ink-lt);transition:all .2s;position:relative}
+.acc-img-upload:hover{border-color:var(--green);color:var(--green);background:var(--green-lt)}
+.acc-img-upload small{font-size:11px;font-weight:600}
+.hidden-file-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.pt-display-row{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:var(--cream);border-radius:8px;font-size:14px}
+.acc-info-card{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--cream);border-radius:10px;border:1px solid var(--border);font-size:14px;color:var(--ink-mid)}
+.acc-info-card span{font-size:20px;flex-shrink:0}
+.acc-info-card strong{color:var(--ink);display:block;margin-bottom:2px}
+.acc-info-card small{font-size:12px}
+
+/* ── CONDOLENCE CARDS ── */
+.condolence-card{background:var(--white);border:1.5px solid #d4b8e0;border-radius:14px;overflow:hidden;transition:box-shadow .2s}
+.condolence-card:hover{box-shadow:0 4px 20px rgba(45,53,97,.12)}
+.condolence-card-header{background:linear-gradient(135deg,#2d3561,#4a5568);padding:18px 22px;display:flex;align-items:center;gap:14px}
+.condolence-card-header h3{color:white;font-size:18px;margin-bottom:2px}
+.condolence-card-header p{color:rgba(255,255,255,.7);font-size:13px}
+.condolence-card-body{padding:18px 22px}
+.condolence-card-body .arabic-small{font-size:18px;direction:rtl;color:var(--green);margin-bottom:8px;font-weight:400}
+.condolence-card-body p{font-size:14px;color:var(--ink-mid);line-height:1.7;margin-bottom:12px}
+.condolence-meta{display:flex;flex-wrap:wrap;gap:8px}
+.condolence-meta span{background:var(--cream);border:1px solid var(--border);padding:4px 10px;border-radius:20px;font-size:12px;color:var(--ink-mid)}
+.condolence-admin-actions{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* ── PAGE ANIMATIONS ── */
+@keyframes fadeUpIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInScale{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulseGreen{0%,100%{box-shadow:0 0 0 0 rgba(26,74,46,.3)}70%{box-shadow:0 0 0 10px rgba(26,74,46,0)}}
+
+/* Scroll-reveal animation class */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .65s cubic-bezier(.4,0,.2,1),transform .65s cubic-bezier(.4,0,.2,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* Animated underline on section headers */
+.section-header h2{position:relative;display:inline-block}
+
+/* News card hover shimmer */
+.news-card::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.4) 50%,transparent 60%);background-size:200% 100%;opacity:0;transition:opacity .3s}
+.news-card{position:relative}
+.news-card:hover::before{opacity:1;animation:shimmer .6s ease}
+
+/* About image float */
+.about-image-main{animation:floatUp 6s ease-in-out infinite}
+
+/* Stat numbers count-up feel */
+.stat-num{animation:fadeInScale .5s ease backwards}
+
+/* Donate circle pulse */
+.donation-circle{animation:pulseGreen 3s infinite}
+
+/* Activity cards stagger on home */
+.activity-card{animation:fadeUpIn .5s ease backwards}
+.activity-card:nth-child(1){animation-delay:.05s}
+.activity-card:nth-child(2){animation-delay:.1s}
+.activity-card:nth-child(3){animation-delay:.15s}
+.activity-card:nth-child(4){animation-delay:.2s}
+.activity-card:nth-child(5){animation-delay:.25s}
+.activity-card:nth-child(6){animation-delay:.3s}
+
+/* Page navigation animated entry */
+.page.active > *:first-child{animation:fadeUpIn .4s ease backwards}
+
+/* About image card bounce in */
+.about-image-card{animation:fadeInScale .6s .3s ease backwards}
+
+/* Prayer strip slide down */
+#prayer-strip{animation:fadeUpIn .4s ease backwards}
+
+/* Gallery items stagger */
+.g-item{animation:fadeInScale .4s ease backwards}
+.g-item:nth-child(1){animation-delay:.05s}.g-item:nth-child(2){animation-delay:.1s}
+.g-item:nth-child(3){animation-delay:.15s}.g-item:nth-child(4){animation-delay:.2s}
+.g-item:nth-child(5){animation-delay:.25s}.g-item:nth-child(6){animation-delay:.3s}
+.g-item:nth-child(7){animation-delay:.35s}.g-item:nth-child(8){animation-delay:.4s}
+
+/* Admin panel fade in */
+.admin-panel.active{animation:fadeUpIn .3s ease}
+
+/* Quick action hover pulse */
+.quick-action-btn:active{transform:scale(.97)}
+
+/* Dash card counter animation */
+.dash-card{animation:fadeInScale .4s ease backwards}
+.dash-card:nth-child(1){animation-delay:.05s}.dash-card:nth-child(2){animation-delay:.1s}
+.dash-card:nth-child(3){animation-delay:.15s}.dash-card:nth-child(4){animation-delay:.2s}
+
+/* Toast bounce */
+.toast{animation:slideIn .35s cubic-bezier(.34,1.56,.64,1)}
+
+/* Nav link underline animation already in place – enhance */
+#main-nav > a,.nav-dropdown > a{transition:color .18s,background .18s,transform .15s}
+#main-nav > a:active{transform:scale(.96)}
+
+/* Modal entrance */
+.modal-overlay.active .modal{animation:fadeInScale .28s cubic-bezier(.34,1.2,.64,1)}
+</style>
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('auth-modal')">×</button>
+    <div class="tab-btns">
+      <button class="tab-btn active" id="tab-login-btn" onclick="switchAuthTab('login')">Hyrja</button>
+      <button class="tab-btn" id="tab-reg-btn" onclick="switchAuthTab('register')">Regjistrim</button>
+    </div>
+    <div id="login-form">
+      <h2 id="login-h2">Mirë se vini</h2>
+      <p class="sub" id="login-sub">Hyni në llogarinë tuaj</p>
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="email@example.com"></div>
+      <div class="form-group"><label id="lbl-pass1">Fjalëkalimi</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="doLogin()" id="login-submit-btn">Hyr</button>
+      <div class="form-divider"><span id="lbl-or">ose</span></div>
+      <p style="text-align:center;font-size:13px;color:var(--ink-lt)"><span id="switch-to-reg">Nuk keni llogari?</span> <a onclick="switchAuthTab('register')" style="color:var(--green);cursor:pointer;font-weight:600" id="switch-reg-link">Regjistrohu</a></p>
+    </div>
+    <div id="register-form" class="hidden">
+      <h2 id="reg-h2">Regjistrohu</h2>
+      <p class="sub" id="reg-sub">Krijoni llogarinë tuaj falas</p>
+      <div class="form-group"><label id="lbl-fullname">Emri i plotë</label><input type="text" id="reg-name" placeholder="Emri Mbiemri"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="email@example.com"></div>
+      <div class="form-group"><label id="lbl-pass2">Fjalëkalimi</label><input type="password" id="reg-pass" placeholder="Min. 8 karaktere"></div>
+      <div class="form-group"><label id="lbl-pass3">Konfirmo</label><input type="password" id="reg-pass2" placeholder="••••••••"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="doRegister()" id="reg-submit-btn">Regjistrohu</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS MODAL -->
+<div class="modal-overlay" id="news-modal">
+  <div class="modal" style="max-width:740px">
+    <button class="modal-close" onclick="closeModal('news-modal')">×</button>
+    <div id="news-modal-content"></div>
+  </div>
+</div>
+
+<!-- POST EDITOR -->
+<div class="modal-overlay" id="post-modal">
+  <div class="modal" style="max-width:640px">
+    <button class="modal-close" onclick="closeModal('post-modal')">×</button>
+    <h2 id="post-modal-title">Artikull i ri</h2>
+    <p class="sub">Shkruani dhe publikoni artikullin</p>
+    <div class="form-group"><label>Titulli</label><input type="text" id="post-title"></div>
+    <div class="form-group"><label>Kategoria</label>
+      <select id="post-cat"><option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option></select>
+    </div>
+    <div class="form-group"><label>Përmbajtja</label><textarea id="post-body" rows="6"></textarea></div>
+    <div class="form-group"><label>URL e fotos</label><input type="text" id="post-img" placeholder="https://..."></div>
+    <button class="btn btn-primary" onclick="savePost()">Publiko</button>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<header id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="navigate('home')">
+        <div class="nav-logo-icon">
+          <!-- Mosque logo: dome + minaret + crescent -->
+          <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+            <!-- Minaret left -->
+            <rect x="4" y="18" width="4" height="16" rx="1" fill="rgba(255,255,255,.9)"/>
+            <rect x="3" y="16" width="6" height="3" rx="1" fill="var(--gold)"/>
+            <rect x="4.5" y="12" width="3" height="4" rx="1" fill="rgba(255,255,255,.9)"/>
+            <polygon points="6,8 4,12 8,12" fill="var(--gold)"/>
+            <!-- Minaret right -->
+            <rect x="36" y="18" width="4" height="16" rx="1" fill="rgba(255,255,255,.9)"/>
+            <rect x="35" y="16" width="6" height="3" rx="1" fill="var(--gold)"/>
+            <rect x="36.5" y="12" width="3" height="4" rx="1" fill="rgba(255,255,255,.9)"/>
+            <polygon points="38,8 36,12 40,12" fill="var(--gold)"/>
+            <!-- Main dome -->
+            <ellipse cx="22" cy="20" rx="10" ry="9" fill="rgba(255,255,255,.95)"/>
+            <!-- Dome base / body -->
+            <rect x="12" y="20" width="20" height="14" rx="1" fill="rgba(255,255,255,.95)"/>
+            <!-- Arch door -->
+            <path d="M18 34 Q18 28 22 28 Q26 28 26 34Z" fill="var(--green)"/>
+            <!-- Ground line -->
+            <rect x="3" y="34" width="38" height="2" rx="1" fill="var(--gold)"/>
+            <!-- Crescent on dome top -->
+            <path d="M22 11 A4 4 0 1 1 26 13 A3 3 0 1 0 22 11Z" fill="var(--gold)"/>
+          </svg>
+        </div>
+        <div class="nav-logo-text">
+          <div class="top">Haus des Friedens</div>
+          <div class="btm" id="nav-subtitle">Shtëpia e Paqës • Zürich</div>
+        </div>
+      </div>
+
+      <nav id="main-nav">
+        <a onclick="navClick('home',event)" id="nav-home" class="active" data-sq="Ballina" data-de="Startseite">Ballina</a>
+
+        <div class="nav-dropdown" id="dd-about">
+          <a onclick="toggleDD('dd-about',event)">
+            <span data-sq="Rreth Nesh" data-de="Über uns">Rreth Nesh</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </a>
+          <div class="nav-dropdown-menu">
+            <a onclick="navClick('history',event)" data-sq="Historiku" data-de="Geschichte">Historiku</a>
+            <a onclick="navClick('statute',event)" data-sq="Rregullorja & Statuti" data-de="Satzung & Statut">Rregullorja & Statuti</a>
+            <a onclick="navClick('imam',event)" data-sq="Imami" data-de="Imam">Imami</a>
+            <div class="sep"></div>
+            <a onclick="navClick('activities',event)" data-sq="Aktivitetet" data-de="Aktivitäten">Aktivitetet</a>
+            <a onclick="navClick('condolences',event)" data-sq="Ngushëllimet" data-de="Kondolenzen">Ngushëllimet</a>
+          </div>
+        </div>
+
+        <div class="nav-dropdown" id="dd-islamic">
+          <a onclick="toggleDD('dd-islamic',event)">
+            <span data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </a>
+          <div class="nav-dropdown-menu">
+            <a onclick="navClick('islamic',event)" data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</a>
+            <a onclick="navClick('quran',event)" data-sq="Kurani i Madhërishëm" data-de="Der Heilige Quran">Kurani i Madhërishëm</a>
+          </div>
+        </div>
+
+        <a onclick="navClick('lectures',event)" id="nav-lectures" data-sq="Ligjëratat" data-de="Vorträge">Ligjëratat</a>
+        <a onclick="navClick('news',event)" id="nav-news" data-sq="Media/Blog" data-de="Medien/Blog">Media/Blog</a>
+        <a onclick="navClick('contact',event)" id="nav-contact" data-sq="Kontakti" data-de="Kontakt">Kontakti</a>
+        <a onclick="navClick('membership',event)" id="nav-membership" data-sq="Anëtarësimi" data-de="Mitgliedschaft">Anëtarësimi</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="lang-switch">
+          <button class="lang-btn active" id="btn-sq" onclick="setLang('sq')" title="Shqip">
+            <span class="flag">🇦🇱</span><span>SQ</span>
+          </button>
+          <button class="lang-btn" id="btn-de" onclick="setLang('de')" title="Deutsch">
+            <span class="flag">🇩🇪</span><span>DE</span>
+          </button>
+        </div>
+        <div id="auth-nav-area">
+          <button class="btn btn-outline" onclick="openModal('auth-modal')" id="nav-login-btn" data-sq="Hyrja" data-de="Anmelden" style="padding:8px 18px;font-size:13px">Hyrja</button>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMobile()" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <nav>
+    <a onclick="navigate('home');toggleMobile()" data-sq="Ballina" data-de="Startseite">Ballina</a>
+    <a onclick="navigate('about');toggleMobile()" data-sq="Rreth Nesh" data-de="Über uns">Rreth Nesh</a>
+    <div class="mob-sub">
+      <a onclick="navigate('history');toggleMobile()" data-sq="Historiku" data-de="Geschichte">Historiku</a>
+      <a onclick="navigate('statute');toggleMobile()" data-sq="Rregullorja" data-de="Satzung">Rregullorja</a>
+      <a onclick="navigate('imam');toggleMobile()" data-sq="Imami" data-de="Imam">Imami</a>
+      <a onclick="navigate('activities');toggleMobile()" data-sq="Aktivitetet" data-de="Aktivitäten">Aktivitetet</a>
+    </div>
+    <a onclick="navigate('islamic');toggleMobile()" data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</a>
+    <a onclick="navigate('quran');toggleMobile()" data-sq="Kurani" data-de="Quran">Kurani</a>
+    <a onclick="navigate('lectures');toggleMobile()" data-sq="Ligjëratat" data-de="Vorträge">Ligjëratat</a>
+    <a onclick="navigate('news');toggleMobile()" data-sq="Media/Blog" data-de="Medien/Blog">Media/Blog</a>
+    <a onclick="navigate('membership');toggleMobile()" data-sq="Anëtarësimi" data-de="Mitgliedschaft">Anëtarësimi</a>
+    <a onclick="navigate('contact');toggleMobile()" data-sq="Kontakti" data-de="Kontakt">Kontakti</a>
+  </nav>
+  <div class="mob-lang">
+    <button class="lang-btn active" id="mob-btn-sq" onclick="setLang('sq')"><span class="flag">🇦🇱</span> Shqip</button>
+    <button class="lang-btn" id="mob-btn-de" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</button>
+  </div>
+  <div style="margin-top:16px">
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openModal('auth-modal');toggleMobile()" id="mob-login-btn" data-sq="Hyrja / Regjistrim" data-de="Anmelden / Registrieren">Hyrja / Regjistrim</button>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <section id="hero">
+    <!-- Background slideshow -->
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide active" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg')"></div>
+    </div>
+    <!-- Gradient overlay -->
+    <div class="hero-overlay"></div>
+    <!-- Subtle pattern -->
+    <div class="hero-pattern"></div>
+    <!-- Arrows -->
+    <button class="slide-arrow prev" onclick="slidePrev()" aria-label="Previous">&#8592;</button>
+    <button class="slide-arrow next" onclick="slideNext()" aria-label="Next">&#8594;</button>
+    <!-- Dot indicators -->
+    <div class="slide-dots" id="slideDots"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge-wrap"><span id="hero-badge">🕌 Zürich Schwamendingen • Est. 2004</span></div>
+        <h1 id="hero-h1">Kulturzentrum<br><em>Haus des Friedens</em><br>Shtëpia e Paqës</h1>
+        <div class="hero-quote">
+          <p id="hero-quote-text">O ju njerëz, vërtet Ne ju krijuam prej një mashkulli dhe një femre, ju bëmë popuj e fise që të njiheni ndërmjet vete, e s'ka dyshim se te All-llahu më i ndershmi ndër ju është ai që më tepër është ruajtur.</p>
+          <cite id="hero-quote-cite">— Kurani i Shenjtë, El-Huxhurat 49:13</cite>
+        </div>
+        <div class="hero-actions">
+          <button class="hero-btn-gold" onclick="navigate('news')" id="hero-btn1">📰 Lajmet e Fundit</button>
+          <button class="hero-btn-outline" onclick="navigate('membership')" id="hero-btn2">🤝 Anëtarësohu</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats"><div class="container">
+      <div class="hero-stats-inner">
+        <div class="stat-item"><div class="stat-num">2004</div><div class="stat-lbl" id="stat1-lbl">Themeluar</div></div>
+        <div class="stat-item"><div class="stat-num">20+</div><div class="stat-lbl" id="stat2-lbl">Vjet Shërbim</div></div>
+        <div class="stat-item"><div class="stat-num">90%+</div><div class="stat-lbl" id="stat3-lbl">Shqiptar</div></div>
+        <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl" id="stat4-lbl">Organizata Partnere</div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <div id="prayer-strip">
+    <div class="prayer-inner">
+      <!-- Live date/time -->
+      <div class="prayer-item" style="background:rgba(0,0,0,.12);border-radius:8px;margin-right:8px;border-right:none;padding:4px 16px">
+        <div class="prayer-name" id="live-date-label">Sot</div>
+        <div class="prayer-time" id="live-date" style="font-size:13px;font-weight:700;letter-spacing:.5px">—</div>
+        <div style="font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:white" id="live-time">00:00:00</div>
+      </div>
+      <div class="prayer-item"><div class="prayer-name" id="pn-sabah">Sabahu</div><div class="prayer-time">05:10</div></div>
+      <div class="prayer-item"><div class="prayer-name" id="pn-dreka">Dreka</div><div class="prayer-time">13:15</div></div>
+      <div class="prayer-item"><div class="prayer-name" id="pn-ikindia">Ikindia</div><div class="prayer-time">17:00</div></div>
+      <div class="prayer-item"><div class="prayer-name" id="pn-akshami">Akshami</div><div class="prayer-time">20:35</div></div>
+      <div class="prayer-item"><div class="prayer-name" id="pn-jacia">Jacia</div><div class="prayer-time">22:10</div></div>
+      <div class="prayer-item" style="border-right:none"><div class="prayer-name">📍 Saatlenstr. 23</div><div class="prayer-time" style="font-size:12px">8051 Zürich</div></div>
+    </div>
+  </div>
+
+  <section class="section" style="background:var(--white)">
+    <div class="container"><div class="about-grid">
+      <div class="about-image">
+        <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Xhamia jonë" class="about-image-main" onerror="this.style.minHeight='300px'">
+        <div class="about-image-card"><div class="num">2013</div><div class="lbl" id="about-card-lbl">Adresa e re<br>Saatlenstr. 23</div></div>
+      </div>
+      <div class="about-content">
+        <div class="badge"><span id="about-badge">🕌 Rreth Nesh</span></div>
+        <h2 id="about-h2" style="margin-top:14px">Qendra Kulturore<br>Islame Shqiptare</h2>
+        <p id="about-p1">Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Është vend ku çdo besimtar ka të drejtë t'i kryejë ritet e tij fetare.</p>
+        <p id="about-p2">Shumica e besimtarëve, mbi 90%, janë shqiptarë nga trojet tona etnike – Shqipëria, Kosova, Maqedonia, Lugina e Preshevës.</p>
+        <div class="about-tags"><span class="about-tag">VIOZ</span><span class="about-tag">DAIGS</span><span class="about-tag">FIDS</span><span class="about-tag">Zürcher Forum der Religionen</span></div>
+        <button class="btn btn-primary" style="margin-top:28px" onclick="navigate('history')" id="about-btn">Lexo Historikun →</button>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" style="background:var(--cream)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge"><span id="news-badge">📰 Lajmet</span></div>
+        <h2 id="news-h2" style="margin-top:12px">Lajmet e Fundit</h2>
+        <div class="divider"></div>
+        <p id="news-sub">Ndiqni aktivitetet dhe lajmet e xhamisë sonë</p>
+      </div>
+      <div class="news-grid" id="home-news-grid"></div>
+      <div style="text-align:center;margin-top:36px">
+        <button class="btn btn-outline" onclick="navigate('news')" id="news-all-btn">Shiko të gjitha lajmet →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--green)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge" style="background:rgba(255,255,255,.15);color:var(--gold)">✨ <span id="act-badge">Aktivitetet</span></div>
+        <h2 id="act-h2" style="margin-top:12px;color:white">Çfarë Ofrojmë</h2>
+        <div class="divider"></div>
+        <p id="act-sub" style="color:rgba(255,255,255,.7)">Xhamia jonë është qendër e jetës fetare, kulturore dhe sociale</p>
+      </div>
+      <div class="activities-grid">
+        <div class="activity-card"><div class="activity-icon">🕌</div><h3 id="act1-h">Namazet e Përditshme</h3><p id="act1-p">Pesë namazet e përditshme të organizuara me imam të kualifikuar.</p></div>
+        <div class="activity-card"><div class="activity-icon">📚</div><h3 id="act2-h">Arsimi Fetar</h3><p id="act2-p">Mësime fetare për fëmijë dhe të rinj, kontribut në edukimin e tyre.</p></div>
+        <div class="activity-card"><div class="activity-icon">🤝</div><h3 id="act3-h">Dialog Ndërfetar</h3><p id="act3-p">Bashkëpunim me Kishën Reformierte dhe Zürcher Forum der Religionen.</p></div>
+        <div class="activity-card"><div class="activity-icon">🌙</div><h3 id="act4-h">Festat Islame</h3><p id="act4-p">Organizim i Ramazanit, Bajrameve dhe festave tjera islame.</p></div>
+        <div class="activity-card"><div class="activity-icon">💙</div><h3 id="act5-h">Ndihmë Humane</h3><p id="act5-p">Ndihma për familjet në nevojë dhe projekte humanitare.</p></div>
+        <div class="activity-card"><div class="activity-icon">🎓</div><h3 id="act6-h">Ligjëratat e Hoxhës</h3><p id="act6-p">Ligjërata javore të imamit për komunitetin tonë.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRAYER + IFRAME -->
+  <section class="section" style="background:var(--cream)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🗓️ <span id="prayer-badge">Namazi</span></div>
+        <h2 id="prayer-h2" style="margin-top:12px">Kohët e Namazit 2026</h2>
+        <div class="divider"></div>
+        <p id="prayer-sub">Shkarkoni kalendarin e kohëve të namazit për çdo muaj</p>
+      </div>
+
+      <!-- SwissMosque LIVE IFRAME -->
+      <div style="margin-bottom:52px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div class="live-dot"></div>
+          <span style="font-size:13px;font-weight:600;color:var(--green)" id="live-label">Live — Orari i namazit</span>
+          <a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" style="font-size:12px;color:var(--ink-lt);margin-left:auto">↗ <span id="open-new-tab">Hap në tab të re</span></a>
+        </div>
+        <div style="border-radius:16px;overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow)">
+          <iframe src="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" width="100%" height="440" frameborder="0" scrolling="no" allow="autoplay" title="SwissMosque – Haus des Friedens Gebetszeiten" style="display:block;background:var(--green-lt)"></iframe>
+        </div>
+        <p style="font-size:12px;color:var(--ink-lt);text-align:center;margin-top:8px" id="iframe-credit">Orari shfaqet drejtpërdrejt nga SwissMosque TV</p>
+      </div>
+
+      <div class="prayer-download-grid">
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Janar_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Janar" data-de="Januar">Janar</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Shkurt_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Shkurt" data-de="Februar">Shkurt</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Mars_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Mars" data-de="März">Mars</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Prill_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Prill" data-de="April">Prill</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Maj_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Maj" data-de="Mai">Maj</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Qershor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Qershor" data-de="Juni">Qershor</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Korrik_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Korrik" data-de="Juli">Korrik</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Gusht_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Gusht" data-de="August">Gusht</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Shtator_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Shtator" data-de="September">Shtator</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Tetor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Tetor" data-de="Oktober">Tetor</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Nentor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Nëntor" data-de="November">Nëntor</span></a>
+        <a class="prayer-dl-btn" href="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Dhjetor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Dhjetor" data-de="Dezember">Dhjetor</span></a>
+      </div>
+      <div style="margin-top:20px;text-align:center">
+        <a href="https://hausdesfriedens.ch/wp-content/uploads/2026/02/🕌-Netet-dhe-Ditet-e-Medha-1.pdf" target="_blank" class="btn btn-outline" id="prayer-special-btn">📥 Ditë dhe netë të mëdha fetare 2026</a>
+      </div>
+      <div class="prayer-steps-grid">
+        <div class="prayer-step"><div class="step-icon">🌅</div><div><a href="https://hausdesfriedens.ch/wp-content/uploads/2020/02/01_-Namazi_i_sabahut.pdf" target="_blank" id="ps1">Namazi i Sabahut</a><small id="ps1-s">Mëngjes</small></div></div>
+        <div class="prayer-step"><div class="step-icon">☀️</div><div><a href="https://hausdesfriedens.ch/wp-content/uploads/2020/02/02_namazi_i_drekes.pdf" target="_blank" id="ps2">Namazi i Drekës</a><small id="ps2-s">Mesdite</small></div></div>
+        <div class="prayer-step"><div class="step-icon">🌤️</div><div><a href="https://hausdesfriedens.ch/wp-content/uploads/2020/02/03_Namazi_i_ikindis.pdf" target="_blank" id="ps3">Namazi i Ikindisë</a><small id="ps3-s">Pasdite</small></div></div>
+        <div class="prayer-step"><div class="step-icon">🌇</div><div><a href="https://hausdesfriedens.ch/wp-content/uploads/2020/02/04_Namazi_i_Akshamit.pdf" target="_blank" id="ps4">Namazi i Akshamit</a><small id="ps4-s">Mbrëmje</small></div></div>
+        <div class="prayer-step"><div class="step-icon">🌙</div><div><a href="https://hausdesfriedens.ch/wp-content/uploads/2020/02/05_Namazi_i_Jacis.pdf" target="_blank" id="ps5">Namazi i Jacisë</a><small id="ps5-s">Natë</small></div></div>
+        <div class="prayer-step"><div class="step-icon">📺</div><div><a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" id="ps6">Kohët e Namazit Live</a><small>SwissMosque TV</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--gold-lt);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container"><div class="donations-inner">
+      <div class="donations-content">
+        <div class="badge"><span id="don-badge">💚 Ndihmat Tuaja</span></div>
+        <h2 id="don-h2" style="margin-top:14px">Mbështesni Xhaminë Tonë</h2>
+        <p id="don-p">Mbështetja juaj financiare ndihmon xhaminë të vazhdojë shërbimin ndaj komunitetit. Ju jemi mirënjohës për çdo ndihmë! All-llahu xh.sh. Ju shpërbleftë!</p>
+        <div class="bank-card">
+          <div class="bank-row"><span class="lbl" id="bank-name-lbl">Emri</span><span class="val">Kulturzentrum Haus des Friedens</span></div>
+          <div class="bank-row"><span class="lbl" id="bank-addr-lbl">Adresa</span><span class="val">8051 Zürich</span></div>
+          <div class="bank-row"><span class="lbl">IBAN</span><span class="val">CH10 0070 0114 9050 2891</span></div>
+          <div class="bank-row"><span class="lbl" id="bank-konto-lbl">Konto</span><span class="val">1149-5028.919</span></div>
+        </div>
+      </div>
+      <div class="donations-visual">
+        <div class="donation-circle">
+          <p id="don-circle-p">Bamirësi — Sadaka</p>
+          <strong id="don-circle-strong" style="font-family:'Playfair Display',serif;color:var(--gold);font-size:28px">🤲 Jepni</strong>
+          <small id="don-circle-small">Me zemër të hapur</small>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" style="background:var(--white)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🖼️ <span id="gallery-badge">Galeria</span></div>
+        <h2 id="gallery-h2" style="margin-top:12px">Galeria e Fotografive</h2>
+        <div class="divider"></div>
+      </div>
+      <!-- Extended gallery: 12 items -->
+      <div class="gallery-grid">
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4741-1-scaled.jpg" alt="Xhamia" loading="lazy"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <!-- Additional images from the site -->
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4737-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4720-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4710-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4700-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4685-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--cream)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">📍 <span id="contact-badge">Kontakti</span></div>
+        <h2 id="contact-h2" style="margin-top:12px">Na Kontaktoni</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3 id="contact-info-h3">Informacione të Kontaktit</h3>
+          <div class="contact-item"><div class="contact-icon">📍</div><div><h4 id="ci-addr-lbl">Adresa</h4><p>Saatlenstr. 23<br>8051 Zürich</p></div></div>
+          <div class="contact-item"><div class="contact-icon">🕌</div><div><h4 id="ci-prayer-lbl">Koha e Namazeve</h4><p id="ci-prayer-p">Pesë herë në ditë · Sipas orarit të publikuar</p></div></div>
+          <div class="contact-social">
+            <a class="social-btn" href="https://www.instagram.com/kulturzentrum_hausdesfriedens/" target="_blank">📷 Instagram</a>
+            <a class="social-btn" href="https://www.facebook.com/people/Xhamia-Schwamendingen-Z%C3%BCrich/100016301764627/" target="_blank">👍 Facebook</a>
+          </div>
+        </div>
+        <div class="contact-form-card">
+          <h3 id="contact-form-h3" style="font-size:20px;color:var(--green);margin-bottom:20px">Dërgoni Mesazh</h3>
+          <div class="form-group"><label id="cf-name-lbl">Emri juaj</label><input type="text" id="cf-name"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="cf-email"></div>
+          <div class="form-group"><label id="cf-msg-lbl">Mesazhi</label><textarea id="cf-msg" rows="4"></textarea></div>
+          <button class="btn btn-primary" onclick="sendContact()" id="contact-send-btn">Dërgo Mesazhin →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-home -->
+
+<!-- NEWS PAGE -->
+<div class="page" id="page-news">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)" id="bc-home">Ballina</span><span style="opacity:.5">›</span><span id="bc-news">Media/Blog</span></div>
+    <h1 id="news-page-h1">Media &amp; Blog</h1><p id="news-page-sub">Lajmet dhe artikujt e fundit nga xhamia jonë</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="search-bar">
+      <input type="text" id="news-search" placeholder="Kërko artikuj..." oninput="filterNews()">
+      <button class="btn btn-primary" onclick="filterNews()" id="search-btn">Kërko</button>
+    </div>
+    <div class="filter-pills">
+      <span class="filter-pill active" onclick="setFilter('ALL',this)" data-sq="Të gjitha" data-de="Alle">Të gjitha</span>
+      <span class="filter-pill" onclick="setFilter('Lajme',this)" data-sq="Lajme" data-de="Nachrichten">Lajme</span>
+      <span class="filter-pill" onclick="setFilter('Aktivitete',this)" data-sq="Aktivitete" data-de="Aktivitäten">Aktivitete</span>
+      <span class="filter-pill" onclick="setFilter('Festat Islame',this)" data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</span>
+      <span class="filter-pill" onclick="setFilter('Bashkëpunimi',this)" data-sq="Bashkëpunimi" data-de="Zusammenarbeit">Bashkëpunimi</span>
+    </div>
+    <div class="news-grid" id="news-grid"></div>
+  </div></div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="page-hero"><div class="container"><h1>Historiku</h1><p>Historia e xhamisë sonë nga viti 2004</p></div></div>
+  <div class="page-content"><div class="container"><div class="prose">
+    <h2>Themelimi i Xhamisë</h2>
+    <p>Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Fillimisht u gjet lokali adekuat në Schwamendingenstr. 112. Falë angazhimit të besimtarëve, imamit dhe bashkatdhetarëve, anëtarët e kësaj xhamie vazhdimisht shtoheshin.</p>
+    <p>Që nga viti 2013 xhamia ndryshoi adresën dhe u transferua në lokalin tjetër në <strong>Saatlenstr. 23, 8051, Zürich</strong>.</p>
+    <h2>Anëtarësimi në Organizata</h2>
+    <ul>
+      <li><strong>VIOZ</strong> – Vereinigung der Islamischen Organisationen in Zürich</li>
+      <li><strong>DAIGS</strong> – Dachverband der Albanisch-Islamischen Gemeinschaften in der Schweiz</li>
+      <li><strong>FIDS</strong> – Födereration Islamischer Dachorganisationen Schweiz</li>
+      <li><strong>Zürcher Forum der Religionen</strong></li>
+    </ul>
+    <h2>Bashkëpunimi</h2>
+    <p>Bashkëpunim me shkollat, Drejtoritë e Arsimit, Kishën Reformierte të Schwamendingenit, DAIGS-UIBSHZ, VIOZ dhe FIDS. Synimi ynë: të jemi <strong>transparentë, tolerantë, të mirëkuptueshëm dhe pozitivë</strong> në shoqërinë ku jetojmë.</p>
+  </div></div></div>
+</div>
+
+<!-- STATUTE -->
+<div class="page" id="page-statute">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Rreth Nesh</span><span style="opacity:.5">›</span>Rregullorja</div>
+    <h1>Rregullorja dhe Statuti</h1>
+    <p>Dokumentet zyrtare të Qendrës Kulturore Shtëpia e Paqës</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:48px">
+      <!-- Left: full text -->
+      <div class="prose">
+        <h2>Statuti i Shoqatës</h2>
+        <h3>Neni 1 – Emri dhe Selia</h3>
+        <p>Shoqata mban emrin <strong>"Jugendkulturzentrum Haus des Friedens – Qendra Kulturore Shtëpia e Paqës"</strong>. Selia e saj ndodhet në Zürich, Zvicër.</p>
+        <h3>Neni 2 – Qëllimi</h3>
+        <p>Qëllimi i shoqatës është kultivimi i vlerave fetare islame, kulturore dhe sociale, duke ofruar hapësirë për besimtarët që të kryejnë detyrimet e tyre fetare dhe të zhvillojnë jetën e komunitetit në mënyrë të dinjitetshme dhe transparente.</p>
+        <h3>Neni 3 – Anëtarësia</h3>
+        <p>Anëtar i shoqatës mund të bëhet çdo person i rritur që pranon statutin dhe qëllimet e shoqatës. Anëtarësia fillon me pagimin e kontributit vjetor dhe aprovohet nga bordi drejtues.</p>
+        <h3>Neni 4 – Organet e Shoqatës</h3>
+        <ul>
+          <li><strong>Kuvendi i Përgjithshëm</strong> – organi më i lartë vendimmarrës, mblidhet të paktën një herë në vit.</li>
+          <li><strong>Bordi Drejtues</strong> – drejton punën e përditshme, zgjedhet çdo 2 vjet.</li>
+          <li><strong>Komisioni i Auditimit</strong> – kontrollon financat dhe veprimtarinë e shoqatës.</li>
+        </ul>
+        <h3>Neni 5 – Financat</h3>
+        <p>Financat e shoqatës sigurohen nga kontributet e anëtarëve, donacionet, dhe veprimtaritë e organizuara. Viti fiskal fillon më 1 janar dhe mbyllet më 31 dhjetor.</p>
+        <h3>Neni 6 – Ndryshimi i Statutit</h3>
+        <p>Statuti mund të ndryshohet vetëm me vendim të Kuvendit të Përgjithshëm me dy të tretat (2/3) e votave të pranishme.</p>
+        <h3>Neni 7 – Shpërbërja</h3>
+        <p>Në rast shpërbërjeje, pasuria e shoqatës i kalon një organizate tjetër jofitimprurëse me qëllime të ngjashme, sipas vendimit të Kuvendit të Përgjithshëm.</p>
+        <div style="margin-top:32px;padding:20px;background:var(--green-lt);border-radius:12px;border-left:4px solid var(--green)">
+          <p style="font-weight:600;color:var(--green);margin:0">📋 Statuti hyn në fuqi që nga viti 2004 dhe është rishikuar herë pas here nga Kuvendi i Përgjithshëm.</p>
+        </div>
+      </div>
+      <!-- Right: PDF viewer + download -->
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:16px">📄 Dokumentet Zyrtare</h3>
+        <!-- PDF Embed -->
+        <div style="border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)">
+          <div style="background:var(--green);color:white;padding:12px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">
+            📄 Rregullorja e Xhamisë – PDF
+          </div>
+          <iframe src="https://hausdesfriedens.ch/wp-content/uploads/2022/10/Rregullorja-e-Xhamisë-Shtëpia-e-Paqës.pdf"
+            width="100%" height="480" style="display:block;border:none;background:#f5f5f5">
+            <div style="padding:32px;text-align:center;background:var(--cream)">
+              <div style="font-size:48px;margin-bottom:12px">📄</div>
+              <p style="font-weight:600;color:var(--ink);margin-bottom:8px">PDF viewer nuk është i disponueshëm</p>
+              <p style="font-size:13px;color:var(--ink-lt)">Shkarkoni dokumentin duke klikuar butonin më poshtë</p>
+            </div>
+          </iframe>
+        </div>
+        <!-- Download buttons -->
+        <div style="display:grid;gap:10px">
+          <a href="https://hausdesfriedens.ch/wp-content/uploads/2022/10/Rregullorja-e-Xhamisë-Shtëpia-e-Paqës.pdf" target="_blank" class="btn btn-primary" style="justify-content:center">
+            📥 Shkarko Rregulloren (PDF)
+          </a>
+          <a href="https://hausdesfriedens.ch/rregullorja/" target="_blank" class="btn btn-outline" style="justify-content:center">
+            🌐 Shiko faqen origjinale
+          </a>
+        </div>
+        <!-- Info cards -->
+        <div style="display:grid;gap:10px;margin-top:24px">
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+            <div style="font-size:22px">🗓️</div>
+            <div><h4 style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Themeluar</h4><p style="font-size:13px;color:var(--ink-mid)">2004 – Zürich Schwamendingen</p></div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+            <div style="font-size:22px">📍</div>
+            <div><h4 style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Selia</h4><p style="font-size:13px;color:var(--ink-mid)">Saatlenstr. 23, 8051 Zürich</p></div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+            <div style="font-size:22px">🏛️</div>
+            <div><h4 style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Forma juridike</h4><p style="font-size:13px;color:var(--ink-mid)">Shoqatë jofitimprurëse (Verein) – Zvicër</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- IMAM -->
+<div class="page" id="page-imam">
+  <div class="page-hero"><div class="container"><h1>Imam Fahredin Bunjaku</h1></div></div>
+  <div class="page-content"><div class="container"><div class="about-grid">
+    <div class="about-image"><div style="height:360px;background:var(--green-lt);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:80px">🧔</div></div>
+    <div class="about-content">
+      <div class="badge">👤 Imami ynë</div>
+      <h2 style="margin-top:14px">Imam Fahredin Bunjaku</h2>
+      <p>Imami i xhamisë sonë udhëheq namazet e përditshme dhe ofron udhëzim fetar për komunitetin. Çdo javë mban ligjërata mësimore dhe spirituale për xhematin.</p>
+      <p>Imami është i disponueshëm për këshillim fetar, ngushëllime dhe çdo shërbim tjetër fetar.</p>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="navigate('lectures')">Shiko ligjëratat →</button>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- ACTIVITIES -->
+<div class="page" id="page-activities">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Rreth Nesh</span><span style="opacity:.5">›</span>Aktivitetet</div>
+    <h1>Aktivitetet e Xhamisë</h1>
+    <p>Shfletoni çfarë ofron qendra jonë kulturore dhe fetare</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="activities-accordion" id="activities-accordion">
+
+      <!-- 1: Namazet -->
+      <div class="acc-item" onclick="toggleAcc(0)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,var(--green),#2d7a4f)">🕌</div>
+          <div class="acc-title">
+            <h3>Namazet e Përditshme</h3>
+            <p>Pesë namazet — Sabahu, Dreka, Ikindia, Akshami, Jacia</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Rreth namazeve</h4>
+                <p>Namazi është shtylla e dytë e Islamit dhe akti kryesor i adhurimit. Xhamia "Shtëpia e Paqës" ofron pesë namazet e përditshme të udhëhequra nga Imam Fahredin Bunjaku, imam i kualifikuar me arsim fetar.</p>
+                <p>Çdo besimtar është i mirëpritur të marrë pjesë, pavarësisht prejardhjes ose nivelit të njohurive fetare.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Namazi i Xhumasë</h4>
+                <p>Çdo të premte mbahet namazi i detyrueshëm i Xhumasë me hutbe (predikë) në gjuhën shqipe, duke filluar pas thirrjes së drekës.</p>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Orari i sotëm (afërsisht)</h4>
+                <div style="display:grid;gap:8px">
+                  <div class="pt-display-row"><span>🌅 Sabahu</span><strong>05:10</strong></div>
+                  <div class="pt-display-row"><span>☀️ Dreka</span><strong>13:15</strong></div>
+                  <div class="pt-display-row"><span>🌤️ Ikindia</span><strong>17:00</strong></div>
+                  <div class="pt-display-row"><span>🌇 Akshami</span><strong>20:35</strong></div>
+                  <div class="pt-display-row"><span>🌙 Jacia</span><strong>22:10</strong></div>
+                </div>
+                <a onclick="navigate('home')" style="display:block;margin-top:14px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer">📥 Shiko kalendarin e plotë →</a>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-0">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Namazi" onerror="this.style.display='none'">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg" alt="Namazi" onerror="this.style.display='none'">
+              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(0)" title="Shto foto">
+                <span>📤</span><small>Shto foto</small>
+                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,0)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Arsimi Fetar -->
+      <div class="acc-item" onclick="toggleAcc(1)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#c8a84b,#b8943b)">📚</div>
+          <div class="acc-title">
+            <h3>Arsimi Fetar</h3>
+            <p>Mësime për fëmijë, të rinj dhe të rritur</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Programi mësimor</h4>
+                <p>Xhamia ofron mësime fetare të strukturuara për të gjitha grupmoshat. Qëllimi është edukimi i gjeneratës së re shqiptare në Zvicër me vlera islame autentike dhe me njohje të gjuhës shqipe.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Çfarë mësojmë</h4>
+                <ul style="padding-left:20px;color:var(--ink-mid);font-size:14px;line-height:2">
+                  <li>Kur'ani i Shenjtë dhe recitimi (Tilawah)</li>
+                  <li>Bazat e fesë islame (Akideja)</li>
+                  <li>Rregullat e namazit dhe adhurimit</li>
+                  <li>Historia islame dhe e profetëve</li>
+                  <li>Gjuha dhe kultura shqiptare</li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Grupet e studimit</h4>
+                <div style="display:grid;gap:10px">
+                  <div class="acc-info-card"><span style="font-size:20px">👶</span><div><strong>Fëmijë (6–12 vjeç)</strong><br><small>Të shtunën 09:00–11:00</small></div></div>
+                  <div class="acc-info-card"><span style="font-size:20px">🧑</span><div><strong>Të rinj (13–18 vjeç)</strong><br><small>Jugendtreff – Të premten mbrëmë</small></div></div>
+                  <div class="acc-info-card"><span style="font-size:20px">👨</span><div><strong>Të rritur</strong><br><small>Pas namazit të Drekës – Të premten</small></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-1">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg" alt="Arsimi" onerror="this.style.display='none'">
+              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(1)" title="Shto foto">
+                <span>📤</span><small>Shto foto</small>
+                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,1)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: Dialog Ndërfetar -->
+      <div class="acc-item" onclick="toggleAcc(2)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#2c5282,#3182ce)">🤝</div>
+          <div class="acc-title">
+            <h3>Dialog Ndërfetar</h3>
+            <p>Bashkëpunim me komunitete të tjera fetare në Zürich</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <p>Xhamia jonë beson fuqishëm në dialogun ndërfetar si rrugë për paqen dhe bashkëjetesën. Bashkëpunojmë aktivisht me:</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin:20px 0">
+              <div class="acc-info-card"><span style="font-size:24px">⛪</span><div><strong>Kisha Reformierte</strong><br><small>Schwamendingen – takime të rregullta</small></div></div>
+              <div class="acc-info-card"><span style="font-size:24px">🕍</span><div><strong>Zürcher Forum der Religionen</strong><br><small>Dialog dhe projekte të përbashkëta</small></div></div>
+              <div class="acc-info-card"><span style="font-size:24px">🌐</span><div><strong>VIOZ & DAIGS</strong><br><small>Organizata islame zvicerane</small></div></div>
+              <div class="acc-info-card"><span style="font-size:24px">🏛️</span><div><strong>Institucione shtetërore</strong><br><small>Bashkëpunim me shkollat lokale</small></div></div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-2">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg" alt="Dialog" onerror="this.style.display='none'">
+              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(2)">
+                <span>📤</span><small>Shto foto</small>
+                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,2)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: Festat Islame -->
+      <div class="acc-item" onclick="toggleAcc(3)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#744210,#c05621)">🌙</div>
+          <div class="acc-title">
+            <h3>Festat Islame</h3>
+            <p>Ramazani, Bajramet dhe ditët e shenjta</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Ramazani</h4>
+                <p>Gjatë muajit të bekuar të Ramazanit, xhamia organizon çdo mbrëmje iftar të përbashkët (darkë kolektive). Jemi krenarë që gjatë viteve të fundit kemi ftuar edhe komunitete jomyslimane në ifshar, si shenjë e respektit dhe bashkëjetesës.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Bajrami i Fitrit & Kurbanit</h4>
+                <p>Namazi i Bajramit mbahet në orën 08:00 ditën e festës. Pas namazit organizohen ngjarje festive familjare me gjithë komunitetin.</p>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Eventet e vitit</h4>
+                <div style="display:grid;gap:8px">
+                  <div class="acc-info-card"><span>🌙</span><div><strong>Ramazani</strong><br><small>Iftar çdo mbrëmje – bashkërisht</small></div></div>
+                  <div class="acc-info-card"><span>🎉</span><div><strong>Bajrami i Fitrit</strong><br><small>Pas Ramazanit – Namaz & festim</small></div></div>
+                  <div class="acc-info-card"><span>🐑</span><div><strong>Bajrami i Kurbanit</strong><br><small>Dhul-Hixheh 10 – Sakrifice & lutje</small></div></div>
+                  <div class="acc-info-card"><span>✨</span><div><strong>Nata e Kadrit</strong><br><small>Laylat al-Qadr – natë e veçantë</small></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-3">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg" alt="Festat" onerror="this.style.display='none'">
+              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(3)">
+                <span>📤</span><small>Shto foto</small>
+                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,3)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: Ndihmë Humane -->
+      <div class="acc-item" onclick="toggleAcc(4)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#e53e3e,#c53030)">💙</div>
+          <div class="acc-title">
+            <h3>Ndihmë Humane & Solidaritet</h3>
+            <p>Mbështetje për familjet në nevojë brenda dhe jashtë Zvicrës</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <p>Islami thekson me forcë detyrimin e çdo myslimani për të ndihmuar të tjerët. Si komunitet, kemi realizuar disa projekte humane konkrete:</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:20px 0">
+              <div class="acc-info-card" style="flex-direction:column;align-items:flex-start;gap:8px"><strong>🏠 Ndërtim shtëpie</strong><p style="font-size:13px;color:var(--ink-mid)">Bashkatdhetarët ndërtuan shtëpi për familjen e dëshmorit Fadil Sylejmani (2019)</p></div>
+              <div class="acc-info-card" style="flex-direction:column;align-items:flex-start;gap:8px"><strong>🍽️ Ushqim për nevojtar</strong><p style="font-size:13px;color:var(--ink-mid)">Shpërndarje e ushqimit dhe ndihmave materiale gjatë vitit</p></div>
+              <div class="acc-info-card" style="flex-direction:column;align-items:flex-start;gap:8px"><strong>🤲 Fondi i Zakat</strong><p style="font-size:13px;color:var(--ink-mid)">Grumbullim dhe shpërndarje e Zekatit dhe Sadakas çdo vit</p></div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-4">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg" alt="Humanitare" onerror="this.style.display='none'">
+              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(4)">
+                <span>📤</span><small>Shto foto</small>
+                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,4)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: Jugendtreff -->
+      <div class="acc-item" onclick="toggleAcc(5)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#553c9a,#6b46c1)">👥</div>
+          <div class="acc-title">
+            <h3>Jugendtreff — Takimi me Rininë</h3>
+            <p>Hapësirë frymëzuese për të rinjtë shqiptarë në Zürich</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Rreth Jugendtreff</h4>
+                <p>Jugendtreff është hapësira tonë e dedikuar për të rinjtë midis 13 dhe 25 vjeç. Këtu, të rinjtë takohen, diskutojnë tema të rëndësishme, mësojnë bazat e fesë dhe zhvillojnë identitetin e tyre si myslimanë shqiptarë në Zvicër.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Çfarë bëjmë</h4>
+                <ul style="padding-left:20px;color:var(--ink-mid);font-size:14px;line-height:2">
+                  <li>Ligjërata dhe diskutime fetare</li>
+                  <li>Sportet dhe aktivitetet rekreative</li>
+                  <li>Projekte sociale dhe vullnetarizëm</li>
+                  <li>Takime me personalitete dhe ekspertë</li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Informacione praktike</h4>
+                <div class="acc-info-card" style="margin-bottom:10px"><span>📅</span><div><strong>Kur?</strong><br><small>Çdo të premte pas namazit të Akshamit</small></div></div>
+                <div class="acc-info-card" style="margin-bottom:10px"><span>📍</span><div><strong>Ku?</strong><br><small>Saatlenstr. 23, 8051 Zürich</small></div></div>
+                <div class="acc-info-card"><span>👤</span><div><strong>Për kë?</strong><br><small>Të rinj 13–25 vjeç</small></div></div>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-5">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4741-1-scaled.jpg" alt="Jugendtreff" onerror="this.style.display='none'">
+              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(5)">
+                <span>📤</span><small>Shto foto</small>
+                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,5)">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /accordion -->
+  </div></div>
+</div>
+
+<!-- CONDOLENCES -->
+<div class="page" id="page-condolences">
+  <div class="page-hero" style="background:linear-gradient(135deg,#1a1a2e,#2d3561)"><div class="container">
+    <h1>🕊️ Ngushëllimet</h1>
+    <p>Njoftimet për humbjet e komunitetit tonë — Inna lillahi wa inna ilayhi raji'un</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <!-- Quran verse -->
+    <div class="quran-card" style="margin-bottom:40px">
+      <div class="arabic">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</div>
+      <div class="trans">Vërtet, ne i përkasim Allahut dhe vërtet, tek Ai do të kthehemi.</div>
+      <div class="ref">El-Bekare 2:156</div>
+    </div>
+    <!-- Condolence announcements list -->
+    <div id="condolences-public-list">
+      <!-- Populated by JS -->
+    </div>
+    <!-- Empty state -->
+    <div id="condolences-empty" style="text-align:center;padding:60px 20px;display:none">
+      <div style="font-size:48px;margin-bottom:16px">🕊️</div>
+      <p style="color:var(--ink-lt);font-size:15px">Nuk ka njoftime aktive për ngushëllime.</p>
+    </div>
+    <!-- Info box -->
+    <div style="margin-top:48px;background:var(--green-lt);border-radius:14px;padding:28px;border:1px solid var(--green);display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:32px;flex-shrink:0">☎️</div>
+      <div>
+        <h3 style="font-size:17px;color:var(--green);margin-bottom:8px">Nevojitet ndihmë?</h3>
+        <p style="color:var(--ink-mid);font-size:14px;line-height:1.7">Imam Fahredin Bunjaku është i disponueshëm për ceremonitë e varrimit, lutjet për të ndjerit dhe mbështetjen shpirtërore të familjeve në zi. Na kontaktoni sa më shpejt që të jetë e mundur.</p>
+        <button onclick="navigate('contact')" class="btn btn-primary" style="margin-top:14px">Na kontaktoni →</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ISLAMIC FEASTS -->
+<div class="page" id="page-islamic">
+  <div class="page-hero"><div class="container"><h1>Festat Islame</h1></div></div>
+  <div class="page-content"><div class="container">
+    <div class="quran-card"><div class="arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div><div class="trans">Me emrin e Allahut, të Gjithëmëshirshmit, Mëshirëplotit</div></div>
+    <div class="news-grid">
+      <div class="news-card"><div class="news-card-img" style="background:linear-gradient(135deg,#1a4a2e,#2d7a4f)"><div class="news-card-img-placeholder">🌙</div></div><div class="news-card-body"><h3>Ramazani</h3><p>Muaji i shenjtë i agjërimit. Iftar i përbashkët çdo ditë dhe ngjarje speciale gjatë natës Laylat al-Qadr.</p></div></div>
+      <div class="news-card"><div class="news-card-img" style="background:linear-gradient(135deg,#c8a84b,#e8c060)"><div class="news-card-img-placeholder">🎉</div></div><div class="news-card-body"><h3>Bajrami i Fitrit</h3><p>Festa e madhe pas Ramazanit. Namazi i Bajramit dhe festimet familjare me gjithë komunitetin.</p></div></div>
+      <div class="news-card"><div class="news-card-img" style="background:linear-gradient(135deg,#2c5282,#3182ce)"><div class="news-card-img-placeholder">🐑</div></div><div class="news-card-body"><h3>Bajrami i Kurbanit</h3><p>Festa e Kurbanit — kujtim i sakrificës së Ibrahimit a.s.</p></div></div>
+    </div>
+    <div style="margin-top:32px"><a href="https://hausdesfriedens.ch/wp-content/uploads/2026/02/🕌-Netet-dhe-Ditet-e-Medha-1.pdf" target="_blank" class="btn btn-primary">📥 Shkarkoni Datat e Festave 2026</a></div>
+  </div></div>
+</div>
+
+<!-- QURAN -->
+<div class="page" id="page-quran">
+  <div class="page-hero"><div class="container"><h1>Kurani i Madhërishëm</h1></div></div>
+  <div class="page-content"><div class="container">
+    <div class="quran-card">
+      <div class="arabic">يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ</div>
+      <div class="trans">O ju njerëz, vërtet Ne ju krijuam prej një mashkulli dhe një femre, ju bëmë popuj e fise që të njiheni ndërmjet vete.</div>
+      <div class="ref">El-Huxhurat 49:13</div>
+    </div>
+    <div class="prose">
+      <h2>Burimet Kuranore</h2>
+      <p>Xhamia jonë ofron mësime kuranore dhe ligjërata fetare bazuar në Kuranin e Shenjtë dhe Sunetin e Profetit Muhamed s.a.v.s.</p>
+      <button class="btn btn-outline" onclick="navigate('lectures')" style="margin-top:16px">Ligjëratat e Hoxhës →</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- LECTURES -->
+<div class="page" id="page-lectures">
+  <div class="page-hero"><div class="container"><h1>Ligjëratat e Hoxhës</h1></div></div>
+  <div class="page-content"><div class="container">
+    <div class="prose"><p>Ligjëratat javore të imamit Fahredin Bunjaku ofrojnë udhëzim fetar dhe frymëzim spiritual për komunitetin tonë.</p></div>
+    <div style="display:grid;gap:14px;margin-top:28px">
+      <div class="news-card" style="display:flex;flex-direction:row;align-items:center;gap:20px;padding:20px"><div style="width:56px;height:56px;background:var(--green-lt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🎙️</div><div><h3 style="font-size:16px;margin-bottom:4px">Ligjërata të Xhumasë</h3><p style="font-size:13px;color:var(--ink-mid)">Hutbetë e Xhumasë dhe mësimet javore</p></div></div>
+      <div class="news-card" style="display:flex;flex-direction:row;align-items:center;gap:20px;padding:20px"><div style="width:56px;height:56px;background:var(--gold-lt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">📖</div><div><h3 style="font-size:16px;margin-bottom:4px">Mësimet Kuranore</h3><p style="font-size:13px;color:var(--ink-mid)">Tefsiri dhe shpjegimi i ajeteve kuranore</p></div></div>
+    </div>
+    <div style="margin-top:24px"><a href="https://hausdesfriedens.ch/ligjeratat-e-hoxhes/" target="_blank" class="btn btn-primary">Shiko të gjitha ligjëratat →</a></div>
+  </div></div>
+</div>
+
+<!-- MEMBERSHIP -->
+<div class="page" id="page-membership">
+  <div class="page-hero"><div class="container"><h1 id="memb-h1">Anëtarësimi</h1><p id="memb-sub">Bashkohuni me komunitetin tonë</p></div></div>
+  <div class="page-content"><div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <div class="prose">
+        <h2 id="memb-h2">Anëtarësimi në Xhami</h2>
+        <p id="memb-p1">Duke u anëtarësuar, kontribuoni drejtpërdrejt në ruajtjen dhe zhvillimin e komunitetit tonë fetar dhe kulturor në Zürich.</p>
+        <h3 id="memb-h3">Përfitimet e Anëtarësimit</h3>
+        <ul>
+          <li id="memb-li1">Akses në të gjitha aktivitetet e xhamisë</li>
+          <li id="memb-li2">E drejta e votës në kuvende</li>
+          <li id="memb-li3">Mbështetje fetare dhe spirituale</li>
+          <li id="memb-li4">Pjesëmarrje në ngjarje speciale</li>
+          <li id="memb-li5">Informacione dhe njoftime të drejtpërdrejta</li>
+        </ul>
+        <h3 style="margin-top:24px">Kontributet</h3>
+        <div class="bank-card" style="margin-top:12px">
+          <div class="bank-row"><span class="lbl">IBAN</span><span class="val">CH10 0070 0114 9050 2891</span></div>
+          <div class="bank-row"><span class="lbl">Konto</span><span class="val">1149-5028.919</span></div>
+          <div class="bank-row"><span class="lbl">Emri</span><span class="val">Kulturzentrum Haus des Friedens</span></div>
+        </div>
+      </div>
+      <!-- Microsoft Form placeholder -->
+      <div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+          <div style="background:var(--green);padding:18px 24px">
+            <h3 style="color:white;font-size:18px;margin-bottom:4px">📋 Formulari i Anëtarësimit</h3>
+            <p style="color:rgba(255,255,255,.7);font-size:13px">Plotëso formularin online</p>
+          </div>
+          <div id="membership-form-area" style="padding:32px;text-align:center">
+            <div style="font-size:48px;margin-bottom:16px">📝</div>
+            <p style="font-weight:700;color:var(--ink);margin-bottom:8px;font-size:16px">Formulari do të shtohet së shpejti</p>
+            <p style="color:var(--ink-lt);font-size:14px;margin-bottom:24px">Linku i Microsoft Form do të integrohet këtu. Deri atëherë, na kontaktoni drejtpërdrejt.</p>
+            <button onclick="navigate('contact')" class="btn btn-primary" style="justify-content:center;width:100%">Na kontaktoni →</button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--ink-lt);text-align:center;margin-top:12px">🔒 Të dhënat tuaja janë të sigurta dhe nuk ndahen me palë të treta</p>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="page-hero"><div class="container"><h1>Kontakti</h1></div></div>
+  <div class="page-content"><div class="container"><div class="contact-grid">
+    <div class="contact-info">
+      <h3>Informacione të Kontaktit</h3>
+      <div class="contact-item"><div class="contact-icon">📍</div><div><h4>Adresa</h4><p>Saatlenstr. 23<br>8051 Zürich</p></div></div>
+      <div class="contact-item"><div class="contact-icon">🕌</div><div><h4>Koha e Namazeve</h4><p>Pesë herë në ditë</p></div></div>
+      <div class="contact-social">
+        <a class="social-btn" href="https://www.instagram.com/kulturzentrum_hausdesfriedens/" target="_blank">📷 Instagram</a>
+        <a class="social-btn" href="https://www.facebook.com/people/Xhamia-Schwamendingen-Z%C3%BCrich/100016301764627/" target="_blank">👍 Facebook</a>
+      </div>
+    </div>
+    <div class="contact-form-card">
+      <h3 style="font-size:20px;color:var(--green);margin-bottom:20px">Dërgoni Mesazh</h3>
+      <div class="form-group"><label>Emri</label><input type="text" id="cf2-name"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="cf2-email"></div>
+      <div class="form-group"><label>Tema</label><input type="text" id="cf2-sub"></div>
+      <div class="form-group"><label>Mesazhi</label><textarea rows="5" id="cf2-msg"></textarea></div>
+      <button class="btn btn-primary" onclick="showToast('Mesazhi u dërgua!','success')">Dërgo →</button>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- MEMBER AREA -->
+<div class="page" id="page-member">
+  <div style="background:var(--white);min-height:80vh">
+    <!-- Locked out -->
+    <div id="member-logged-out" class="hidden">
+      <div style="text-align:center;padding:100px 20px">
+        <div style="font-size:72px;margin-bottom:24px">🔒</div>
+        <h2 style="color:var(--green);margin-bottom:12px;font-size:28px" id="locked-h2">Zona e Anëtarëve</h2>
+        <p style="color:var(--ink-mid);margin-bottom:32px;font-size:16px" id="locked-p">Kyçuni ose regjistrohuni për të aksesuar panelin e administrimit.</p>
+        <button class="btn btn-primary" style="padding:14px 32px;font-size:15px" onclick="openModal('auth-modal')" id="locked-btn">🔑 Hyrja / Regjistrim</button>
+        <p style="margin-top:16px;font-size:13px;color:var(--ink-lt)">Admin demo: admin@hausdesfriedens.ch / admin123</p>
+      </div>
+    </div>
+
+    <!-- Logged in -->
+    <div id="member-logged-in" class="hidden">
+
+      <!-- Admin top bar -->
+      <div style="background:var(--green);padding:0">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:60px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="profile-avatar" id="profile-avatar" style="width:36px;height:36px;font-size:16px;margin:0">?</div>
+            <div>
+              <div id="member-welcome" style="color:white;font-weight:700;font-size:15px">Mirë se vini!</div>
+              <div id="prof-role-badge" style="font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px">Member</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" style="background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);padding:7px 16px;font-size:13px" onclick="showAdminTab('dashboard')">📊 Dashboard</button>
+            <button class="btn" style="background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);padding:7px 16px;font-size:13px" onclick="doLogout()" id="logout-btn">↩ Dalje</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab navigation pills -->
+      <div style="background:var(--cream);border-bottom:1px solid var(--border)">
+        <div class="container" style="display:flex;gap:0;overflow-x:auto">
+          <button class="admin-tab-pill active" id="apill-dashboard" onclick="showAdminTab('dashboard')">📊 Dashboard</button>
+          <button class="admin-tab-pill" id="apill-news" onclick="showAdminTab('news')">📰 Lajmet</button>
+          <button class="admin-tab-pill admin-only" id="apill-condolences" onclick="showAdminTab('condolences')" style="display:none">🕊️ Ngushëllimet</button>
+          <button class="admin-tab-pill" id="apill-media" onclick="showAdminTab('media')">🖼️ Media</button>
+          <button class="admin-tab-pill admin-only" id="apill-prayertimes" onclick="showAdminTab('prayertimes')" style="display:none">🕌 Kohët</button>
+          <button class="admin-tab-pill" id="apill-profile" onclick="showAdminTab('profile')">⚙️ Profili</button>
+        </div>
+      </div>
+
+      <div class="container" style="padding-top:32px;padding-bottom:48px">
+
+        <!-- ── DASHBOARD TAB ── -->
+        <div class="admin-panel active" id="apanel-dashboard">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:24px">📊 Dashboard</h2>
+          <!-- Stats cards -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:32px">
+            <div class="dash-card"><div class="dash-card-icon" style="background:#e8f5ee">📰</div><div class="dash-card-num" id="dc-posts">0</div><div class="dash-card-lbl">Artikuj total</div></div>
+            <div class="dash-card"><div class="dash-card-icon" style="background:#fdf6e3">👥</div><div class="dash-card-num" id="dc-members">0</div><div class="dash-card-lbl">Anëtarë</div></div>
+            <div class="dash-card"><div class="dash-card-icon" style="background:#e8e4ff">🌐</div><div class="dash-card-num">6</div><div class="dash-card-lbl">Faqe aktive</div></div>
+            <div class="dash-card"><div class="dash-card-icon" style="background:#fee2e2">📅</div><div class="dash-card-num" id="dc-today">—</div><div class="dash-card-lbl">Sot</div></div>
+          </div>
+          <!-- Quick actions -->
+          <h3 style="font-size:17px;color:var(--ink);margin-bottom:16px;font-family:'DM Sans',sans-serif;font-weight:600">⚡ Veprime të shpejta</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px">
+            <button class="quick-action-btn" onclick="showAdminTab('news');setTimeout(()=>openPostModal(null),100)">
+              <span style="font-size:28px">✍️</span>
+              <strong>Shkruaj artikull</strong>
+              <small>Publiko lajm të ri</small>
+            </button>
+            <button class="quick-action-btn admin-only-el" onclick="showAdminTab('condolences')">
+              <span style="font-size:28px">🕊️</span>
+              <strong>Njoftim ngushëllimi</strong>
+              <small>Njofto komunitetin</small>
+            </button>
+            <button class="quick-action-btn" onclick="showAdminTab('media')">
+              <span style="font-size:28px">🖼️</span>
+              <strong>Shto foto</strong>
+              <small>Ngarko nga kompjuteri</small>
+            </button>
+            <button class="quick-action-btn admin-only-el" onclick="showAdminTab('prayertimes')">
+              <span style="font-size:28px">🕌</span>
+              <strong>Kohët e namazit</strong>
+              <small>Përditëso oraret</small>
+            </button>
+          </div>
+          <!-- Recent posts -->
+          <h3 style="font-size:17px;color:var(--ink);margin-bottom:16px;font-family:'DM Sans',sans-serif;font-weight:600">🕐 Artikujt e fundit</h3>
+          <div id="dash-recent-posts" style="display:grid;gap:10px"></div>
+        </div>
+
+        <!-- ── NEWS TAB ── -->
+        <div class="admin-panel" id="apanel-news">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+            <h2 style="font-size:24px;color:var(--green)">📰 Menaxho Lajmet</h2>
+            <button class="btn btn-primary" style="gap:8px" onclick="openPostModal(null)">✍️ Shkruaj Artikull të Ri</button>
+          </div>
+          <!-- Search/filter bar -->
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <input type="text" id="admin-news-search" placeholder="🔍 Kërko artikuj..." style="flex:1;min-width:180px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit" oninput="renderAdminNews()">
+            <select id="admin-news-cat-filter" onchange="renderAdminNews()" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit;color:var(--ink)">
+              <option value="">Të gjitha kategoritë</option>
+              <option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option>
+            </select>
+          </div>
+          <!-- Cards view -->
+          <div id="admin-news-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px"></div>
+        </div>
+
+        <!-- ── MEDIA TAB ── -->
+        <div class="admin-panel" id="apanel-media">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🖼️ Media & Galeria</h2>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Menaxhoni fotot dhe mediat e xhamisë</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px" id="media-grid">
+            <!-- Populated by JS -->
+          </div>
+          <div style="margin-top:24px;padding:24px;border:2px dashed var(--border);border-radius:12px;text-align:center">
+            <div style="font-size:36px;margin-bottom:8px">📤</div>
+            <p style="font-weight:600;color:var(--ink);margin-bottom:4px">Shto foto nga URL</p>
+            <p style="font-size:13px;color:var(--ink-lt);margin-bottom:16px">Fut URL-në e fotos dhe shtoje në galeri</p>
+            <div style="display:flex;gap:8px;max-width:500px;margin:0 auto">
+              <input type="text" id="media-url-input" placeholder="https://example.com/foto.jpg" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
+              <input type="text" id="media-caption-input" placeholder="Përshkrimi..." style="width:140px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
+              <button class="btn btn-primary" onclick="addMediaItem()" style="white-space:nowrap">+ Shto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONDOLENCES TAB ── -->
+        <div class="admin-panel" id="apanel-condolences">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
+            <div>
+              <h2 style="font-size:24px;color:var(--green)">🕊️ Njoftimet e Ngushëllimit</h2>
+              <p style="color:var(--ink-mid);font-size:14px;margin-top:4px">Të ndara nga lajmet e rregullta — shfaqen në faqen e Ngushëllimeve</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCondolenceModal(null)" style="background:#2d3561">🕊️ Shto Njoftim të Ri</button>
+          </div>
+          <!-- Alert -->
+          <div style="background:#fff8e1;border:1px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;gap:10px;align-items:center;font-size:14px">
+            <span style="font-size:20px">⚠️</span>
+            <div><strong>Njoftime të ndjeshme</strong> — Këto njoftime shfaqen publikisht. Shkruani me respekt dhe saktësi.</div>
+          </div>
+          <!-- Cards -->
+          <div id="condolence-admin-list" style="display:grid;gap:14px"></div>
+          <!-- Empty state -->
+          <div id="condolence-admin-empty" style="text-align:center;padding:60px;display:none">
+            <div style="font-size:48px;margin-bottom:12px">🕊️</div>
+            <p style="color:var(--ink-lt)">Nuk ka njoftime aktive. Shtoni njoftimin e parë duke klikuar butonin lart.</p>
+          </div>
+        </div>
+
+        <!-- ── PRAYER TIMES TAB ── -->
+        <div class="admin-panel" id="apanel-prayertimes">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🕌 Kohët e Namazit</h2>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Përditëso oraret e namazit — shfaqen automatikisht në shiritin e verdhë</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:24px">
+            <div class="prayer-time-edit-card">
+              <div class="pt-icon">🌅</div>
+              <label>Sabahu / Fadschr</label>
+              <input type="time" id="pt-sabah" value="05:10">
+            </div>
+            <div class="prayer-time-edit-card">
+              <div class="pt-icon">☀️</div>
+              <label>Dreka / Dhuhr</label>
+              <input type="time" id="pt-dreka" value="13:15">
+            </div>
+            <div class="prayer-time-edit-card">
+              <div class="pt-icon">🌤️</div>
+              <label>Ikindia / Asr</label>
+              <input type="time" id="pt-ikindia" value="17:00">
+            </div>
+            <div class="prayer-time-edit-card">
+              <div class="pt-icon">🌇</div>
+              <label>Akshami / Maghrib</label>
+              <input type="time" id="pt-akshami" value="20:35">
+            </div>
+            <div class="prayer-time-edit-card">
+              <div class="pt-icon">🌙</div>
+              <label>Jacia / Ischa</label>
+              <input type="time" id="pt-jacia" value="22:10">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="savePrayerTimes()" style="padding:12px 28px">💾 Ruaj Oraret</button>
+          <div id="pt-saved-msg" style="display:none;margin-top:12px;color:var(--green);font-weight:600;font-size:14px">✅ Oraret u ruajtën dhe u përditësuan!</div>
+        </div>
+
+        <!-- ── PROFILE TAB ── -->
+        <div class="admin-panel" id="apanel-profile">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:24px">⚙️ Profili & Cilësimet</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+            <div class="profile-card">
+              <h3 style="font-size:17px;margin-bottom:20px;color:var(--ink)">👤 Informacionet personale</h3>
+              <div class="profile-avatar" id="profile-avatar-big" style="width:72px;height:72px;font-size:26px;margin-bottom:20px">?</div>
+              <div class="form-group"><label>Emri i plotë</label><input type="text" id="prof-name"></div>
+              <div class="form-group"><label>Email</label><input type="email" id="prof-email" readonly style="background:var(--cream);color:var(--ink-lt)"></div>
+              <div class="form-group"><label>Roli</label><input type="text" id="prof-role" readonly style="background:var(--cream);color:var(--ink-lt)"></div>
+              <button class="btn btn-primary" onclick="updateProfile()" id="prof-save-btn">💾 Ruaj ndryshimet</button>
+            </div>
+            <div class="profile-card">
+              <h3 style="font-size:17px;margin-bottom:20px;color:var(--ink)">🔐 Ndrysho fjalëkalimin</h3>
+              <div class="form-group"><label id="lbl-newpass">Fjalëkalimi i ri</label><input type="password" id="new-pass" placeholder="Min. 8 karaktere"></div>
+              <div class="form-group"><label id="lbl-newpass2">Konfirmo fjalëkalimin</label><input type="password" id="new-pass2" placeholder="••••••••"></div>
+              <button class="btn btn-primary" onclick="changePassword()" id="change-pass-btn">🔐 Ndrysho fjalëkalimin</button>
+              <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border)">
+                <h4 style="font-size:14px;margin-bottom:10px;color:#c0392b" id="danger-zone">⚠️ Zona e rrezikut</h4>
+                <button class="btn" style="border:1.5px solid #c0392b;color:#c0392b;font-size:13px" onclick="deleteAccount()" id="delete-account-btn">🗑️ Fshi llogarinë</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONDOLENCE MODAL -->
+<div class="modal-overlay" id="condolence-modal">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="closeModal('condolence-modal')">×</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="width:44px;height:44px;background:#2d3561;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">🕊️</div>
+      <div>
+        <h2 style="font-size:20px;color:#2d3561;margin-bottom:2px" id="cond-modal-title">Njoftim i ri ngushëllimi</h2>
+        <p style="font-size:13px;color:var(--ink-lt)">Do të shfaqet publikishtë në faqen e Ngushëllimeve</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Emri i të ndjerit (Emri Mbiemri)</label>
+      <input type="text" id="cond-name" placeholder="p.sh. Fadil Sylejmani" style="font-size:16px;font-weight:600">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label>Datëlindja (opsionale)</label>
+        <input type="text" id="cond-born" placeholder="p.sh. 1945">
+      </div>
+      <div class="form-group">
+        <label>Data e ndarjes</label>
+        <input type="date" id="cond-date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Vendlindja / Qyteti</label>
+      <input type="text" id="cond-city" placeholder="p.sh. Prizren, Kosovë">
+    </div>
+    <div class="form-group">
+      <label>Mesazhi i ngushëllimit</label>
+      <textarea id="cond-msg" rows="4" placeholder="Shkruani mesazhin e ngushëllimit për familjen dhe komunitetin..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Koha e namazit të xhenazes (opsionale)</label>
+      <input type="text" id="cond-funeral" placeholder="p.sh. E shtunë 15 Qershor, ora 14:00 – Xhamia Schwamendingen">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveCondolence()" style="flex:1;justify-content:center;background:#2d3561">🕊️ Publiko Njoftimin</button>
+      <button class="btn btn-outline" onclick="closeModal('condolence-modal')" style="padding:11px 20px">Anulo</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <div style="width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 3L4 9v12h5v-7h6v7h5V9L12 3z"/></svg></div>
+          <div style="color:white;font-family:'Playfair Display',serif;font-size:16px">Haus des Friedens</div>
+        </div>
+        <p id="footer-desc">Kulturzentrum Haus des Friedens – Qendra Kulturore Islame Shqiptare në Zürich Schwamendingen. Themeluar 2004.</p>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <a href="https://www.instagram.com/kulturzentrum_hausdesfriedens/" target="_blank" style="width:36px;height:36px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center">📷</a>
+          <a href="https://www.facebook.com/people/Xhamia-Schwamendingen-Z%C3%BCrich/100016301764627/" target="_blank" style="width:36px;height:36px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center">👍</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col1-h">Rreth Nesh</h4>
+        <a onclick="navigate('history')" id="footer-history">Historiku</a>
+        <a onclick="navigate('statute')" id="footer-statute">Rregullorja</a>
+        <a onclick="navigate('imam')" id="footer-imam">Imami</a>
+        <a onclick="navigate('activities')" id="footer-activities">Aktivitetet</a>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col2-h">Shërbime</h4>
+        <a onclick="navigate('islamic')" id="footer-islamic">Festat Islame</a>
+        <a onclick="navigate('quran')" id="footer-quran">Kurani</a>
+        <a onclick="navigate('lectures')" id="footer-lectures">Ligjëratat</a>
+        <a onclick="navigate('membership')" id="footer-membership">Anëtarësimi</a>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col3-h">Kontakti</h4>
+        <a>Saatlenstr. 23</a>
+        <a>8051 Zürich</a>
+        <a onclick="navigate('contact')" id="footer-contact-link">Dërgoni mesazh</a>
+        <div style="margin-top:12px;font-size:12px;color:var(--gold);font-weight:600">IBAN: CH10 0070 0114 9050 2891</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2004–2026 <span>Haus des Friedens</span> · Zürich Schwamendingen</div>
+      <div style="display:flex;gap:16px">
+        <span style="color:rgba(255,255,255,.4);font-size:13px">Impressum</span>
+        <span style="color:rgba(255,255,255,.4);font-size:13px">Datenschutz</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════
+//  HERO SLIDESHOW
+// ═══════════════════════════════════════
+let slideIndex = 0;
+let slideTimer = null;
+const SLIDE_INTERVAL = 4500;
+
+function initSlideshow() {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dotsWrap = document.getElementById('slideDots');
+  if (!slides.length || !dotsWrap) return;
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'slide-dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Slide ' + (i + 1));
+    d.onclick = () => goSlide(i);
+    dotsWrap.appendChild(d);
+  });
+
+  startAutoSlide();
+}
+
+function goSlide(idx) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.slide-dot');
+  slides[slideIndex].classList.remove('active');
+  dots[slideIndex]  && dots[slideIndex].classList.remove('active');
+  slideIndex = (idx + slides.length) % slides.length;
+  slides[slideIndex].classList.add('active');
+  dots[slideIndex]  && dots[slideIndex].classList.add('active');
+}
+function slideNext() { clearInterval(slideTimer); goSlide(slideIndex + 1); startAutoSlide(); }
+function slidePrev() { clearInterval(slideTimer); goSlide(slideIndex - 1); startAutoSlide(); }
+function startAutoSlide() {
+  clearInterval(slideTimer);
+  slideTimer = setInterval(() => goSlide(slideIndex + 1), SLIDE_INTERVAL);
+}
+
+// ═══════════════════════════════════════
+//  DATA
+const DB={
+  users:[{id:1,name:'Admin User',email:'admin@hausdesfriedens.ch',password:'admin123',role:'admin'},{id:2,name:'Anëtar Demo',email:'demo@test.ch',password:'demo1234',role:'member'}],
+  posts:[
+    {id:1,title:'Iftar i përbashkët në Schwamendingen',category:'Aktivitete',date:'March 2, 2026',body:'Të shtunën, në mbrëmjen e 28 shkurt 2026, Xhamia e Schwamendingen organizoi iftar të përbashkët ndërfetar. Ky event ishte shembull i shkëlqyer i dialogut ndërfetar dhe respektit të ndërsjellë në Cyrih.',img:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg'},
+    {id:2,title:'Shenjë kundër racizmit antimusliman',category:'Bashkëpunimi',date:'May 25, 2025',body:'"Ne të gjithë i përkasim Zvicrës" – një shenjë e fuqishme kundër racizmit antimusliman dhe antisemitizmit. Xhamia jonë bashkë me organizata tjera mori pjesë në këtë iniciativë të rëndësishme.',img:''},
+    {id:3,title:'Takimi me rininë – Jugendtreff',category:'Aktivitete',date:'May 23, 2025',body:'Falënderim i madh për Dr. Lumni Ademi për ligjëratën jashtëzakonisht interesante me temën "Kurani dhe shkenca moderne". Jugendtreff vazhdon të jetë hapësirë frytdhënëse.',img:''},
+    {id:4,title:'Kuvendi i rregullt i Xhamisë 2026',category:'Lajme',date:'March 31, 2026',body:'Kuvendi vjetor i rregullt i xhamisë u mbajt me sukses. Anëtarët diskutuan planin e aktiviteteve, buxhetin dhe çështje të tjera të rëndësishme për komunitetin tonë.',img:''},
+    {id:5,title:'Pranimi i Imamëve nga Qyteti i Cyrihut',category:'Lajme',date:'May 28, 2025',body:'Imamët e xhamive të Cyrihut u pritën zyrtarisht nga Qyteti i Cyrihut. Kjo takim u bë rast për dialog dhe forcim të marrëdhënieve ndërmjet institucioneve fetare dhe pushtetit lokal.',img:''},
+    {id:6,title:'Bashkatdhetarët ndërtuan shtëpi për familjen e dëshmorit',category:'Lajme',date:'April 10, 2019',body:'Me ndihmën e xhematit të xhamisë Schwamendingen, familja e Fadil Sylejmanit mori shtëpi të re. Ky akt solidariteti tregoi fuqinë e komunitetit tonë.',img:''},
+  ],
+  nextPostId:7,nextUserId:3
+};
+let currentUser=null,currentFilter='ALL',editingPostId=null,currentLang='sq';
+
+// ROUTING
+function navigate(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  (document.getElementById('page-'+p)||document.getElementById('page-home')).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('#main-nav > a').forEach(a=>a.classList.remove('active'));
+  const na=document.getElementById('nav-'+p);if(na)na.classList.add('active');
+  document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'));
+  if(p==='news')renderNewsPage();
+  if(p==='member')renderMemberArea();
+  if(p==='home')renderHomeNews();
+}
+
+// MODALS
+function openModal(id){document.getElementById(id).classList.add('active')}
+function closeModal(id){document.getElementById(id).classList.remove('active')}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id)}));
+function switchAuthTab(t){
+  document.getElementById('login-form').classList.toggle('hidden',t!=='login');
+  document.getElementById('register-form').classList.toggle('hidden',t!=='register');
+  document.getElementById('tab-login-btn').classList.toggle('active',t==='login');
+  document.getElementById('tab-reg-btn').classList.toggle('active',t==='register');
+}
+
+// NAVBAR RIPPLE + DROPDOWN
+function addRipple(el,e){
+  const r=el.getBoundingClientRect(),sp=document.createElement('span'),s=Math.max(r.width,r.height)*2;
+  sp.className='ripple';
+  sp.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-r.left-s/2}px;top:${e.clientY-r.top-s/2}px;position:absolute`;
+  el.appendChild(sp);setTimeout(()=>sp.remove(),600);
+}
+function navClick(page,e){
+  if(e)addRipple(e.currentTarget,e);
+  document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'));
+  navigate(page);
+}
+function toggleDD(id,e){
+  if(e){e.stopPropagation();if(e.currentTarget)addRipple(e.currentTarget,e);}
+  const dd=document.getElementById(id),wasOpen=dd.classList.contains('open');
+  document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'));
+  if(!wasOpen)dd.classList.add('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-dropdown'))document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'));
+});
+window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40));
+function toggleMobile(){
+  document.getElementById('mobile-menu').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+
+// LANGUAGE
+const T={
+  sq:{
+    'nav-subtitle':'Shtëpia e Paqës • Zürich','hero-badge':'🕌 Zürich Schwamendingen • Est. 2004',
+    'hero-h1':'Kulturzentrum<br><em>Haus des Friedens</em><br>Shtëpia e Paqës',
+    'hero-quote-text':'O ju njerëz, vërtet Ne ju krijuam prej një mashkulli dhe një femre, ju bëmë popuj e fise që të njiheni ndërmjet vete, e s\'ka dyshim se te All-llahu më i ndershmi ndër ju është ai që më tepër është ruajtur.',
+    'hero-quote-cite':'— Kurani i Shenjtë, El-Huxhurat 49:13',
+    'hero-btn1':'Lajmet e Fundit','hero-btn2':'Anëtarësohu',
+    'stat1-lbl':'Themeluar','stat2-lbl':'Vjet Shërbim','stat3-lbl':'Shqiptar','stat4-lbl':'Organizata Partnere',
+    'pn-sabah':'Sabahu','pn-dreka':'Dreka','pn-ikindia':'Ikindia','pn-akshami':'Akshami','pn-jacia':'Jacia',
+    'about-badge':'🕌 Rreth Nesh','about-h2':'Qendra Kulturore<br>Islame Shqiptare',
+    'about-p1':'Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Është vend ku çdo besimtar ka të drejtë t\'i kryejë ritet e tij fetare.',
+    'about-p2':'Shumica e besimtarëve, mbi 90%, janë shqiptarë nga trojet tona etnike – Shqipëria, Kosova, Maqedonia, Lugina e Preshevës.',
+    'about-btn':'Lexo Historikun →','about-card-lbl':'Adresa e re<br>Saatlenstr. 23',
+    'news-badge':'📰 Lajmet','news-h2':'Lajmet e Fundit','news-sub':'Ndiqni aktivitetet dhe lajmet e xhamisë sonë','news-all-btn':'Shiko të gjitha lajmet →',
+    'act-badge':'Aktivitetet','act-h2':'Çfarë Ofrojmë','act-sub':'Xhamia jonë është qendër e jetës fetare, kulturore dhe sociale',
+    'act1-h':'Namazet e Përditshme','act1-p':'Pesë namazet e përditshme të organizuara me imam të kualifikuar.',
+    'act2-h':'Arsimi Fetar','act2-p':'Mësime fetare për fëmijë dhe të rinj, kontribut në edukimin e tyre.',
+    'act3-h':'Dialog Ndërfetar','act3-p':'Bashkëpunim me Kishën Reformierte dhe Zürcher Forum der Religionen.',
+    'act4-h':'Festat Islame','act4-p':'Organizim i Ramazanit, Bajrameve dhe festave tjera islame.',
+    'act5-h':'Ndihmë Humane','act5-p':'Ndihma për familjet në nevojë dhe projekte humanitare.',
+    'act6-h':'Ligjëratat e Hoxhës','act6-p':'Ligjërata javore të imamit për komunitetin tonë.',
+    'prayer-badge':'Namazi','prayer-h2':'Kohët e Namazit 2026','prayer-sub':'Shkarkoni kalendarin e kohëve të namazit për çdo muaj',
+    'live-label':'Live — Orari i namazit','open-new-tab':'Hap në tab të re','iframe-credit':'Orari shfaqet drejtpërdrejt nga SwissMosque TV',
+    'prayer-special-btn':'📥 Ditë dhe netë të mëdha fetare 2026',
+    'ps1':'Namazi i Sabahut','ps1-s':'Mëngjes','ps2':'Namazi i Drekës','ps2-s':'Mesdite',
+    'ps3':'Namazi i Ikindisë','ps3-s':'Pasdite','ps4':'Namazi i Akshamit','ps4-s':'Mbrëmje','ps5':'Namazi i Jacisë','ps5-s':'Natë','ps6':'Kohët e Namazit Live',
+    'don-badge':'💚 Ndihmat Tuaja','don-h2':'Mbështesni Xhaminë Tonë',
+    'don-p':'Mbështetja juaj financiare ndihmon xhaminë të vazhdojë shërbimin ndaj komunitetit. Ju jemi mirënjohës për çdo ndihmë!',
+    'bank-name-lbl':'Emri','bank-addr-lbl':'Adresa','bank-konto-lbl':'Konto',
+    'don-circle-p':'Bamirësi — Sadaka','don-circle-strong':'🤲 Jepni','don-circle-small':'Me zemër të hapur',
+    'gallery-badge':'Galeria','gallery-h2':'Galeria e Fotografive',
+    'contact-badge':'Kontakti','contact-h2':'Na Kontaktoni','contact-info-h3':'Informacione të Kontaktit',
+    'ci-addr-lbl':'Adresa','ci-prayer-lbl':'Koha e Namazeve','ci-prayer-p':'Pesë herë në ditë · Sipas orarit të publikuar',
+    'contact-form-h3':'Dërgoni Mesazh','cf-name-lbl':'Emri juaj','cf-msg-lbl':'Mesazhi','contact-send-btn':'Dërgo Mesazhin →',
+    'footer-desc':'Kulturzentrum Haus des Friedens – Qendra Kulturore Islame Shqiptare në Zürich Schwamendingen. Themeluar 2004.',
+    'footer-col1-h':'Rreth Nesh','footer-col2-h':'Shërbime','footer-col3-h':'Kontakti',
+    'footer-history':'Historiku','footer-statute':'Rregullorja','footer-imam':'Imami','footer-activities':'Aktivitetet',
+    'footer-islamic':'Festat Islame','footer-quran':'Kurani','footer-lectures':'Ligjëratat','footer-membership':'Anëtarësimi','footer-contact-link':'Dërgoni mesazh',
+    'tab-login-btn':'Hyrja','tab-reg-btn':'Regjistrim','login-h2':'Mirë se vini','login-sub':'Hyni në llogarinë tuaj','login-submit-btn':'Hyr',
+    'lbl-or':'ose','switch-to-reg':'Nuk keni llogari?','switch-reg-link':'Regjistrohu',
+    'reg-h2':'Regjistrohu','reg-sub':'Krijoni llogarinë tuaj falas','lbl-fullname':'Emri i plotë','lbl-pass2':'Fjalëkalimi','lbl-pass3':'Konfirmo','reg-submit-btn':'Regjistrohu',
+    'nav-login-btn':'Hyrja','mob-login-btn':'Hyrja / Regjistrim',
+    'bc-home':'Ballina','bc-news':'Media/Blog','news-page-h1':'Media & Blog','news-page-sub':'Lajmet dhe artikujt e fundit nga xhamia jonë','search-btn':'Kërko',
+    'memb-h1':'Anëtarësimi','memb-sub':'Bashkohuni me komunitetin tonë','memb-h2':'Pagesat Online & Anëtarësimi','memb-p1':'Duke u anëtarësuar, kontribuoni drejtpërdrejt në komunitetin tonë fetar dhe kulturor në Zürich.',
+    'memb-h3':'Përfitimet e Anëtarësimit','memb-li1':'Akses në të gjitha aktivitetet e xhamisë','memb-li2':'E drejta e votës në kuvende','memb-li3':'Mbështetje fetare dhe spirituale','memb-li4':'Pjesëmarrje në ngjarje speciale','memb-li5':'Newsletter dhe informacione të drejtpërdrejta',
+    'memb-form-h3':'Formulari i Anëtarësimit','memb-lbl-name':'Emri i plotë','memb-lbl-tel':'Telefoni','memb-lbl-msg':'Mesazh','memb-send-btn':'Dërgo Formularin →',
+    'locked-h2':'Zona e Anëtarëve','locked-p':'Kyçuni ose regjistrohuni për të aksesuar profilin tuaj.','locked-btn':'Hyrja / Regjistrim',
+    'logout-btn':'Dalje','member-welcome-sub':'Menaxhoni profilin dhe llogarinë tuaj',
+    'prof-title':'Profili im','prof-save-btn':'Ruaj ndryshimet',
+    'cms-title':'Menaxho Lajmet','new-post-btn':'Artikull i ri','users-title':'Anëtarët e Regjistruar','settings-title':'Cilësimet e Llogarisë',
+    'lbl-newpass':'Fjalëkalimi i ri','lbl-newpass2':'Konfirmo fjalëkalimin','change-pass-btn':'Ndrysho fjalëkalimin','danger-zone':'Zona e rrezikut','delete-account-btn':'Fshi llogarinë',
+    'sideitem-profile':'Profili im','sideitem-cms':'Menaxho Lajmet','sideitem-users':'Anëtarët','sideitem-settings':'Cilësimet',
+  },
+  de:{
+    'nav-subtitle':'Haus des Friedens • Zürich','hero-badge':'🕌 Zürich Schwamendingen • Gegr. 2004',
+    'hero-h1':'Kulturzentrum<br><em>Haus des Friedens</em><br>Moschee Schwamendingen',
+    'hero-quote-text':'O ihr Menschen! Wir haben euch aus einem Mann und einer Frau erschaffen und euch zu Völkern und Stämmen gemacht, damit ihr einander kennenlernt. Der Edelste von euch bei Allah ist der Gottesfürchtigste.',
+    'hero-quote-cite':'— Der Heilige Quran, Al-Hujurat 49:13',
+    'hero-btn1':'Aktuelle Neuigkeiten','hero-btn2':'Mitglied werden',
+    'stat1-lbl':'Gegründet','stat2-lbl':'Jahre Dienst','stat3-lbl':'Albanischsprachig','stat4-lbl':'Partnerorganisationen',
+    'pn-sabah':'Fadschr','pn-dreka':'Dhuhr','pn-ikindia':'Asr','pn-akshami':'Maghrib','pn-jacia':'Ischa',
+    'about-badge':'🕌 Über uns','about-h2':'Islamisches<br>Kulturzentrum',
+    'about-p1':'Das „Jugendkulturzentrum Haus des Friedens" wurde 2004 gegründet. Es ist ein Ort, an dem jeder Gläubige das Recht hat, seine religiösen Pflichten zu erfüllen.',
+    'about-p2':'Die Mehrheit der Gläubigen – über 90% – sind Albaner aus Albanien, Kosovo, Nordmazedonien und dem Presevo-Tal.',
+    'about-btn':'Geschichte lesen →','about-card-lbl':'Neue Adresse<br>Saatlenstr. 23',
+    'news-badge':'📰 Neuigkeiten','news-h2':'Aktuelle Nachrichten','news-sub':'Bleiben Sie über die Aktivitäten unserer Moschee informiert','news-all-btn':'Alle Nachrichten anzeigen →',
+    'act-badge':'Aktivitäten','act-h2':'Was wir anbieten','act-sub':'Unsere Moschee ist ein Zentrum des religiösen, kulturellen und sozialen Lebens',
+    'act1-h':'Tägliche Gebete','act1-p':'Fünf tägliche Gebete unter Leitung eines qualifizierten Imams.',
+    'act2-h':'Religiöse Bildung','act2-p':'Islamischer Unterricht für Kinder und Jugendliche.',
+    'act3-h':'Interreligiöser Dialog','act3-p':'Zusammenarbeit mit der reformierten Kirche und dem Zürcher Forum der Religionen.',
+    'act4-h':'Islamische Feste','act4-p':'Organisation von Ramadan-Iftar, Eid-Gebeten und anderen islamischen Festen.',
+    'act5-h':'Humanitäre Hilfe','act5-p':'Unterstützung für bedürftige Familien und humanitäre Projekte.',
+    'act6-h':'Imam-Vorträge','act6-p':'Wöchentliche Vorträge des Imams für unsere Gemeinschaft.',
+    'prayer-badge':'Gebet','prayer-h2':'Gebetszeiten 2026','prayer-sub':'Laden Sie den Gebetszeitenkalender für jeden Monat herunter',
+    'live-label':'Live — Gebetszeiten','open-new-tab':'In neuem Tab öffnen','iframe-credit':'Die Zeiten werden direkt von SwissMosque TV angezeigt',
+    'prayer-special-btn':'📥 Besondere islamische Tage und Nächte 2026',
+    'ps1':'Morgengebet (Fadschr)','ps1-s':'Morgen','ps2':'Mittagsgebet (Dhuhr)','ps2-s':'Mittag',
+    'ps3':'Nachmittagsgebet (Asr)','ps3-s':'Nachmittag','ps4':'Abendgebet (Maghrib)','ps4-s':'Abend','ps5':'Nachtgebet (Ischa)','ps5-s':'Nacht','ps6':'Gebetszeiten Live',
+    'don-badge':'💚 Ihre Spende','don-h2':'Unterstützen Sie unsere Moschee',
+    'don-p':'Ihre finanzielle Unterstützung hilft der Moschee, weiterhin der Gemeinschaft zu dienen. Wir sind für jede Hilfe dankbar!',
+    'bank-name-lbl':'Name','bank-addr-lbl':'Adresse','bank-konto-lbl':'Konto',
+    'don-circle-p':'Wohltätigkeit — Sadaqa','don-circle-strong':'🤲 Spenden','don-circle-small':'Von ganzem Herzen',
+    'gallery-badge':'Galerie','gallery-h2':'Fotogalerie',
+    'contact-badge':'Kontakt','contact-h2':'Kontaktieren Sie uns','contact-info-h3':'Kontaktinformationen',
+    'ci-addr-lbl':'Adresse','ci-prayer-lbl':'Gebetszeiten','ci-prayer-p':'Fünfmal täglich · Gemäß veröffentlichtem Zeitplan',
+    'contact-form-h3':'Nachricht senden','cf-name-lbl':'Ihr Name','cf-msg-lbl':'Ihre Nachricht','contact-send-btn':'Nachricht absenden →',
+    'footer-desc':'Kulturzentrum Haus des Friedens – Islamisches Kulturzentrum in Zürich Schwamendingen. Gegründet 2004.',
+    'footer-col1-h':'Über uns','footer-col2-h':'Dienstleistungen','footer-col3-h':'Kontakt',
+    'footer-history':'Geschichte','footer-statute':'Satzung','footer-imam':'Imam','footer-activities':'Aktivitäten',
+    'footer-islamic':'Islamische Feste','footer-quran':'Quran','footer-lectures':'Vorträge','footer-membership':'Mitgliedschaft','footer-contact-link':'Nachricht senden',
+    'tab-login-btn':'Anmelden','tab-reg-btn':'Registrieren','login-h2':'Willkommen','login-sub':'Melden Sie sich in Ihrem Konto an','login-submit-btn':'Anmelden',
+    'lbl-or':'oder','switch-to-reg':'Noch kein Konto?','switch-reg-link':'Registrieren',
+    'reg-h2':'Registrieren','reg-sub':'Erstellen Sie Ihr kostenloses Konto','lbl-fullname':'Vollständiger Name','lbl-pass2':'Passwort','lbl-pass3':'Passwort bestätigen','reg-submit-btn':'Registrieren',
+    'nav-login-btn':'Anmelden','mob-login-btn':'Anmelden / Registrieren',
+    'bc-home':'Startseite','bc-news':'Medien/Blog','news-page-h1':'Medien & Blog','news-page-sub':'Neueste Nachrichten und Artikel aus unserer Moschee','search-btn':'Suchen',
+    'memb-h1':'Mitgliedschaft','memb-sub':'Treten Sie unserer Gemeinschaft bei','memb-h2':'Online-Zahlung & Mitgliedschaft','memb-p1':'Durch Ihre Mitgliedschaft tragen Sie direkt zur Erhaltung unserer Gemeinschaft in Zürich bei.',
+    'memb-h3':'Vorteile der Mitgliedschaft','memb-li1':'Zugang zu allen Aktivitäten der Moschee','memb-li2':'Stimmrecht bei Versammlungen','memb-li3':'Religiöse und spirituelle Unterstützung','memb-li4':'Teilnahme an besonderen Veranstaltungen','memb-li5':'Newsletter und direkte Informationen',
+    'memb-form-h3':'Mitgliedschaftsformular','memb-lbl-name':'Vollständiger Name','memb-lbl-tel':'Telefon','memb-lbl-msg':'Nachricht','memb-send-btn':'Formular absenden →',
+    'locked-h2':'Mitgliederbereich','locked-p':'Bitte melden Sie sich an oder registrieren Sie sich.','locked-btn':'Anmelden / Registrieren',
+    'logout-btn':'Abmelden','member-welcome-sub':'Verwalten Sie Ihr Profil und Ihr Konto',
+    'prof-title':'Mein Profil','prof-save-btn':'Änderungen speichern',
+    'cms-title':'Nachrichten verwalten','new-post-btn':'Neuer Artikel','users-title':'Registrierte Mitglieder','settings-title':'Kontoeinstellungen',
+    'lbl-newpass':'Neues Passwort','lbl-newpass2':'Passwort bestätigen','change-pass-btn':'Passwort ändern','danger-zone':'Gefahrenzone','delete-account-btn':'Konto löschen',
+    'sideitem-profile':'Mein Profil','sideitem-cms':'Nachrichten verwalten','sideitem-users':'Mitglieder','sideitem-settings':'Einstellungen',
+  }
+};
+
+function setLang(lang){
+  if(currentLang===lang)return;
+  currentLang=lang;
+  document.documentElement.lang=lang==='sq'?'sq':'de';
+  ['btn-sq','btn-de','mob-btn-sq','mob-btn-de'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.toggle('active',id.includes(lang));
+  });
+  const htmlIds=['hero-h1','about-h2','about-card-lbl'];
+  Object.entries(T[lang]).forEach(([id,val])=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.style.transition='opacity .16s';el.style.opacity='0';
+    setTimeout(()=>{
+      if(htmlIds.includes(id))el.innerHTML=val;else el.textContent=val;
+      el.style.opacity='1';
+    },160);
+  });
+  document.querySelectorAll('[data-sq]').forEach(el=>{
+    const v=el.getAttribute('data-'+lang);
+    if(v){el.style.transition='opacity .16s';el.style.opacity='0';setTimeout(()=>{el.textContent=v;el.style.opacity='1';},160);}
+  });
+  if(currentUser){
+    const w=document.getElementById('member-welcome');
+    if(w)w.textContent=(lang==='de'?'Willkommen, ':'Mirë se vini, ')+currentUser.name.split(' ')[0]+'!';
+  }
+}
+
+// AUTH
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const user=DB.users.find(u=>u.email===email&&u.password===pass);
+  if(!user){showToast(currentLang==='de'?'Falsche E-Mail oder Passwort!':'Email ose fjalëkalim i gabuar!','error');return;}
+  currentUser=user;closeModal('auth-modal');updateAuthUI();
+  showToast((currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+user.name+'!','success');
+}
+function doRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pass=document.getElementById('reg-pass').value;
+  const pass2=document.getElementById('reg-pass2').value;
+  if(!name||!email||!pass){showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;}
+  if(pass!==pass2){showToast(currentLang==='de'?'Passwörter stimmen nicht überein!':'Fjalëkalimet nuk përputhen!','error');return;}
+  if(pass.length<8){showToast('Min. 8 '+(currentLang==='de'?'Zeichen!':'karaktere!'),'error');return;}
+  if(DB.users.find(u=>u.email===email)){showToast(currentLang==='de'?'E-Mail bereits registriert!':'Ky email është i regjistruar!','error');return;}
+  const nu={id:DB.nextUserId++,name,email,password:pass,role:'member'};
+  DB.users.push(nu);currentUser=nu;closeModal('auth-modal');updateAuthUI();
+  showToast((currentLang==='de'?'Konto erstellt! Willkommen, ':'Llogaria u krijua! Mirë se vini, ')+name+'!','success');
+}
+function doLogout(){
+  currentUser=null;updateAuthUI();navigate('home');
+  showToast(currentLang==='de'?'Erfolgreich abgemeldet.':'U dilët nga llogaria.','');
+}
+function updateAuthUI(){
+  const area=document.getElementById('auth-nav-area');
+  if(currentUser){
+    area.innerHTML=`<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="navigate('member')"><div class="user-avatar">${currentUser.name.charAt(0)}</div><span style="font-size:13px;font-weight:600;color:var(--ink)">${currentUser.name.split(' ')[0]}</span></div>`;
+  }else{
+    area.innerHTML=`<button class="btn btn-outline" onclick="openModal('auth-modal')" style="padding:8px 18px;font-size:13px">${currentLang==='de'?'Anmelden':'Hyrja'}</button>`;
+  }
+}
+
+// NEWS
+function newsCard(p){
+  return `<div class="news-card" onclick="openNewsModal(${p.id})">
+    <div class="news-card-img">${p.img?`<img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=news-card-img-placeholder>📰</div>'">`:'<div class="news-card-img-placeholder">📰</div>'}</div>
+    <div class="news-card-body">
+      <div class="news-card-meta"><span class="news-card-cat">${p.category}</span><span class="news-card-date">${p.date}</span></div>
+      <h3>${p.title}</h3>
+      <p>${p.body.substring(0,110)}${p.body.length>110?'...':''}</p>
+      <div class="news-card-footer"><span class="read-more">${currentLang==='de'?'Weiterlesen →':'Lexo më shumë →'}</span></div>
+    </div>
+  </div>`;
+}
+function renderHomeNews(){const g=document.getElementById('home-news-grid');if(g)g.innerHTML=DB.posts.slice(0,3).map(newsCard).join('');}
+function renderNewsPage(){
+  const g=document.getElementById('news-grid');if(!g)return;
+  const q=(document.getElementById('news-search')||{}).value||'';
+  let posts=DB.posts;
+  if(q)posts=posts.filter(p=>p.title.toLowerCase().includes(q.toLowerCase())||p.body.toLowerCase().includes(q.toLowerCase()));
+  if(currentFilter!=='ALL')posts=posts.filter(p=>p.category===currentFilter);
+  g.innerHTML=posts.length?posts.map(newsCard).join(''):`<p style="color:var(--ink-lt);grid-column:1/-1;text-align:center;padding:40px 0">${currentLang==='de'?'Keine Artikel gefunden.':'Nuk u gjetën artikuj.'}</p>`;
+}
+function filterNews(){renderNewsPage();}
+function setFilter(f,el){
+  currentFilter=f;
+  document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');renderNewsPage();
+}
+function openNewsModal(id){
+  const p=DB.posts.find(x=>x.id===id);if(!p)return;
+  document.getElementById('news-modal-content').innerHTML=`
+    ${p.img?`<img src="${p.img}" alt="${p.title}" style="width:100%;height:260px;object-fit:cover;border-radius:10px;margin-bottom:20px" onerror="this.style.display='none'">`:''}
+    <div class="news-card-meta" style="margin-bottom:10px"><span class="news-card-cat">${p.category}</span><span class="news-card-date">${p.date}</span></div>
+    <h2 style="font-size:22px;color:var(--green);margin-bottom:14px">${p.title}</h2>
+    <div style="color:var(--ink-mid);font-size:15px;line-height:1.8">${p.body.replace(/\n/g,'<br>')}</div>`;
+  openModal('news-modal');
+}
+
+// MEMBER AREA
+let mediaItems = [
+  {url:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg',cap:'Iftar 2026'},
+  {url:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg',cap:'Xhamia'},
+  {url:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg',cap:'Aktivitet'},
+  {url:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg',cap:'Bashkësia'},
+  {url:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg',cap:'Namazi'},
+  {url:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg',cap:'Galeria'},
+];
+
+function renderMemberArea(){
+  const out=document.getElementById('member-logged-out'),inp=document.getElementById('member-logged-in');
+  if(!currentUser){out.classList.remove('hidden');inp.classList.add('hidden');return;}
+  out.classList.add('hidden');inp.classList.remove('hidden');
+  const name=currentUser.name.split(' ')[0];
+  document.getElementById('member-welcome').textContent=(currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+name+'!';
+  document.getElementById('prof-role-badge').textContent=currentUser.role==='admin'?'Administrator':'Anëtar';
+  const pa=document.getElementById('profile-avatar');if(pa)pa.textContent=currentUser.name.charAt(0).toUpperCase();
+  const pab=document.getElementById('profile-avatar-big');if(pab)pab.textContent=currentUser.name.charAt(0).toUpperCase();
+  document.getElementById('prof-name').value=currentUser.name;
+  document.getElementById('prof-email').value=currentUser.email;
+  document.getElementById('prof-role').value=currentUser.role==='admin'?'Administrator':(currentLang==='de'?'Mitglied':'Anëtar');
+  const isAdmin=currentUser.role==='admin';
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display=isAdmin?'':'none');
+  document.querySelectorAll('.admin-only-el').forEach(el=>el.style.display=isAdmin?'flex':'none');
+  showAdminTab('dashboard');
+}
+
+function renderDashboard(){
+  const dc=document.getElementById('dc-posts');if(dc)dc.textContent=DB.posts.length;
+  const dm=document.getElementById('dc-members');if(dm)dm.textContent=DB.users.length;
+  const dt=document.getElementById('dc-today');if(dt)dt.textContent=new Date().toLocaleDateString('sq-AL',{day:'numeric',month:'short'});
+  const rec=document.getElementById('dash-recent-posts');
+  if(!rec)return;
+  rec.innerHTML=DB.posts.slice(0,5).map(p=>`
+    <div class="dash-post-row" onclick="showAdminTab('news');setTimeout(()=>openPostModal(${p.id}),100)">
+      <div class="dash-post-thumb">${p.img?`<img src="${p.img}" style="width:48px;height:48px;object-fit:cover;border-radius:8px" onerror="this.outerHTML='📰'">`:'📰'}</div>
+      <div class="dash-post-info">
+        <h4>${p.title}</h4>
+        <p>${p.category} · ${p.date}</p>
+      </div>
+      <span style="font-size:12px;color:var(--green);font-weight:600">Edito →</span>
+    </div>`).join('');
+}
+
+function renderAdminNews(){
+  const grid=document.getElementById('admin-news-cards');if(!grid)return;
+  const q=(document.getElementById('admin-news-search')||{}).value||'';
+  const cat=(document.getElementById('admin-news-cat-filter')||{}).value||'';
+  let posts=DB.posts;
+  if(q)posts=posts.filter(p=>p.title.toLowerCase().includes(q.toLowerCase())||p.body.toLowerCase().includes(q.toLowerCase()));
+  if(cat)posts=posts.filter(p=>p.category===cat);
+  if(!posts.length){grid.innerHTML=`<p style="color:var(--ink-lt);text-align:center;padding:40px;grid-column:1/-1">Nuk u gjetën artikuj.</p>`;return;}
+  grid.innerHTML=posts.map(p=>`
+    <div class="admin-post-card">
+      <div class="admin-post-card-img">
+        ${p.img?`<img src="${p.img}" onerror="this.style.display='none'">`:''}
+        <div class="admin-post-card-img-placeholder">📰</div>
+      </div>
+      <div class="admin-post-card-body">
+        <span style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.6px">${p.category} · ${p.date}</span>
+        <h4>${p.title}</h4>
+        <p>${p.body.substring(0,80)}...</p>
+        <div class="admin-post-card-actions">
+          <button class="btn-edit" onclick="openPostModal(${p.id})">✏️ Edito</button>
+          <button class="btn-del" onclick="deletePost(${p.id})">🗑️ Fshi</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderMembersTab(){
+  const grid=document.getElementById('members-cards');if(!grid)return;
+  const q=(document.getElementById('member-search')||{}).value||'';
+  const role=(document.getElementById('member-role-filter')||{}).value||'';
+  let users=DB.users;
+  if(q)users=users.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.email.toLowerCase().includes(q.toLowerCase()));
+  if(role)users=users.filter(u=>u.role===role);
+  grid.innerHTML=users.map(u=>`
+    <div class="member-card">
+      <div class="member-card-avatar">${u.name.charAt(0).toUpperCase()}</div>
+      <div class="member-card-info">
+        <h4>${u.name}</h4>
+        <p>${u.email}</p>
+      </div>
+      <span class="member-card-role ${u.role==='admin'?'role-admin':'role-member'}">${u.role==='admin'?'Admin':'Anëtar'}</span>
+    </div>`).join('');
+}
+
+function renderMediaTab(){
+  const grid=document.getElementById('media-grid');if(!grid)return;
+  grid.innerHTML=mediaItems.map((m,i)=>`
+    <div class="media-thumb">
+      <img src="${m.url}" alt="${m.cap}" onerror="this.style.display='none'">
+      <div class="media-thumb-overlay">
+        <button class="media-thumb-del" onclick="deleteMediaItem(${i})">🗑️ Fshi</button>
+        <span style="color:white;font-size:11px;font-weight:600;opacity:0;transition:opacity .2s" class="media-cap">${m.cap}</span>
+      </div>
+    </div>`).join('');
+  grid.querySelectorAll('.media-thumb').forEach(el=>{
+    el.addEventListener('mouseenter',()=>el.querySelector('.media-cap').style.opacity='1');
+    el.addEventListener('mouseleave',()=>el.querySelector('.media-cap').style.opacity='0');
+  });
+}
+
+function addMediaItem(){
+  const url=document.getElementById('media-url-input').value.trim();
+  const cap=document.getElementById('media-caption-input').value.trim()||'Foto';
+  if(!url){showToast('Fut URL-në e fotos!','error');return;}
+  mediaItems.push({url,cap});
+  document.getElementById('media-url-input').value='';
+  document.getElementById('media-caption-input').value='';
+  renderMediaTab();
+  showToast('Foto u shtua në galeri!','success');
+}
+
+function deleteMediaItem(i){
+  if(!confirm('Fshi këtë foto?'))return;
+  mediaItems.splice(i,1);renderMediaTab();
+  showToast('Foto u fshi.','');
+}
+
+function savePrayerTimes(){
+  const times={sabah:document.getElementById('pt-sabah').value,dreka:document.getElementById('pt-dreka').value,ikindia:document.getElementById('pt-ikindia').value,akshami:document.getElementById('pt-akshami').value,jacia:document.getElementById('pt-jacia').value};
+  // Update the prayer strip on the homepage
+  const strip=document.getElementById('prayer-strip');
+  if(strip){
+    const items=strip.querySelectorAll('.prayer-item .prayer-time');
+    // items[0] is the live clock item, so prayer times start at index...
+    // Get all prayer-time elements after the date/time block
+    const allTimes=strip.querySelectorAll('.prayer-item');
+    // item 0 = clock, 1=sabah, 2=dreka, 3=ikindia, 4=akshami, 5=jacia
+    allTimes[1].querySelector('.prayer-time').textContent=times.sabah;
+    allTimes[2].querySelector('.prayer-time').textContent=times.dreka;
+    allTimes[3].querySelector('.prayer-time').textContent=times.ikindia;
+    allTimes[4].querySelector('.prayer-time').textContent=times.akshami;
+    allTimes[5].querySelector('.prayer-time').textContent=times.jacia;
+  }
+  const msg=document.getElementById('pt-saved-msg');
+  msg.style.display='block';setTimeout(()=>msg.style.display='none',3500);
+  showToast('Kohët e namazit u përditësuan!','success');
+}
+
+// Show/hide member tab (old references compatibility)
+function showMTab(name,el){showAdminTab(name);}
+
+function renderAdminNewsLegacy(){renderAdminNews();}
+function renderUsersTable(){renderMembersTab();}
+
+// ADMIN CMS (post modal)
+function openPostModal(postId){
+  editingPostId=postId;
+  const isEdit=postId!==null;
+  document.getElementById('post-modal-title').textContent=isEdit?'✏️ Edito Artikullin':'✍️ Artikull i ri';
+  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-img').value=p.img||'';}
+  else{['post-title','post-body','post-img'].forEach(id=>document.getElementById(id).value='');}
+  openModal('post-modal');
+}
+function savePost(){
+  const title=document.getElementById('post-title').value.trim(),body=document.getElementById('post-body').value.trim();
+  if(!title||!body){showToast('Plotësoni titullin dhe përmbajtjen!','error');return;}
+  const data={title,category:document.getElementById('post-cat').value,body,img:document.getElementById('post-img').value.trim(),date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
+  if(editingPostId!==null){const i=DB.posts.findIndex(p=>p.id===editingPostId);DB.posts[i]={...DB.posts[i],...data};showToast('✅ Artikulli u përditësua!','success');}
+  else{DB.posts.unshift({id:DB.nextPostId++,...data});showToast('🎉 Artikulli u publikua!','success');}
+  closeModal('post-modal');renderAdminNews();renderHomeNews();renderDashboard();
+}
+function deletePost(id){
+  if(!confirm('A jeni i sigurt që doni të fshini këtë artikull?'))return;
+  DB.posts=DB.posts.filter(p=>p.id!==id);renderAdminNews();renderHomeNews();renderDashboard();
+  showToast('Artikulli u fshi.','');
+}
+function updateProfile(){
+  const name=document.getElementById('prof-name').value.trim();
+  if(!name){showToast('Emri nuk mund të jetë bosh!','error');return;}
+  currentUser.name=name;DB.users.find(u=>u.id===currentUser.id).name=name;
+  const pa=document.getElementById('profile-avatar');if(pa)pa.textContent=name.charAt(0).toUpperCase();
+  const pab=document.getElementById('profile-avatar-big');if(pab)pab.textContent=name.charAt(0).toUpperCase();
+  document.getElementById('member-welcome').textContent=(currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+name.split(' ')[0]+'!';
+  updateAuthUI();showToast('✅ Profili u ruajt!','success');
+}
+function changePassword(){
+  const p1=document.getElementById('new-pass').value,p2=document.getElementById('new-pass2').value;
+  if(!p1||!p2){showToast('Plotësoni të dy fushat!','error');return;}
+  if(p1!==p2){showToast('Fjalëkalimet nuk përputhen!','error');return;}
+  if(p1.length<8){showToast('Min. 8 karaktere!','error');return;}
+  currentUser.password=p1;showToast('🔐 Fjalëkalimi u ndryshua!','success');
+  document.getElementById('new-pass').value='';document.getElementById('new-pass2').value='';
+}
+function deleteAccount(){
+  if(!confirm('A jeni i sigurt? Kjo veprim nuk mund të zhbëhet!'))return;
+  DB.users=DB.users.filter(u=>u.id!==currentUser.id);doLogout();showToast('Llogaria u fshi.','');
+}
+
+// CONTACT
+function sendContact(){
+  const n=document.getElementById('cf-name').value,e=document.getElementById('cf-email').value,m=document.getElementById('cf-msg').value;
+  if(!n||!e||!m){showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;}
+  showToast(currentLang==='de'?'Nachricht gesendet!':'Mesazhi u dërgua!','success');
+  ['cf-name','cf-email','cf-msg'].forEach(id=>document.getElementById(id).value='');
+}
+
+// TOAST
+function showToast(msg,type=''){
+  const c=document.getElementById('toast-container'),t=document.createElement('div');
+  t.className='toast'+(type?' '+type:'');t.textContent=msg;c.appendChild(t);
+  setTimeout(()=>t.style.opacity='0',3000);setTimeout(()=>t.remove(),3400);
+}
+
+// ── CONDOLENCES ──
+let condolences = [];
+let editingCondId = null;
+
+function openCondolenceModal(id) {
+  editingCondId = id;
+  document.getElementById('cond-modal-title').textContent = id !== null ? '✏️ Edito Njoftimin' : '🕊️ Njoftim i ri ngushëllimi';
+  if (id !== null) {
+    const c = condolences.find(x => x.id === id);
+    document.getElementById('cond-name').value = c.name;
+    document.getElementById('cond-born').value = c.born || '';
+    document.getElementById('cond-date').value = c.date || '';
+    document.getElementById('cond-city').value = c.city || '';
+    document.getElementById('cond-msg').value = c.msg || '';
+    document.getElementById('cond-funeral').value = c.funeral || '';
+  } else {
+    ['cond-name','cond-born','cond-city','cond-msg','cond-funeral'].forEach(i => document.getElementById(i).value = '');
+    document.getElementById('cond-date').value = new Date().toISOString().split('T')[0];
+  }
+  openModal('condolence-modal');
+}
+
+function saveCondolence() {
+  const name = document.getElementById('cond-name').value.trim();
+  if (!name) { showToast('Shkruani emrin e të ndjerit!', 'error'); return; }
+  const data = {
+    name,
+    born: document.getElementById('cond-born').value,
+    date: document.getElementById('cond-date').value,
+    city: document.getElementById('cond-city').value,
+    msg: document.getElementById('cond-msg').value,
+    funeral: document.getElementById('cond-funeral').value,
+    postedAt: new Date().toLocaleDateString('sq-AL', {day:'numeric',month:'long',year:'numeric'}),
+  };
+  if (editingCondId !== null) {
+    const i = condolences.findIndex(c => c.id === editingCondId);
+    condolences[i] = { ...condolences[i], ...data };
+    showToast('Njoftimi u përditësua!', 'success');
+  } else {
+    condolences.unshift({ id: Date.now(), ...data });
+    showToast('🕊️ Njoftimi u publikua!', 'success');
+  }
+  closeModal('condolence-modal');
+  renderCondolenceAdmin();
+  renderCondolencesPublic();
+}
+
+function deleteCondolence(id) {
+  if (!confirm('Fshi këtë njoftim?')) return;
+  condolences = condolences.filter(c => c.id !== id);
+  renderCondolenceAdmin(); renderCondolencesPublic();
+  showToast('Njoftimi u fshi.', '');
+}
+
+function renderCondolenceAdmin() {
+  const list = document.getElementById('condolence-admin-list');
+  const empty = document.getElementById('condolence-admin-empty');
+  if (!list) return;
+  if (!condolences.length) { list.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = condolences.map(c => `
+    <div class="condolence-card">
+      <div class="condolence-card-header">
+        <div style="font-size:28px">🕊️</div>
+        <div><h3>${c.name}</h3><p>${c.born ? c.born + ' – ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
+      </div>
+      <div class="condolence-card-body">
+        ${c.msg ? `<p style="font-style:italic">"${c.msg}"</p>` : ''}
+        ${c.funeral ? `<div style="background:#e8f5ee;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--green);font-weight:600;margin-bottom:10px">⏰ ${c.funeral}</div>` : ''}
+        <div class="condolence-meta"><span>📅 Publikuar: ${c.postedAt}</span></div>
+        <div class="condolence-admin-actions">
+          <button class="btn-edit" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;font-family:inherit;background:var(--green-lt);color:var(--green);border:none" onclick="openCondolenceModal(${c.id})">✏️ Edito</button>
+          <button class="btn-del" style="flex:1;padding:8px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;font-family:inherit;background:#fee2e2;color:#c0392b;border:none" onclick="deleteCondolence(${c.id})">🗑️ Fshi</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderCondolencesPublic() {
+  const list = document.getElementById('condolences-public-list');
+  const empty = document.getElementById('condolences-empty');
+  if (!list) return;
+  if (!condolences.length) { list.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+  if (empty) empty.style.display = 'none';
+  list.innerHTML = condolences.map(c => `
+    <div class="condolence-card" style="margin-bottom:20px;animation:fadeUpIn .4s ease">
+      <div class="condolence-card-header">
+        <div style="font-size:32px">🕊️</div>
+        <div><h3>${c.name}</h3><p>${c.born ? c.born + ' – ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
+      </div>
+      <div class="condolence-card-body">
+        <div class="arabic-small">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</div>
+        <p style="font-style:italic;color:var(--ink-mid)"><em>Inna lillahi wa inna ilayhi raji'un.</em><br>Allahu i mëshiroftë dhe e vendosë në Xhenet!</p>
+        ${c.msg ? `<p>"${c.msg}"</p>` : ''}
+        ${c.funeral ? `<div style="background:#e8f5ee;border-radius:8px;padding:12px 16px;font-size:14px;color:var(--green);font-weight:600;margin-bottom:10px;display:flex;gap:8px"><span>⏰</span><div><strong>Namazi i Xhenazes:</strong><br>${c.funeral}</div></div>` : ''}
+        <div class="condolence-meta"><span>📅 Njoftuar: ${c.postedAt}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+// ── ACTIVITIES ACCORDION ──
+function toggleAcc(idx) {
+  const items = document.querySelectorAll('.acc-item');
+  const item = items[idx];
+  const isOpen = item.classList.contains('open');
+  items.forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// ── ACTIVITY IMAGE UPLOAD ──
+function triggerImgUpload(accIdx) {
+  const gallery = document.getElementById('acc-gallery-' + accIdx);
+  if (!gallery) return;
+  const input = gallery.querySelector('.hidden-file-input');
+  if (input) input.click();
+}
+function handleActivityImgUpload(event, accIdx) {
+  const files = event.target.files;
+  if (!files || !files.length) return;
+  const gallery = document.getElementById('acc-gallery-' + accIdx);
+  const uploadBtn = gallery.querySelector('.acc-img-upload');
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.alt = 'Aktivitet';
+      img.style.cssText = 'width:140px;height:100px;object-fit:cover;border-radius:10px;transition:transform .25s;cursor:pointer;animation:fadeInScale .3s ease';
+      img.title = 'Kliko për ta fshirë';
+      img.onclick = () => { if (confirm('Fshi këtë foto?')) img.remove(); };
+      gallery.insertBefore(img, uploadBtn);
+    };
+    reader.readAsDataURL(file);
+  });
+  showToast('📸 ' + files.length + ' foto u shtua!', 'success');
+  event.target.value = '';
+}
+
+// ── ADMIN TAB (override to add condolences) ──
+function showAdminTab(name) {
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-pill').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('apanel-' + name);
+  const pill  = document.getElementById('apill-' + name);
+  if (panel) panel.classList.add('active');
+  if (pill) pill.classList.add('active');
+  if (name === 'dashboard')    renderDashboard();
+  if (name === 'news')         renderAdminNews();
+  if (name === 'condolences')  renderCondolenceAdmin();
+  if (name === 'members')      renderMembersTab();
+  if (name === 'media')        renderMediaTab();
+}
+
+// ── SCROLL REVEAL ──
+function initScrollReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.news-card,.activity-card,.acc-item,.g-item,.contact-item,.about-grid,.donations-inner').forEach(el => {
+    el.classList.add('reveal'); obs.observe(el);
+  });
+}
+
+// ── INIT ──
+renderHomeNews();
+initSlideshow();
+setTimeout(initScrollReveal, 400);
+
+// ── LIVE CLOCK ──
+function updateClock(){
+  const now=new Date();
+  const timeEl=document.getElementById('live-time');
+  const dateEl=document.getElementById('live-date');
+  const lblEl=document.getElementById('live-date-label');
+  if(timeEl) timeEl.textContent=now.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  if(dateEl) dateEl.textContent=now.toLocaleDateString('de-CH',{weekday:'short',day:'numeric',month:'short'});
+  if(lblEl)  lblEl.textContent=currentLang==='de'?'Heute':'Sot';
+}
+updateClock();
+setInterval(updateClock,1000);
+</script>
+</body>
+</html>
