@@ -231,19 +231,16 @@
   </section>
 
   <div id="prayer-strip">
-    <div class="prayer-inner">
-      <!-- Live date/time -->
-      <div class="prayer-item" style="background:rgba(0,0,0,.12);border-radius:8px;margin-right:8px;border-right:none;padding:4px 16px">
-        <div class="prayer-name" id="live-date-label">Sot</div>
-        <div class="prayer-time" id="live-date" style="font-size:13px;font-weight:700;letter-spacing:.5px">—</div>
-        <div style="font-size:18px;font-weight:700;font-family:'Playfair Display',serif;color:white" id="live-time">00:00:00</div>
+    <div class="container prayer-inner">
+      <div class="prayer-clock">
+        <span class="prayer-clock-time" id="live-time">00:00:00</span>
+        <span class="prayer-clock-date"><span id="live-date-label">Sot</span> · <span id="live-date">—</span></span>
       </div>
-      <div class="prayer-item"><div class="prayer-name" id="pn-sabah">Sabahu</div><div class="prayer-time">05:10</div></div>
-      <div class="prayer-item"><div class="prayer-name" id="pn-dreka">Dreka</div><div class="prayer-time">13:15</div></div>
-      <div class="prayer-item"><div class="prayer-name" id="pn-ikindia">Ikindia</div><div class="prayer-time">17:00</div></div>
-      <div class="prayer-item"><div class="prayer-name" id="pn-akshami">Akshami</div><div class="prayer-time">20:35</div></div>
-      <div class="prayer-item"><div class="prayer-name" id="pn-jacia">Jacia</div><div class="prayer-time">22:10</div></div>
-      <div class="prayer-item" style="border-right:none"><div class="prayer-name">📍 Saatlenstr. 23</div><div class="prayer-time" style="font-size:12px">8051 Zürich</div></div>
+      <a class="prayer-live-link" onclick="document.getElementById('prayer-live').scrollIntoView({behavior:'smooth'})">
+        <span class="live-dot"></span>
+        <span data-sq="Kohët e Namazit — LIVE" data-de="Gebetszeiten — LIVE">Kohët e Namazit — LIVE</span>
+      </a>
+      <div class="prayer-addr">📍 Saatlenstrasse 23, 8051 Zürich</div>
     </div>
   </div>
 
@@ -309,7 +306,7 @@
       </div>
 
       <!-- SwissMosque LIVE IFRAME -->
-      <div style="margin-bottom:52px">
+      <div style="margin-bottom:52px" id="prayer-live">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
           <div class="live-dot"></div>
           <span style="font-size:13px;font-weight:600;color:var(--green)" id="live-label">Live — Orari i namazit</span>
@@ -594,15 +591,9 @@
                 <p>Çdo të premte mbahet namazi i detyrueshëm i Xhumasë me hutbe (predikë) në gjuhën shqipe, duke filluar pas thirrjes së drekës.</p>
               </div>
               <div>
-                <h4 style="color:var(--green);margin-bottom:12px">Orari i sotëm (afërsisht)</h4>
-                <div style="display:grid;gap:8px">
-                  <div class="pt-display-row"><span>🌅 Sabahu</span><strong>05:10</strong></div>
-                  <div class="pt-display-row"><span>☀️ Dreka</span><strong>13:15</strong></div>
-                  <div class="pt-display-row"><span>🌤️ Ikindia</span><strong>17:00</strong></div>
-                  <div class="pt-display-row"><span>🌇 Akshami</span><strong>20:35</strong></div>
-                  <div class="pt-display-row"><span>🌙 Jacia</span><strong>22:10</strong></div>
-                </div>
-                <a onclick="navigate('home')" style="display:block;margin-top:14px;font-size:13px;font-weight:600;color:var(--green);cursor:pointer">📥 Shiko kalendarin e plotë →</a>
+                <h4 style="color:var(--green);margin-bottom:12px">Orari i namazit</h4>
+                <p>Kohët e sakta të namazit për xhaminë tonë merren drejtpërdrejt nga SwissMosque dhe përditësohen automatikisht çdo ditë.</p>
+                <a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" class="btn btn-outline" style="margin-top:14px"><span class="live-dot"></span> Kohët e Namazit — LIVE</a>
               </div>
             </div>
             <div class="acc-img-gallery" id="acc-gallery-0">
@@ -993,7 +984,6 @@
           <button class="admin-tab-pill" id="apill-news" onclick="showAdminTab('news')">📰 Lajmet</button>
           <button class="admin-tab-pill admin-only" id="apill-condolences" onclick="showAdminTab('condolences')" style="display:none">🕊️ Ngushëllimet</button>
           <button class="admin-tab-pill" id="apill-media" onclick="showAdminTab('media')">🖼️ Media</button>
-          <button class="admin-tab-pill admin-only" id="apill-prayertimes" onclick="showAdminTab('prayertimes')" style="display:none">🕌 Kohët</button>
           <button class="admin-tab-pill" id="apill-profile" onclick="showAdminTab('profile')">⚙️ Profili</button>
         </div>
       </div>
@@ -1097,41 +1087,6 @@
             <div style="font-size:48px;margin-bottom:12px">🕊️</div>
             <p style="color:var(--ink-lt)">Nuk ka njoftime aktive. Shtoni njoftimin e parë duke klikuar butonin lart.</p>
           </div>
-        </div>
-
-        <!-- ── PRAYER TIMES TAB ── -->
-        <div class="admin-panel" id="apanel-prayertimes">
-          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🕌 Kohët e Namazit</h2>
-          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Përditëso oraret e namazit — shfaqen automatikisht në shiritin e verdhë</p>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:24px">
-            <div class="prayer-time-edit-card">
-              <div class="pt-icon">🌅</div>
-              <label>Sabahu / Fadschr</label>
-              <input type="time" id="pt-sabah" value="05:10">
-            </div>
-            <div class="prayer-time-edit-card">
-              <div class="pt-icon">☀️</div>
-              <label>Dreka / Dhuhr</label>
-              <input type="time" id="pt-dreka" value="13:15">
-            </div>
-            <div class="prayer-time-edit-card">
-              <div class="pt-icon">🌤️</div>
-              <label>Ikindia / Asr</label>
-              <input type="time" id="pt-ikindia" value="17:00">
-            </div>
-            <div class="prayer-time-edit-card">
-              <div class="pt-icon">🌇</div>
-              <label>Akshami / Maghrib</label>
-              <input type="time" id="pt-akshami" value="20:35">
-            </div>
-            <div class="prayer-time-edit-card">
-              <div class="pt-icon">🌙</div>
-              <label>Jacia / Ischa</label>
-              <input type="time" id="pt-jacia" value="22:10">
-            </div>
-          </div>
-          <button class="btn btn-primary" onclick="savePrayerTimes()" style="padding:12px 28px">💾 Ruaj Oraret</button>
-          <div id="pt-saved-msg" style="display:none;margin-top:12px;color:var(--green);font-weight:600;font-size:14px">✅ Oraret u ruajtën dhe u përditësuan!</div>
         </div>
 
         <!-- ── PROFILE TAB ── -->

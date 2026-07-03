@@ -52,7 +52,10 @@ The site has two data modes:
   activities, condolences, Islamic feasts, Quran, lectures, membership, contact.
 - **Bilingual UI** — Albanian (sq) and German (de) via an in-page translation dictionary.
 - **Member area with admin dashboard** — stats, news editor (create/edit/delete), condolence
-  announcements, media gallery, prayer-time editing, profile settings.
+  announcements, media gallery, profile settings.
+- **Prayer times** — displayed live from [SwissMosque](https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003)
+  (mosque ID 1003). Deliberately **not** editable on the site; SwissMosque is the single
+  source of truth.
 - **Design system** — green/gold palette, Playfair Display + DM Sans, scroll-reveal
   animations, responsive layout down to mobile.
 
@@ -81,7 +84,9 @@ passwords, and admin rights come from the `profiles.role` column.
 - [x] Interim persistence: admin data survives page reloads (localStorage)
 - [x] Real backend: Supabase database + authentication, with RLS admin policies
       (localStorage kept as offline/demo fallback)
-- [x] Real prayer-times management (admin-editable, stored in the database)
+- [x] Prayer times sourced live from SwissMosque (admin editor removed by design)
+- [x] Design pass: unified buttons, fixed hero layout, section headers, prayer strip,
+      mobile refinements
 - [ ] Image upload to Supabase Storage with automatic resizing
 - [ ] Per-article URLs + SEO (meta tags, sitemap, Open Graph) so news is indexable
 - [ ] Contact form delivery (email or database inbox)

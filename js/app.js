@@ -55,7 +55,6 @@ const DB={
   nextPostId:7,nextUserId:3
 };
 let currentUser=null,currentFilter='ALL',editingPostId=null,currentLang='sq';
-let prayerTimes={sabah:'05:10',dreka:'13:15',ikindia:'17:00',akshami:'20:35',jacia:'22:10'};
 
 // ═══════════════════════════════════════
 //  PERSISTENCE (localStorage)
@@ -70,7 +69,6 @@ function saveState(){
       db:DB,
       condolences,
       mediaItems,
-      prayerTimes,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -84,26 +82,8 @@ function loadState(){
   if(s.db)Object.assign(DB,s.db);
   if(Array.isArray(s.condolences))condolences=s.condolences;
   if(Array.isArray(s.mediaItems))mediaItems=s.mediaItems;
-  if(s.prayerTimes)prayerTimes=s.prayerTimes;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
-}
-
-function applyPrayerTimes(){
-  const strip=document.getElementById('prayer-strip');
-  const order=['sabah','dreka','ikindia','akshami','jacia'];
-  if(strip){
-    const items=strip.querySelectorAll('.prayer-item');
-    // items[0] is the live clock, prayers start at index 1
-    order.forEach((k,i)=>{
-      const el=items[i+1]&&items[i+1].querySelector('.prayer-time');
-      if(el)el.textContent=prayerTimes[k];
-    });
-  }
-  order.forEach(k=>{
-    const inp=document.getElementById('pt-'+k);
-    if(inp)inp.value=prayerTimes[k];
-  });
 }
 
 // ═══════════════════════════════════════
@@ -120,17 +100,15 @@ function fmtDateEn(iso){return new Date(iso).toLocaleDateString('en-US',{year:'n
 function fmtDateSq(iso){return new Date(iso).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'});}
 
 async function remoteLoadAll(){
-  const [posts,conds,media,pt]=await Promise.all([
+  const [posts,conds,media]=await Promise.all([
     sb.from('posts').select('*').order('created_at',{ascending:false}),
     sb.from('condolences').select('*').order('created_at',{ascending:false}),
     sb.from('media').select('*').order('created_at',{ascending:true}),
-    sb.from('prayer_times').select('*').eq('id',1).maybeSingle(),
   ]);
   if(posts.error)throw posts.error;
   DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',date:fmtDateEn(p.created_at)}));
   condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',postedAt:fmtDateSq(c.created_at)}));
   mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption}));
-  if(pt.data)['sabah','dreka','ikindia','akshami','jacia'].forEach(k=>{if(pt.data[k])prayerTimes[k]=pt.data[k];});
 }
 
 async function setUserFromSession(u){
@@ -394,9 +372,13 @@ function updateAuthUI(){
 // NEWS
 function newsCard(p){
   return `<div class="news-card" onclick="openNewsModal(${p.id})">
-    <div class="news-card-img">${p.img?`<img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=news-card-img-placeholder>📰</div>'">`:'<div class="news-card-img-placeholder">📰</div>'}</div>
+    <div class="news-card-img">
+      <div class="news-card-img-placeholder">📰</div>
+      ${p.img?`<img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'">`:''}
+      <span class="news-card-chip">${p.category}</span>
+    </div>
     <div class="news-card-body">
-      <div class="news-card-meta"><span class="news-card-cat">${p.category}</span><span class="news-card-date">${p.date}</span></div>
+      <div class="news-card-meta"><span class="news-card-date">📅 ${p.date}</span></div>
       <h3>${p.title}</h3>
       <p>${p.body.substring(0,110)}${p.body.length>110?'...':''}</p>
       <div class="news-card-footer"><span class="read-more">${currentLang==='de'?'Weiterlesen →':'Lexo më shumë →'}</span></div>
@@ -559,22 +541,6 @@ async function deleteMediaItem(i){
   }
   mediaItems.splice(i,1);saveState();renderMediaTab();
   showToast('Foto u fshi.','');
-}
-
-async function savePrayerTimes(){
-  ['sabah','dreka','ikindia','akshami','jacia'].forEach(k=>{
-    const inp=document.getElementById('pt-'+k);
-    if(inp&&inp.value)prayerTimes[k]=inp.value;
-  });
-  if(REMOTE){
-    const {error}=await sb.from('prayer_times').upsert({id:1,...prayerTimes,updated_at:new Date().toISOString()});
-    if(error){showToast('Gabim: '+error.message,'error');return;}
-  }
-  applyPrayerTimes();
-  saveState();
-  const msg=document.getElementById('pt-saved-msg');
-  msg.style.display='block';setTimeout(()=>msg.style.display='none',3500);
-  showToast('Kohët e namazit u përditësuan!','success');
 }
 
 // Show/hide member tab (old references compatibility)
@@ -874,7 +840,6 @@ async function initApp(){
     const l=localStorage.getItem('hdf_lang');
     if(l&&l!==currentLang)setLang(l);
   }catch(e){}
-  applyPrayerTimes();
   updateAuthUI();
   renderHomeNews();
   renderCondolencesPublic();
