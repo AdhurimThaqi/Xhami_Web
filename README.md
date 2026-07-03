@@ -9,8 +9,20 @@ simple built-in admin area so staff can publish news themselves.
 
 ## Current state
 
-`index.html` is a **self-contained front-end prototype** (no build step, no dependencies
-beyond Google Fonts). Open it directly in a browser to try it.
+A **front-end prototype with local persistence** (no build step, no dependencies beyond
+Google Fonts). Open `index.html` directly in a browser to try it.
+
+```
+index.html       page markup (all pages + admin area)
+css/styles.css   design system and all styles
+js/app.js        routing, i18n, admin logic, localStorage persistence
+```
+
+Everything created in the admin area — news posts, condolence announcements, prayer times,
+media items, registered users, login session, language choice — is saved to the browser's
+localStorage and survives page reloads. The save/load layer (`saveState` / `loadState` in
+`js/app.js`) mirrors the shape a future backend API will use, so swapping localStorage for
+a real database stays a contained change.
 
 ### What it includes
 
@@ -32,8 +44,9 @@ beyond Google Fonts). Open it directly in a browser to try it.
 
 ## Known limitations (why this is still a prototype)
 
-1. **No persistence** — all data (posts, users, prayer times, uploads) lives in a JavaScript
-   object in memory. Refreshing the page resets everything.
+1. **Local-only persistence** — data is saved in the visitor's own browser (localStorage),
+   so admin changes are not shared between devices or visitors. A real backend is needed
+   for that.
 2. **No real authentication** — credentials are hard-coded in the client-side source and
    visible to anyone. This is a UI mock, not security.
 3. **Single-URL SPA** — every page shares one URL, so news articles can't be linked to or
@@ -42,8 +55,9 @@ beyond Google Fonts). Open it directly in a browser to try it.
 
 ## Roadmap
 
-- [x] Design prototype (this file)
-- [ ] Split the monolith into maintainable files (css / js / pages)
+- [x] Design prototype
+- [x] Split the monolith into maintainable files (css / js)
+- [x] Interim persistence: admin data survives page reloads (localStorage)
 - [ ] Add a real backend: database + authentication + news/media API
       (candidate: Supabase or PocketBase to keep hosting simple and cheap)
 - [ ] Real prayer-times management (admin-editable, optionally auto-calculated)
