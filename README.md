@@ -13,16 +13,37 @@ A **front-end prototype with local persistence** (no build step, no dependencies
 Google Fonts). Open `index.html` directly in a browser to try it.
 
 ```
-index.html       page markup (all pages + admin area)
-css/styles.css   design system and all styles
-js/app.js        routing, i18n, admin logic, localStorage persistence
+index.html           page markup (all pages + admin area)
+css/styles.css       design system and all styles
+js/app.js            routing, i18n, admin logic, data layer
+js/config.js         Supabase project URL + publishable key (public values)
+supabase/schema.sql  database schema — run once in the Supabase SQL Editor
 ```
 
-Everything created in the admin area — news posts, condolence announcements, prayer times,
-media items, registered users, login session, language choice — is saved to the browser's
-localStorage and survives page reloads. The save/load layer (`saveState` / `loadState` in
-`js/app.js`) mirrors the shape a future backend API will use, so swapping localStorage for
-a real database stays a contained change.
+The site has two data modes:
+
+- **Remote mode (Supabase)** — when `js/config.js` has project credentials and the database
+  is reachable, all content (news, condolences, prayer times, media, accounts) lives in a
+  shared Postgres database. What an admin publishes is immediately visible to every visitor.
+  Write access is enforced server-side by Row Level Security: only profiles with
+  `role = 'admin'` can create/edit/delete content, no matter what the browser sends.
+- **Demo mode (localStorage)** — when the backend is not configured or unreachable, the site
+  falls back to per-browser localStorage so it stays fully usable for local development
+  (including opening `index.html` straight from disk).
+
+### Backend setup (one time)
+
+1. In the [Supabase dashboard](https://supabase.com/dashboard) open **SQL Editor**, paste
+   the whole of `supabase/schema.sql`, and click **Run**.
+2. In **Authentication → Sign In / Providers → Email**, turn **off** "Confirm email"
+   (or keep it on if you want registration emails — both work).
+3. Open the website, register your own account (Regjistrim), then back in the SQL Editor
+   promote it to admin:
+   ```sql
+   update public.profiles set role = 'admin'
+   where id = (select id from auth.users where email = 'YOUR-EMAIL@EXAMPLE.COM');
+   ```
+4. Log out and back in on the site — the admin dashboard tabs appear.
 
 ### What it includes
 
@@ -35,33 +56,34 @@ a real database stays a contained change.
 - **Design system** — green/gold palette, Playfair Display + DM Sans, scroll-reveal
   animations, responsive layout down to mobile.
 
-### Demo accounts (prototype only — not real security)
+### Demo-mode accounts (localStorage fallback only — not used in remote mode)
 
 | Role   | Email                        | Password  |
 |--------|------------------------------|-----------|
 | Admin  | admin@hausdesfriedens.ch     | admin123  |
 | Member | demo@test.ch                 | demo1234  |
 
-## Known limitations (why this is still a prototype)
+In remote mode these do not exist: accounts are real Supabase Auth users with hashed
+passwords, and admin rights come from the `profiles.role` column.
 
-1. **Local-only persistence** — data is saved in the visitor's own browser (localStorage),
-   so admin changes are not shared between devices or visitors. A real backend is needed
-   for that.
-2. **No real authentication** — credentials are hard-coded in the client-side source and
-   visible to anyone. This is a UI mock, not security.
-3. **Single-URL SPA** — every page shares one URL, so news articles can't be linked to or
-   indexed by Google individually.
-4. **Uploads aren't stored** — images are read as data URLs and disappear on refresh.
+## Known limitations
+
+1. **Single-URL SPA** — every page shares one URL, so news articles can't be linked to or
+   indexed by Google individually yet.
+2. **Images are linked, not uploaded** — news/gallery images are added by URL. Upload to
+   Supabase Storage with resizing is a planned step.
+3. **Contact form is decorative** — it shows a confirmation but doesn't send anything yet.
 
 ## Roadmap
 
 - [x] Design prototype
 - [x] Split the monolith into maintainable files (css / js)
 - [x] Interim persistence: admin data survives page reloads (localStorage)
-- [ ] Add a real backend: database + authentication + news/media API
-      (candidate: Supabase or PocketBase to keep hosting simple and cheap)
-- [ ] Real prayer-times management (admin-editable, optionally auto-calculated)
+- [x] Real backend: Supabase database + authentication, with RLS admin policies
+      (localStorage kept as offline/demo fallback)
+- [x] Real prayer-times management (admin-editable, stored in the database)
+- [ ] Image upload to Supabase Storage with automatic resizing
 - [ ] Per-article URLs + SEO (meta tags, sitemap, Open Graph) so news is indexable
-- [ ] Image upload to real storage with automatic resizing
+- [ ] Contact form delivery (email or database inbox)
 - [ ] Migrate existing WordPress content (posts + media)
 - [ ] Deploy + point hausdesfriedens.ch at the new site

@@ -64,6 +64,7 @@ let prayerTimes={sabah:'05:10',dreka:'13:15',ikindia:'17:00',akshami:'20:35',jac
 const STORE_KEY='hdf_state_v1';
 
 function saveState(){
+  if(REMOTE)return; // remote mode: Supabase is the source of truth
   try{
     localStorage.setItem(STORE_KEY,JSON.stringify({
       db:DB,
@@ -103,6 +104,45 @@ function applyPrayerTimes(){
     const inp=document.getElementById('pt-'+k);
     if(inp)inp.value=prayerTimes[k];
   });
+}
+
+// ═══════════════════════════════════════
+//  REMOTE BACKEND (Supabase)
+//  When js/config.js has project credentials and the Supabase client
+//  loaded, all data lives in the shared database. Otherwise the site
+//  falls back to the localStorage demo mode above.
+const sb=(window.HDF_CONFIG&&window.HDF_CONFIG.SUPABASE_URL&&window.supabase)
+  ?window.supabase.createClient(window.HDF_CONFIG.SUPABASE_URL,window.HDF_CONFIG.SUPABASE_ANON_KEY)
+  :null;
+let REMOTE=false; // true once the first fetch from Supabase succeeds
+
+function fmtDateEn(iso){return new Date(iso).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}
+function fmtDateSq(iso){return new Date(iso).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'});}
+
+async function remoteLoadAll(){
+  const [posts,conds,media,pt]=await Promise.all([
+    sb.from('posts').select('*').order('created_at',{ascending:false}),
+    sb.from('condolences').select('*').order('created_at',{ascending:false}),
+    sb.from('media').select('*').order('created_at',{ascending:true}),
+    sb.from('prayer_times').select('*').eq('id',1).maybeSingle(),
+  ]);
+  if(posts.error)throw posts.error;
+  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',date:fmtDateEn(p.created_at)}));
+  condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',postedAt:fmtDateSq(c.created_at)}));
+  mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption}));
+  if(pt.data)['sabah','dreka','ikindia','akshami','jacia'].forEach(k=>{if(pt.data[k])prayerTimes[k]=pt.data[k];});
+}
+
+async function setUserFromSession(u){
+  let role='member',name=(u.user_metadata&&u.user_metadata.name)||u.email;
+  const {data:prof}=await sb.from('profiles').select('name,role').eq('id',u.id).maybeSingle();
+  if(prof){role=prof.role;if(prof.name)name=prof.name;}
+  currentUser={id:u.id,name,email:u.email,role};
+}
+
+async function remoteRestoreSession(){
+  const {data}=await sb.auth.getSession();
+  if(data&&data.session)await setUserFromSession(data.session.user);
 }
 
 // ROUTING
@@ -289,19 +329,29 @@ function setLang(lang){
     const w=document.getElementById('member-welcome');
     if(w)w.textContent=(lang==='de'?'Willkommen, ':'Mirë se vini, ')+currentUser.name.split(' ')[0]+'!';
   }
+  try{localStorage.setItem('hdf_lang',lang);}catch(e){}
   saveState();
 }
 
 // AUTH
-function doLogin(){
+async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value;
+  if(REMOTE){
+    const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error){showToast(currentLang==='de'?'Falsche E-Mail oder Passwort!':'Email ose fjalëkalim i gabuar!','error');return;}
+    await setUserFromSession(data.user);
+    closeModal('auth-modal');updateAuthUI();
+    if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
+    showToast((currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+currentUser.name+'!','success');
+    return;
+  }
   const user=DB.users.find(u=>u.email===email&&u.password===pass);
   if(!user){showToast(currentLang==='de'?'Falsche E-Mail oder Passwort!':'Email ose fjalëkalim i gabuar!','error');return;}
   currentUser=user;closeModal('auth-modal');updateAuthUI();saveState();
   showToast((currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+user.name+'!','success');
 }
-function doRegister(){
+async function doRegister(){
   const name=document.getElementById('reg-name').value.trim();
   const email=document.getElementById('reg-email').value.trim();
   const pass=document.getElementById('reg-pass').value;
@@ -309,12 +359,26 @@ function doRegister(){
   if(!name||!email||!pass){showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;}
   if(pass!==pass2){showToast(currentLang==='de'?'Passwörter stimmen nicht überein!':'Fjalëkalimet nuk përputhen!','error');return;}
   if(pass.length<8){showToast('Min. 8 '+(currentLang==='de'?'Zeichen!':'karaktere!'),'error');return;}
+  if(REMOTE){
+    const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+    if(error){showToast(error.message,'error');return;}
+    if(!data.session){
+      closeModal('auth-modal');
+      showToast(currentLang==='de'?'Bestätigen Sie Ihre E-Mail-Adresse!':'Kontrolloni email-in tuaj për konfirmim!','success');
+      return;
+    }
+    await setUserFromSession(data.user);
+    closeModal('auth-modal');updateAuthUI();
+    showToast((currentLang==='de'?'Konto erstellt! Willkommen, ':'Llogaria u krijua! Mirë se vini, ')+name+'!','success');
+    return;
+  }
   if(DB.users.find(u=>u.email===email)){showToast(currentLang==='de'?'E-Mail bereits registriert!':'Ky email është i regjistruar!','error');return;}
   const nu={id:DB.nextUserId++,name,email,password:pass,role:'member'};
   DB.users.push(nu);currentUser=nu;closeModal('auth-modal');updateAuthUI();saveState();
   showToast((currentLang==='de'?'Konto erstellt! Willkommen, ':'Llogaria u krijua! Mirë se vini, ')+name+'!','success');
 }
 function doLogout(){
+  if(REMOTE)sb.auth.signOut();
   currentUser=null;updateAuthUI();saveState();navigate('home');
   showToast(currentLang==='de'?'Erfolgreich abgemeldet.':'U dilët nga llogaria.','');
 }
@@ -469,28 +533,43 @@ function renderMediaTab(){
   });
 }
 
-function addMediaItem(){
+async function addMediaItem(){
   const url=document.getElementById('media-url-input').value.trim();
   const cap=document.getElementById('media-caption-input').value.trim()||'Foto';
   if(!url){showToast('Fut URL-në e fotos!','error');return;}
-  mediaItems.push({url,cap});saveState();
+  if(REMOTE){
+    const {error}=await sb.from('media').insert({url,caption:cap});
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+  }else{
+    mediaItems.push({url,cap});saveState();
+  }
   document.getElementById('media-url-input').value='';
   document.getElementById('media-caption-input').value='';
   renderMediaTab();
   showToast('Foto u shtua në galeri!','success');
 }
 
-function deleteMediaItem(i){
+async function deleteMediaItem(i){
   if(!confirm('Fshi këtë foto?'))return;
+  if(REMOTE){
+    const it=mediaItems[i];
+    const {error}=await sb.from('media').delete().eq('id',it.id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+  }
   mediaItems.splice(i,1);saveState();renderMediaTab();
   showToast('Foto u fshi.','');
 }
 
-function savePrayerTimes(){
+async function savePrayerTimes(){
   ['sabah','dreka','ikindia','akshami','jacia'].forEach(k=>{
     const inp=document.getElementById('pt-'+k);
     if(inp&&inp.value)prayerTimes[k]=inp.value;
   });
+  if(REMOTE){
+    const {error}=await sb.from('prayer_times').upsert({id:1,...prayerTimes,updated_at:new Date().toISOString()});
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+  }
   applyPrayerTimes();
   saveState();
   const msg=document.getElementById('pt-saved-msg');
@@ -513,37 +592,72 @@ function openPostModal(postId){
   else{['post-title','post-body','post-img'].forEach(id=>document.getElementById(id).value='');}
   openModal('post-modal');
 }
-function savePost(){
+async function savePost(){
   const title=document.getElementById('post-title').value.trim(),body=document.getElementById('post-body').value.trim();
   if(!title||!body){showToast('Plotësoni titullin dhe përmbajtjen!','error');return;}
-  const data={title,category:document.getElementById('post-cat').value,body,img:document.getElementById('post-img').value.trim(),date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
+  const category=document.getElementById('post-cat').value,img=document.getElementById('post-img').value.trim();
+  if(REMOTE){
+    const q=editingPostId!==null
+      ?sb.from('posts').update({title,category,body,img}).eq('id',editingPostId)
+      :sb.from('posts').insert({title,category,body,img});
+    const {error}=await q;
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+    closeModal('post-modal');renderAdminNews();renderHomeNews();renderDashboard();
+    showToast(editingPostId!==null?'✅ Artikulli u përditësua!':'🎉 Artikulli u publikua!','success');
+    return;
+  }
+  const data={title,category,body,img,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
   if(editingPostId!==null){const i=DB.posts.findIndex(p=>p.id===editingPostId);DB.posts[i]={...DB.posts[i],...data};showToast('✅ Artikulli u përditësua!','success');}
   else{DB.posts.unshift({id:DB.nextPostId++,...data});showToast('🎉 Artikulli u publikua!','success');}
   closeModal('post-modal');saveState();renderAdminNews();renderHomeNews();renderDashboard();
 }
-function deletePost(id){
+async function deletePost(id){
   if(!confirm('A jeni i sigurt që doni të fshini këtë artikull?'))return;
-  DB.posts=DB.posts.filter(p=>p.id!==id);saveState();renderAdminNews();renderHomeNews();renderDashboard();
+  if(REMOTE){
+    const {error}=await sb.from('posts').delete().eq('id',id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    DB.posts=DB.posts.filter(p=>p.id!==id);
+  }else{
+    DB.posts=DB.posts.filter(p=>p.id!==id);saveState();
+  }
+  renderAdminNews();renderHomeNews();renderDashboard();
   showToast('Artikulli u fshi.','');
 }
-function updateProfile(){
+async function updateProfile(){
   const name=document.getElementById('prof-name').value.trim();
   if(!name){showToast('Emri nuk mund të jetë bosh!','error');return;}
-  currentUser.name=name;DB.users.find(u=>u.id===currentUser.id).name=name;
+  if(REMOTE){
+    const [{error:e1},{error:e2}]=await Promise.all([
+      sb.auth.updateUser({data:{name}}),
+      sb.from('profiles').update({name}).eq('id',currentUser.id),
+    ]);
+    if(e1||e2){showToast('Gabim: '+(e1||e2).message,'error');return;}
+    currentUser.name=name;
+  }else{
+    currentUser.name=name;DB.users.find(u=>u.id===currentUser.id).name=name;
+  }
   const pa=document.getElementById('profile-avatar');if(pa)pa.textContent=name.charAt(0).toUpperCase();
   const pab=document.getElementById('profile-avatar-big');if(pab)pab.textContent=name.charAt(0).toUpperCase();
   document.getElementById('member-welcome').textContent=(currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+name.split(' ')[0]+'!';
   updateAuthUI();saveState();showToast('✅ Profili u ruajt!','success');
 }
-function changePassword(){
+async function changePassword(){
   const p1=document.getElementById('new-pass').value,p2=document.getElementById('new-pass2').value;
   if(!p1||!p2){showToast('Plotësoni të dy fushat!','error');return;}
   if(p1!==p2){showToast('Fjalëkalimet nuk përputhen!','error');return;}
   if(p1.length<8){showToast('Min. 8 karaktere!','error');return;}
-  currentUser.password=p1;saveState();showToast('🔐 Fjalëkalimi u ndryshua!','success');
+  if(REMOTE){
+    const {error}=await sb.auth.updateUser({password:p1});
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+  }else{
+    currentUser.password=p1;saveState();
+  }
+  showToast('🔐 Fjalëkalimi u ndryshua!','success');
   document.getElementById('new-pass').value='';document.getElementById('new-pass2').value='';
 }
 function deleteAccount(){
+  if(REMOTE){showToast(currentLang==='de'?'Kontaktieren Sie den Administrator.':'Kontaktoni administratorin për fshirjen e llogarisë.','error');return;}
   if(!confirm('A jeni i sigurt? Kjo veprim nuk mund të zhbëhet!'))return;
   DB.users=DB.users.filter(u=>u.id!==currentUser.id);doLogout();saveState();showToast('Llogaria u fshi.','');
 }
@@ -585,7 +699,7 @@ function openCondolenceModal(id) {
   openModal('condolence-modal');
 }
 
-function saveCondolence() {
+async function saveCondolence() {
   const name = document.getElementById('cond-name').value.trim();
   if (!name) { showToast('Shkruani emrin e të ndjerit!', 'error'); return; }
   const data = {
@@ -597,6 +711,20 @@ function saveCondolence() {
     funeral: document.getElementById('cond-funeral').value,
     postedAt: new Date().toLocaleDateString('sq-AL', {day:'numeric',month:'long',year:'numeric'}),
   };
+  if (REMOTE) {
+    const row = { name: data.name, born: data.born, died_on: data.date || null, city: data.city, msg: data.msg, funeral: data.funeral };
+    const q = editingCondId !== null
+      ? sb.from('condolences').update(row).eq('id', editingCondId)
+      : sb.from('condolences').insert(row);
+    const { error } = await q;
+    if (error) { showToast('Gabim: ' + error.message, 'error'); return; }
+    await remoteLoadAll();
+    closeModal('condolence-modal');
+    renderCondolenceAdmin();
+    renderCondolencesPublic();
+    showToast(editingCondId !== null ? 'Njoftimi u përditësua!' : '🕊️ Njoftimi u publikua!', 'success');
+    return;
+  }
   if (editingCondId !== null) {
     const i = condolences.findIndex(c => c.id === editingCondId);
     condolences[i] = { ...condolences[i], ...data };
@@ -729,11 +857,30 @@ function initScrollReveal() {
 }
 
 // ── INIT ──
-loadState();
-applyPrayerTimes();
-updateAuthUI();
-renderHomeNews();
-renderCondolencesPublic();
+async function initApp(){
+  if(sb){
+    try{
+      await remoteLoadAll();
+      REMOTE=true;
+      await remoteRestoreSession();
+    }catch(e){
+      console.warn('Backend i paarritshëm — kalim në modalitetin lokal demo:',e);
+      loadState();
+    }
+  }else{
+    loadState();
+  }
+  try{
+    const l=localStorage.getItem('hdf_lang');
+    if(l&&l!==currentLang)setLang(l);
+  }catch(e){}
+  applyPrayerTimes();
+  updateAuthUI();
+  renderHomeNews();
+  renderCondolencesPublic();
+  if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
+}
+initApp();
 initSlideshow();
 setTimeout(initScrollReveal, 400);
 
