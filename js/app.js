@@ -614,8 +614,11 @@ function renderMembersTab(){
 function detectMediaKind(url){
   if(/facebook\.com|fb\.watch/i.test(url))return'facebook';
   if(/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url))return'video';
+  if(/\.(mp3|m4a|aac|ogg|wav)(\?|$)/i.test(url))return'audio';
   return'image';
 }
+// Facebook Reels and share/watch short links refuse to embed — link out instead
+function fbEmbeddable(url){return !/\/reel\/|fb\.watch|\/share\//i.test(url);}
 
 async function resizeImage(file,maxW=1600,quality=.85){
   if(!/^image\//.test(file.type)||file.type==='image/gif')return file;
@@ -632,12 +635,12 @@ async function resizeImage(file,maxW=1600,quality=.85){
 }
 
 async function uploadToStorage(file){
-  const isVideo=/^video\//.test(file.type);
-  const processed=isVideo?file:await resizeImage(file);
-  const ext=isVideo?((file.name.match(/\.\w+$/)||['.mp4'])[0]):'.jpg';
+  const isImage=/^image\//.test(file.type);
+  const processed=isImage?await resizeImage(file):file;
+  const ext=isImage?'.jpg':((file.name.match(/\.\w+$/)||['.bin'])[0]);
   const path=Date.now()+'-'+Math.random().toString(36).slice(2,8)+ext.toLowerCase();
   const {error}=await sb.storage.from('media').upload(path,processed,{
-    contentType:isVideo?file.type:'image/jpeg',cacheControl:'31536000'});
+    contentType:isImage?'image/jpeg':(file.type||'application/octet-stream'),cacheControl:'31536000'});
   if(error)throw error;
   return sb.storage.from('media').getPublicUrl(path).data.publicUrl;
 }
@@ -649,18 +652,19 @@ async function uploadMediaFiles(ev){
   showToast('⏳ Duke ngarkuar '+files.length+' skedar(ë)...','');
   let ok=0;
   for(const f of files){
-    const isVideo=/^video\//.test(f.type);
-    if(isVideo&&f.size>50*1024*1024){showToast(f.name+': videot deri në 50MB!','error');continue;}
-    if(!isVideo&&!/^image\//.test(f.type)){showToast(f.name+': vetëm foto ose video!','error');continue;}
+    const isVideo=/^video\//.test(f.type),isAudio=/^audio\//.test(f.type)||/\.(mp3|m4a)$/i.test(f.name);
+    if((isVideo||isAudio)&&f.size>50*1024*1024){showToast(f.name+': maksimumi 50MB!','error');continue;}
+    if(!isVideo&&!isAudio&&!/^image\//.test(f.type)){showToast(f.name+': vetëm foto, video ose MP3!','error');continue;}
     try{
       const url=await uploadToStorage(f);
-      const {error}=await sb.from('media').insert({url,caption:f.name.replace(/\.\w+$/,''),kind:isVideo?'video':'image'});
+      const kind=isVideo?'video':(isAudio?'audio':'image');
+      const {error}=await sb.from('media').insert({url,caption:f.name.replace(/\.\w+$/,''),kind});
       if(error)throw error;
       ok++;
     }catch(e){showToast('Gabim te '+f.name+': '+e.message,'error');}
   }
   if(ok){
-    await remoteLoadAll();renderMediaTab();renderPublicGallery();
+    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();
     showToast('✅ '+ok+' skedar(ë) u ngarkuan!','success');
   }
 }
@@ -669,6 +673,7 @@ function mediaThumbHtml(m,i){
   let inner;
   if(m.kind==='video')inner=`<video src="${m.url}" preload="metadata" muted playsinline></video><div class="media-kind-badge">🎬</div>`;
   else if(m.kind==='facebook')inner=`<div class="media-fb-tile">📘<small>Facebook</small></div>`;
+  else if(m.kind==='audio')inner=`<div class="media-audio-tile">🎧<small>${(m.cap||'Audio').slice(0,22)}</small></div>`;
   else inner=`<img src="${m.url}" alt="${m.cap}" loading="lazy" onerror="this.style.display='none'">`;
   return `<div class="media-thumb">${inner}
     <div class="media-thumb-overlay">
@@ -690,14 +695,117 @@ function renderMediaTab(){
 // Public homepage gallery mirrors the media library once it has content
 function renderPublicGallery(){
   const g=document.querySelector('#page-home .gallery-grid');if(!g)return;
-  if(!REMOTE||!mediaItems.length)return; // keep the static fallback gallery
+  const items=mediaItems.filter(m=>m.kind!=='audio');
+  if(!REMOTE||!items.length)return; // keep the static fallback gallery
   const zoomSvg='<div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>';
-  g.innerHTML=mediaItems.map(m=>{
+  g.innerHTML=items.map(m=>{
     if(m.kind==='video')return `<div class="g-item g-media"><video src="${m.url}" preload="metadata" controls playsinline></video></div>`;
-    if(m.kind==='facebook')return `<div class="g-item g-media"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(m.url)}&show_text=false" allowfullscreen loading="lazy" title="Facebook video"></iframe></div>`;
+    if(m.kind==='facebook'){
+      if(!fbEmbeddable(m.url))return `<a class="g-item g-media g-fb-link" href="${m.url}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg><span>Shiko në Facebook ↗</span><small>${m.cap||''}</small></a>`;
+      return `<div class="g-item g-media"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(m.url)}&show_text=false" allowfullscreen loading="lazy" title="Facebook video"></iframe></div>`;
+    }
     return `<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`;
   }).join('');
 }
+
+// ── IMAGE LIGHTBOX ──
+let lbImages=[],lbIndex=0;
+function openLightbox(list,i){
+  lbImages=list;lbIndex=i;updateLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+function lbNav(d){lbIndex=(lbIndex+d+lbImages.length)%lbImages.length;updateLb();}
+function updateLb(){
+  const img=document.getElementById('lb-img');
+  img.style.animation='none';void img.offsetWidth;img.style.animation='';
+  img.src=lbImages[lbIndex];
+  document.getElementById('lb-counter').textContent=(lbIndex+1)+' / '+lbImages.length;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLightbox();
+  if(e.key==='ArrowRight')lbNav(1);
+  if(e.key==='ArrowLeft')lbNav(-1);
+});
+document.addEventListener('click',e=>{
+  const item=e.target.closest('.gallery-grid .g-item');
+  if(!item||item.classList.contains('g-media'))return;
+  const grid=item.closest('.gallery-grid');
+  const imgs=Array.from(grid.querySelectorAll('.g-item:not(.g-media) img')).filter(im=>im.src&&im.style.display!=='none');
+  const idx=imgs.indexOf(item.querySelector('img'));
+  if(idx>=0)openLightbox(imgs.map(im=>im.src),idx);
+});
+
+// ── AUDIO PLAYER (Spotify-style, lockscreen-friendly) ──
+let audioQueue=[],audioIndex=-1;
+const pAudio=()=>document.getElementById('player-audio');
+function fmtTime(s){if(!isFinite(s)||s<0)return'0:00';s=Math.round(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+
+function renderAudioList(){
+  const list=document.getElementById('audio-list');if(!list)return;
+  const tracks=mediaItems.filter(m=>m.kind==='audio');
+  const empty=document.getElementById('audio-empty');
+  if(empty)empty.style.display=tracks.length?'none':'block';
+  const playing=!pAudio().paused;
+  list.innerHTML=tracks.map((t,i)=>`
+    <div class="audio-row${audioIndex===i?' playing':''}" onclick="playTrack(${i})">
+      <div class="audio-row-btn">${audioIndex===i&&playing?'⏸':'▶'}</div>
+      <div class="audio-row-info"><strong>${t.cap||'Audio'}</strong><small>Kulturzentrum Haus des Friedens</small></div>
+      ${audioIndex===i&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
+    </div>`).join('');
+}
+
+function playTrack(i){
+  audioQueue=mediaItems.filter(m=>m.kind==='audio');
+  if(!audioQueue[i])return;
+  const a=pAudio();
+  if(audioIndex===i){a.paused?a.play():a.pause();return;}
+  audioIndex=i;
+  a.src=audioQueue[i].url;
+  a.play();
+  document.getElementById('player-bar').classList.add('open');
+  setMediaSession(audioQueue[i]);
+}
+function playerToggle(){const a=pAudio();if(!a.src)return;a.paused?a.play():a.pause();}
+function playerNext(){if(audioQueue.length)playTrackByStep(1);}
+function playerPrev(){if(audioQueue.length)playTrackByStep(-1);}
+function playTrackByStep(d){
+  const n=(audioIndex+d+audioQueue.length)%audioQueue.length;
+  audioIndex=-1;playTrack(n);
+}
+function playerSeek(v){const a=pAudio();if(isFinite(a.duration))a.currentTime=a.duration*v/100;}
+function playerClose(){
+  const a=pAudio();a.pause();a.removeAttribute('src');a.load();
+  audioIndex=-1;
+  document.getElementById('player-bar').classList.remove('open');
+  renderAudioList();
+}
+function updatePlayerBar(){
+  const a=pAudio(),t=audioQueue[audioIndex];
+  document.getElementById('pb-title').textContent=t?(t.cap||'Audio'):'—';
+  document.getElementById('pb-toggle').textContent=a.paused?'▶':'⏸';
+  document.getElementById('pb-cur').textContent=fmtTime(a.currentTime);
+  document.getElementById('pb-dur').textContent=fmtTime(a.duration);
+  if(isFinite(a.duration)&&a.duration>0)document.getElementById('pb-range').value=a.currentTime/a.duration*100;
+}
+function setMediaSession(t){
+  if(!('mediaSession'in navigator))return;
+  try{
+    navigator.mediaSession.metadata=new MediaMetadata({title:t.cap||'Audio',artist:'Kulturzentrum Haus des Friedens',album:'Ligjëratat'});
+    navigator.mediaSession.setActionHandler('play',()=>pAudio().play());
+    navigator.mediaSession.setActionHandler('pause',()=>pAudio().pause());
+    navigator.mediaSession.setActionHandler('previoustrack',playerPrev);
+    navigator.mediaSession.setActionHandler('nexttrack',playerNext);
+  }catch(e){}
+}
+['play','pause'].forEach(ev=>pAudio().addEventListener(ev,()=>{updatePlayerBar();renderAudioList();}));
+pAudio().addEventListener('timeupdate',updatePlayerBar);
+pAudio().addEventListener('ended',playerNext);
 
 async function addMediaItem(){
   const url=document.getElementById('media-url-input').value.trim();
@@ -1067,6 +1175,7 @@ async function initApp(){
   renderCondolencesPublic();
   renderPublicGallery();
   renderPartners();
+  renderAudioList();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
