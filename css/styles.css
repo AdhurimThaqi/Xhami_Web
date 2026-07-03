@@ -450,6 +450,16 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 /* Admin-only elements are hidden until an admin session reveals them */
 .admin-only-el{display:none}
 
+/* ── LOGIN LOADING OVERLAY ── */
+#login-loading{position:fixed;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;background:rgba(250,248,244,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#login-loading.open{display:flex}
+.ll-box{display:flex;flex-direction:column;align-items:center;gap:18px;animation:fadeInScale .3s ease}
+.ll-logo{width:64px;height:64px;animation:floatUp 2s ease-in-out infinite}
+.ll-bar{width:220px;height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.ll-bar span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:4px;animation:llFill 1.6s cubic-bezier(.4,0,.2,1) forwards}
+@keyframes llFill{0%{width:0}70%{width:78%}100%{width:100%}}
+#login-loading p{font-size:14px;font-weight:600;color:var(--green);letter-spacing:.3px}
+
 /* ── PAYMENTS PAGE ── */
 .payments-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
 .payment-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:30px 26px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;transition:transform .25s,box-shadow .25s,border-color .25s}

@@ -334,22 +334,38 @@ function setLang(lang){
 }
 
 // AUTH
+function showLoginLoading(on){
+  const el=document.getElementById('login-loading');
+  if(el)el.classList.toggle('open',on);
+}
+// After a successful login: branded loading bar, then straight to the dashboard
+async function finishLogin(startedAt){
+  const wait=Math.max(0,1600-(Date.now()-startedAt));
+  await new Promise(r=>setTimeout(r,wait));
+  updateAuthUI();
+  navigate('member');
+  showLoginLoading(false);
+  showToast((currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+currentUser.name.split(' ')[0]+'!','success');
+}
+
 async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const pass=document.getElementById('login-pass').value;
   if(REMOTE){
     const {data,error}=await sb.auth.signInWithPassword({email,password:pass});
     if(error){showToast(currentLang==='de'?'Falsche E-Mail oder Passwort!':'Email ose fjalëkalim i gabuar!','error');return;}
+    closeModal('auth-modal');
+    showLoginLoading(true);
+    const t0=Date.now();
     await setUserFromSession(data.user);
-    closeModal('auth-modal');updateAuthUI();
-    if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
-    showToast((currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+currentUser.name+'!','success');
+    await finishLogin(t0);
     return;
   }
   const user=DB.users.find(u=>u.email===email&&u.password===pass);
   if(!user){showToast(currentLang==='de'?'Falsche E-Mail oder Passwort!':'Email ose fjalëkalim i gabuar!','error');return;}
-  currentUser=user;closeModal('auth-modal');updateAuthUI();saveState();
-  showToast((currentLang==='de'?'Willkommen, ':'Mirë se vini, ')+user.name+'!','success');
+  currentUser=user;closeModal('auth-modal');saveState();
+  showLoginLoading(true);
+  await finishLogin(Date.now());
 }
 async function doRegister(){
   const name=document.getElementById('reg-name').value.trim();
@@ -1060,12 +1076,47 @@ function deleteAccount(){
   DB.users=DB.users.filter(u=>u.id!==currentUser.id);doLogout();saveState();showToast('Llogaria u fshi.','');
 }
 
-// CONTACT
+// CONTACT — delivers to the mosque inbox via FormSubmit
+const CONTACT_EMAIL='xhamiaepaqes@hotmail.com';
+async function deliverContact(btn,fields,clearIds){
+  if(!fields.name||!fields.email||!fields.message){
+    showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;
+  }
+  const label=btn.textContent;
+  btn.disabled=true;btn.textContent=currentLang==='de'?'Wird gesendet...':'Duke dërguar...';
+  try{
+    const res=await fetch('https://formsubmit.co/ajax/'+CONTACT_EMAIL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        name:fields.name,email:fields.email,
+        subject:fields.subject||'',message:fields.message,
+        _subject:'Mesazh nga webfaqja: '+fields.name,
+        _template:'table',_captcha:'false'
+      })
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    clearIds.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+    showToast(currentLang==='de'?'✅ Nachricht gesendet!':'✅ Mesazhi u dërgua në xhami!','success');
+  }catch(e){
+    showToast(currentLang==='de'?'Senden fehlgeschlagen — versuchen Sie es später.':'Dërgimi dështoi — provoni më vonë.','error');
+  }
+  btn.disabled=false;btn.textContent=label;
+}
 function sendContact(){
-  const n=document.getElementById('cf-name').value,e=document.getElementById('cf-email').value,m=document.getElementById('cf-msg').value;
-  if(!n||!e||!m){showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;}
-  showToast(currentLang==='de'?'Nachricht gesendet!':'Mesazhi u dërgua!','success');
-  ['cf-name','cf-email','cf-msg'].forEach(id=>document.getElementById(id).value='');
+  deliverContact(document.getElementById('contact-send-btn'),{
+    name:document.getElementById('cf-name').value.trim(),
+    email:document.getElementById('cf-email').value.trim(),
+    message:document.getElementById('cf-msg').value.trim(),
+  },['cf-name','cf-email','cf-msg']);
+}
+function sendContact2(){
+  deliverContact(document.getElementById('contact-send-btn2'),{
+    name:document.getElementById('cf2-name').value.trim(),
+    email:document.getElementById('cf2-email').value.trim(),
+    subject:document.getElementById('cf2-sub').value.trim(),
+    message:document.getElementById('cf2-msg').value.trim(),
+  },['cf2-name','cf2-email','cf2-sub','cf2-msg']);
 }
 
 // TOAST
