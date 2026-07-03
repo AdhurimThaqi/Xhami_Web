@@ -69,6 +69,7 @@ function saveState(){
       db:DB,
       condolences,
       mediaItems,
+      partners,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -82,6 +83,7 @@ function loadState(){
   if(s.db)Object.assign(DB,s.db);
   if(Array.isArray(s.condolences))condolences=s.condolences;
   if(Array.isArray(s.mediaItems))mediaItems=s.mediaItems;
+  if(Array.isArray(s.partners))partners=s.partners;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -107,8 +109,12 @@ async function remoteLoadAll(){
   ]);
   if(posts.error)throw posts.error;
   DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',date:fmtDateEn(p.created_at)}));
-  condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',postedAt:fmtDateSq(c.created_at)}));
-  mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption}));
+  condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',photo:c.photo||'',postedAt:fmtDateSq(c.created_at)}));
+  mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption,kind:m.kind||'image'}));
+  try{
+    const {data:pr}=await sb.from('partners').select('*').order('created_at',{ascending:true});
+    if(pr)partners=pr.map(p=>({id:p.id,name:p.name,url:p.url||'',logo:p.logo||''}));
+  }catch(e){/* partners table may not exist yet (migration 003) */}
 }
 
 async function setUserFromSession(u){
@@ -371,7 +377,7 @@ function updateAuthUI(){
 
 // NEWS
 function newsCard(p){
-  return `<div class="news-card" onclick="openNewsModal(${p.id})">
+  return `<div class="news-card" onclick="openArticle(${p.id})">
     <div class="news-card-img">
       <div class="news-card-img-placeholder">📰</div>
       ${p.img?`<img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'">`:''}
@@ -400,6 +406,24 @@ function setFilter(f,el){
   document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');renderNewsPage();
 }
+// ── SINGLE ARTICLE PAGE (own URL via #lajmi-<id>) ──
+function openArticle(id,pushHash=true){
+  const p=DB.posts.find(x=>x.id===id);if(!p)return;
+  document.getElementById('article-cat').textContent=p.category;
+  document.getElementById('article-date').textContent=p.date;
+  document.getElementById('article-title').textContent=p.title;
+  const img=document.getElementById('article-img');
+  if(p.img){img.src=p.img;img.alt=p.title;img.style.display='block';img.onerror=()=>img.style.display='none';}
+  else img.style.display='none';
+  document.getElementById('article-body').innerHTML='<p>'+p.body.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
+  if(pushHash){try{history.pushState(null,'','#lajmi-'+id);}catch(e){}}
+  navigate('article');
+}
+window.addEventListener('hashchange',()=>{
+  const m=location.hash.match(/^#lajmi-(\d+)$/);
+  if(m)openArticle(+m[1],false);
+});
+
 function openNewsModal(id){
   const p=DB.posts.find(x=>x.id===id);if(!p)return;
   document.getElementById('news-modal-content').innerHTML=`
@@ -408,6 +432,93 @@ function openNewsModal(id){
     <h2 style="font-size:22px;color:var(--green);margin-bottom:14px">${p.title}</h2>
     <div style="color:var(--ink-mid);font-size:15px;line-height:1.8">${p.body.replace(/\n/g,'<br>')}</div>`;
   openModal('news-modal');
+}
+
+// ── PARTNERS ──
+let partners=[
+  {name:'Parandalo.ch',url:'https://parandalo.ch',logo:''},
+  {name:'VIOZ – Vereinigung der Islamischen Organisationen in Zürich',url:'',logo:''},
+  {name:'DAIGS – Dachverband der Albanisch-Islamischen Gemeinschaften',url:'',logo:''},
+  {name:'FIDS – Föderation Islamischer Dachorganisationen Schweiz',url:'',logo:''},
+  {name:'Zürcher Forum der Religionen',url:'',logo:''},
+];
+
+function partnerTile(p){
+  const visual=p.logo
+    ?`<div class="partner-letter">${p.name.charAt(0)}</div><img src="${p.logo}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`
+    :`<div class="partner-letter">${p.name.charAt(0)}</div>`;
+  const inner=`<div class="partner-visual">${visual}</div><div class="partner-name">${p.name}</div>`;
+  return p.url
+    ?`<a class="partner-card" href="${p.url}" target="_blank" rel="noopener">${inner}</a>`
+    :`<div class="partner-card">${inner}</div>`;
+}
+
+function renderPartners(){
+  const g=document.getElementById('partners-grid');if(!g)return;
+  g.innerHTML=partners.map(partnerTile).join('');
+}
+
+function renderPartnersAdmin(){
+  const list=document.getElementById('partners-admin-list');if(!list)return;
+  if(!partners.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë partner.</p>';return;}
+  list.innerHTML=partners.map((p,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+      <div style="width:40px;height:40px;border-radius:8px;background:var(--green-lt);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+        ${p.logo?`<img src="${p.logo}" style="width:100%;height:100%;object-fit:contain">`:`<strong style="color:var(--green)">${p.name.charAt(0)}</strong>`}
+      </div>
+      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</strong><small style="color:var(--ink-lt)">${p.url||'—'}</small></div>
+      <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deletePartner(${i})">🗑️</button>
+    </div>`).join('');
+}
+
+async function addPartner(){
+  const name=document.getElementById('partner-name').value.trim();
+  const url=document.getElementById('partner-url').value.trim();
+  const logo=document.getElementById('partner-logo').value.trim();
+  if(!name){showToast('Shkruani emrin e partnerit!','error');return;}
+  if(REMOTE){
+    const {error}=await sb.from('partners').insert({name,url,logo});
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+  }else{
+    partners.push({name,url,logo});saveState();
+  }
+  ['partner-name','partner-url','partner-logo'].forEach(id=>document.getElementById(id).value='');
+  renderPartnersAdmin();renderPartners();
+  showToast('🤝 Partneri u shtua!','success');
+}
+
+async function deletePartner(i){
+  if(!confirm('Fshi këtë partner?'))return;
+  if(REMOTE){
+    const {error}=await sb.from('partners').delete().eq('id',partners[i].id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+  }
+  partners.splice(i,1);saveState();
+  renderPartnersAdmin();renderPartners();
+  showToast('Partneri u fshi.','');
+}
+
+async function uploadPartnerLogo(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  showToast('⏳ Duke ngarkuar logon...','');
+  try{
+    document.getElementById('partner-logo').value=await uploadToStorage(f);
+    showToast('✅ Logo u ngarkua!','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
+async function uploadCondPhoto(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  showToast('⏳ Duke ngarkuar foton...','');
+  try{
+    document.getElementById('cond-photo').value=await uploadToStorage(f);
+    showToast('✅ Fotoja u ngarkua!','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
 // MEMBER AREA
@@ -499,48 +610,140 @@ function renderMembersTab(){
     </div>`).join('');
 }
 
+// ── MEDIA UPLOADS (Supabase Storage) ──
+function detectMediaKind(url){
+  if(/facebook\.com|fb\.watch/i.test(url))return'facebook';
+  if(/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url))return'video';
+  return'image';
+}
+
+async function resizeImage(file,maxW=1600,quality=.85){
+  if(!/^image\//.test(file.type)||file.type==='image/gif')return file;
+  try{
+    const img=await createImageBitmap(file);
+    const scale=Math.min(1,maxW/Math.max(img.width,img.height));
+    if(scale>=1)return file;
+    const c=document.createElement('canvas');
+    c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',quality));
+    return blob||file;
+  }catch(e){return file;}
+}
+
+async function uploadToStorage(file){
+  const isVideo=/^video\//.test(file.type);
+  const processed=isVideo?file:await resizeImage(file);
+  const ext=isVideo?((file.name.match(/\.\w+$/)||['.mp4'])[0]):'.jpg';
+  const path=Date.now()+'-'+Math.random().toString(36).slice(2,8)+ext.toLowerCase();
+  const {error}=await sb.storage.from('media').upload(path,processed,{
+    contentType:isVideo?file.type:'image/jpeg',cacheControl:'31536000'});
+  if(error)throw error;
+  return sb.storage.from('media').getPublicUrl(path).data.publicUrl;
+}
+
+async function uploadMediaFiles(ev){
+  const files=Array.from(ev.target.files||[]);ev.target.value='';
+  if(!files.length)return;
+  if(!REMOTE){showToast('Ngarkimi i skedarëve kërkon lidhje me serverin!','error');return;}
+  showToast('⏳ Duke ngarkuar '+files.length+' skedar(ë)...','');
+  let ok=0;
+  for(const f of files){
+    const isVideo=/^video\//.test(f.type);
+    if(isVideo&&f.size>50*1024*1024){showToast(f.name+': videot deri në 50MB!','error');continue;}
+    if(!isVideo&&!/^image\//.test(f.type)){showToast(f.name+': vetëm foto ose video!','error');continue;}
+    try{
+      const url=await uploadToStorage(f);
+      const {error}=await sb.from('media').insert({url,caption:f.name.replace(/\.\w+$/,''),kind:isVideo?'video':'image'});
+      if(error)throw error;
+      ok++;
+    }catch(e){showToast('Gabim te '+f.name+': '+e.message,'error');}
+  }
+  if(ok){
+    await remoteLoadAll();renderMediaTab();renderPublicGallery();
+    showToast('✅ '+ok+' skedar(ë) u ngarkuan!','success');
+  }
+}
+
+function mediaThumbHtml(m,i){
+  let inner;
+  if(m.kind==='video')inner=`<video src="${m.url}" preload="metadata" muted playsinline></video><div class="media-kind-badge">🎬</div>`;
+  else if(m.kind==='facebook')inner=`<div class="media-fb-tile">📘<small>Facebook</small></div>`;
+  else inner=`<img src="${m.url}" alt="${m.cap}" loading="lazy" onerror="this.style.display='none'">`;
+  return `<div class="media-thumb">${inner}
+    <div class="media-thumb-overlay">
+      <button class="media-thumb-del" onclick="deleteMediaItem(${i})">🗑️ Fshi</button>
+      <span style="color:white;font-size:11px;font-weight:600;opacity:0;transition:opacity .2s" class="media-cap">${m.cap||''}</span>
+    </div>
+  </div>`;
+}
+
 function renderMediaTab(){
   const grid=document.getElementById('media-grid');if(!grid)return;
-  grid.innerHTML=mediaItems.map((m,i)=>`
-    <div class="media-thumb">
-      <img src="${m.url}" alt="${m.cap}" onerror="this.style.display='none'">
-      <div class="media-thumb-overlay">
-        <button class="media-thumb-del" onclick="deleteMediaItem(${i})">🗑️ Fshi</button>
-        <span style="color:white;font-size:11px;font-weight:600;opacity:0;transition:opacity .2s" class="media-cap">${m.cap}</span>
-      </div>
-    </div>`).join('');
+  grid.innerHTML=mediaItems.map(mediaThumbHtml).join('');
   grid.querySelectorAll('.media-thumb').forEach(el=>{
-    el.addEventListener('mouseenter',()=>el.querySelector('.media-cap').style.opacity='1');
-    el.addEventListener('mouseleave',()=>el.querySelector('.media-cap').style.opacity='0');
+    el.addEventListener('mouseenter',()=>{const c=el.querySelector('.media-cap');if(c)c.style.opacity='1';});
+    el.addEventListener('mouseleave',()=>{const c=el.querySelector('.media-cap');if(c)c.style.opacity='0';});
   });
+}
+
+// Public homepage gallery mirrors the media library once it has content
+function renderPublicGallery(){
+  const g=document.querySelector('#page-home .gallery-grid');if(!g)return;
+  if(!REMOTE||!mediaItems.length)return; // keep the static fallback gallery
+  const zoomSvg='<div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>';
+  g.innerHTML=mediaItems.map(m=>{
+    if(m.kind==='video')return `<div class="g-item g-media"><video src="${m.url}" preload="metadata" controls playsinline></video></div>`;
+    if(m.kind==='facebook')return `<div class="g-item g-media"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(m.url)}&show_text=false" allowfullscreen loading="lazy" title="Facebook video"></iframe></div>`;
+    return `<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`;
+  }).join('');
 }
 
 async function addMediaItem(){
   const url=document.getElementById('media-url-input').value.trim();
   const cap=document.getElementById('media-caption-input').value.trim()||'Foto';
-  if(!url){showToast('Fut URL-në e fotos!','error');return;}
+  if(!url){showToast('Fut URL-në e fotos ose linkun e Facebook!','error');return;}
+  const kind=detectMediaKind(url);
   if(REMOTE){
-    const {error}=await sb.from('media').insert({url,caption:cap});
+    const {error}=await sb.from('media').insert({url,caption:cap,kind});
     if(error){showToast('Gabim: '+error.message,'error');return;}
     await remoteLoadAll();
   }else{
-    mediaItems.push({url,cap});saveState();
+    mediaItems.push({url,cap,kind});saveState();
   }
   document.getElementById('media-url-input').value='';
   document.getElementById('media-caption-input').value='';
-  renderMediaTab();
-  showToast('Foto u shtua në galeri!','success');
+  renderMediaTab();renderPublicGallery();
+  showToast(kind==='facebook'?'Video e Facebook u shtua!':'Media u shtua në galeri!','success');
 }
 
 async function deleteMediaItem(i){
-  if(!confirm('Fshi këtë foto?'))return;
+  if(!confirm('Fshi këtë media?'))return;
   if(REMOTE){
     const it=mediaItems[i];
     const {error}=await sb.from('media').delete().eq('id',it.id);
     if(error){showToast('Gabim: '+error.message,'error');return;}
+    // If the file lives in our storage bucket, remove it there too
+    const marker='/object/public/media/';
+    const idx=it.url.indexOf(marker);
+    if(idx>0)sb.storage.from('media').remove([decodeURIComponent(it.url.slice(idx+marker.length))]);
   }
-  mediaItems.splice(i,1);saveState();renderMediaTab();
-  showToast('Foto u fshi.','');
+  mediaItems.splice(i,1);saveState();renderMediaTab();renderPublicGallery();
+  showToast('Media u fshi.','');
+}
+
+// Upload an image straight from the post editor
+async function uploadPostImage(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  if(!/^image\//.test(f.type)){showToast('Zgjidhni një foto!','error');return;}
+  showToast('⏳ Duke ngarkuar foton...','');
+  try{
+    const url=await uploadToStorage(f);
+    document.getElementById('post-img').value=url;
+    showToast('✅ Fotoja u ngarkua! Tani klikoni Publiko.','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
 // Show/hide member tab (old references compatibility)
@@ -658,8 +861,9 @@ function openCondolenceModal(id) {
     document.getElementById('cond-city').value = c.city || '';
     document.getElementById('cond-msg').value = c.msg || '';
     document.getElementById('cond-funeral').value = c.funeral || '';
+    document.getElementById('cond-photo').value = c.photo || '';
   } else {
-    ['cond-name','cond-born','cond-city','cond-msg','cond-funeral'].forEach(i => document.getElementById(i).value = '');
+    ['cond-name','cond-born','cond-city','cond-msg','cond-funeral','cond-photo'].forEach(i => document.getElementById(i).value = '');
     document.getElementById('cond-date').value = new Date().toISOString().split('T')[0];
   }
   openModal('condolence-modal');
@@ -675,10 +879,11 @@ async function saveCondolence() {
     city: document.getElementById('cond-city').value,
     msg: document.getElementById('cond-msg').value,
     funeral: document.getElementById('cond-funeral').value,
+    photo: document.getElementById('cond-photo').value.trim(),
     postedAt: new Date().toLocaleDateString('sq-AL', {day:'numeric',month:'long',year:'numeric'}),
   };
   if (REMOTE) {
-    const row = { name: data.name, born: data.born, died_on: data.date || null, city: data.city, msg: data.msg, funeral: data.funeral };
+    const row = { name: data.name, born: data.born, died_on: data.date || null, city: data.city, msg: data.msg, funeral: data.funeral, photo: data.photo };
     const q = editingCondId !== null
       ? sb.from('condolences').update(row).eq('id', editingCondId)
       : sb.from('condolences').insert(row);
@@ -722,7 +927,7 @@ function renderCondolenceAdmin() {
   list.innerHTML = condolences.map(c => `
     <div class="condolence-card">
       <div class="condolence-card-header">
-        <div style="font-size:28px">🕊️</div>
+        ${c.photo?`<img src="${c.photo}" alt="${c.name}" class="cond-photo" onerror="this.outerHTML='<div style=font-size:28px>🕊️</div>'">`:'<div style="font-size:28px">🕊️</div>'}
         <div><h3>${c.name}</h3><p>${c.born ? c.born + ' – ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
       </div>
       <div class="condolence-card-body">
@@ -746,7 +951,7 @@ function renderCondolencesPublic() {
   list.innerHTML = condolences.map(c => `
     <div class="condolence-card" style="margin-bottom:20px;animation:fadeUpIn .4s ease">
       <div class="condolence-card-header">
-        <div style="font-size:32px">🕊️</div>
+        ${c.photo?`<img src="${c.photo}" alt="${c.name}" class="cond-photo" onerror="this.outerHTML='<div style=font-size:32px>🕊️</div>'">`:'<div style="font-size:32px">🕊️</div>'}
         <div><h3>${c.name}</h3><p>${c.born ? c.born + ' – ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
       </div>
       <div class="condolence-card-body">
@@ -768,35 +973,6 @@ function toggleAcc(idx) {
   if (!isOpen) item.classList.add('open');
 }
 
-// ── ACTIVITY IMAGE UPLOAD ──
-function triggerImgUpload(accIdx) {
-  const gallery = document.getElementById('acc-gallery-' + accIdx);
-  if (!gallery) return;
-  const input = gallery.querySelector('.hidden-file-input');
-  if (input) input.click();
-}
-function handleActivityImgUpload(event, accIdx) {
-  const files = event.target.files;
-  if (!files || !files.length) return;
-  const gallery = document.getElementById('acc-gallery-' + accIdx);
-  const uploadBtn = gallery.querySelector('.acc-img-upload');
-  Array.from(files).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const img = document.createElement('img');
-      img.src = e.target.result;
-      img.alt = 'Aktivitet';
-      img.style.cssText = 'width:140px;height:100px;object-fit:cover;border-radius:10px;transition:transform .25s;cursor:pointer;animation:fadeInScale .3s ease';
-      img.title = 'Kliko për ta fshirë';
-      img.onclick = () => { if (confirm('Fshi këtë foto?')) img.remove(); };
-      gallery.insertBefore(img, uploadBtn);
-    };
-    reader.readAsDataURL(file);
-  });
-  showToast('📸 ' + files.length + ' foto u shtua!', 'success');
-  event.target.value = '';
-}
-
 // ── ADMIN TAB (override to add condolences) ──
 function showAdminTab(name) {
   document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
@@ -810,6 +986,7 @@ function showAdminTab(name) {
   if (name === 'condolences')  renderCondolenceAdmin();
   if (name === 'members')      renderMembersTab();
   if (name === 'media')        renderMediaTab();
+  if (name === 'partners')     renderPartnersAdmin();
 }
 
 // ── ACTIVITY DETAIL MODAL ──
@@ -862,7 +1039,7 @@ function initScrollReveal() {
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, { threshold: 0.07 });
-  document.querySelectorAll('.news-card,.activity-card,.acc-item,.g-item,.contact-item,.about-grid,.donations-inner').forEach(el => {
+  document.querySelectorAll('.news-card,.activity-card,.acc-item,.g-item,.contact-item,.about-grid,.donations-inner,.partner-card').forEach(el => {
     el.classList.add('reveal'); obs.observe(el);
   });
 }
@@ -888,7 +1065,11 @@ async function initApp(){
   updateAuthUI();
   renderHomeNews();
   renderCondolencesPublic();
+  renderPublicGallery();
+  renderPartners();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
+  const hash=location.hash.match(/^#lajmi-(\d+)$/);
+  if(hash)openArticle(+hash[1],false);
 }
 initApp();
 initSlideshow();

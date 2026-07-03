@@ -87,8 +87,13 @@ passwords, and admin rights come from the `profiles.role` column.
 - [x] Prayer times sourced live from SwissMosque (admin editor removed by design)
 - [x] Design pass: unified buttons, fixed hero layout, section headers, prayer strip,
       mobile refinements
-- [ ] Image upload to Supabase Storage with automatic resizing
-- [ ] Per-article URLs + SEO (meta tags, sitemap, Open Graph) so news is indexable
+- [x] Media uploads to Supabase Storage: images (auto-resized in browser), videos
+      (≤50MB), Facebook video links as embeds; homepage gallery driven by the media
+      library (run `supabase/migration-002-media-uploads.sql`)
+- [x] Partner organizations section (admin-managed) + condolence photos
+      (run `supabase/migration-003-partners-condolence-photos.sql`)
+- [x] Per-article page with own URL (#lajmi-id); admin can upload the article image
+- [ ] Full SEO (meta tags, sitemap, Open Graph per article)
 - [ ] Contact form delivery (email or database inbox)
 - [ ] Migrate existing WordPress content (posts + media)
 - [ ] Deploy + point hausdesfriedens.ch at the new site

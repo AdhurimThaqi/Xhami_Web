@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=5">
+<link rel="stylesheet" href="css/styles.css?v=6">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -61,7 +61,13 @@
       <select id="post-cat"><option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option></select>
     </div>
     <div class="form-group"><label>Përmbajtja</label><textarea id="post-body" rows="6"></textarea></div>
-    <div class="form-group"><label>URL e fotos</label><input type="text" id="post-img" placeholder="https://..."></div>
+    <div class="form-group"><label>Fotoja e artikullit</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="post-img" placeholder="https://... ose ngarko →" style="flex:1">
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('post-img-file').click()">📤 Ngarko</button>
+        <input type="file" id="post-img-file" accept="image/*" style="display:none" onchange="uploadPostImage(event)">
+      </div>
+    </div>
     <button class="btn btn-primary" onclick="savePost()">Publiko</button>
   </div>
 </div>
@@ -290,6 +296,18 @@
     </div>
   </section>
 
+  <!-- PARTNERS -->
+  <section class="section" style="background:var(--white);padding:64px 0">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:36px">
+        <div class="badge">🤝 <span data-sq="Bashkëpunimet" data-de="Partnerschaften">Bashkëpunimet</span></div>
+        <h2 style="margin-top:12px;font-size:clamp(24px,3vw,32px)" data-sq="Organizatat Partnere" data-de="Partnerorganisationen">Organizatat Partnere</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="partners-grid" id="partners-grid"></div>
+    </div>
+  </section>
+
   <!-- PRAYER + IFRAME -->
   <section class="section" style="background:var(--cream)">
     <div class="container">
@@ -418,6 +436,22 @@
     </div>
   </section>
 </div><!-- /page-home -->
+
+<!-- SINGLE ARTICLE PAGE -->
+<div class="page" id="page-article">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span onclick="navigate('news')" style="cursor:pointer;color:rgba(255,255,255,.7)">Media/Blog</span><span style="opacity:.5">›</span><span data-sq="Artikull" data-de="Artikel">Artikull</span></div>
+    <div class="news-card-meta" style="margin-bottom:10px"><span class="news-card-cat" id="article-cat" style="color:var(--gold)"></span><span class="news-card-date" id="article-date" style="color:rgba(255,255,255,.7)"></span></div>
+    <h1 id="article-title"></h1>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="article-body-wrap">
+      <img id="article-img" class="article-img" alt="" style="display:none">
+      <div class="prose" id="article-body" style="font-size:16px"></div>
+      <button class="btn btn-outline" style="margin-top:36px" onclick="navigate('news')" data-sq="← Kthehu te lajmet" data-de="← Zurück zu den Nachrichten">← Kthehu te lajmet</button>
+    </div>
+  </div></div>
+</div>
 
 <!-- NEWS PAGE -->
 <div class="page" id="page-news">
@@ -594,10 +628,6 @@
             <div class="acc-img-gallery" id="acc-gallery-0">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Namazi" onerror="this.style.display='none'">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg" alt="Namazi" onerror="this.style.display='none'">
-              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(0)" title="Shto foto">
-                <span>📤</span><small>Shto foto</small>
-                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,0)">
-              </div>
             </div>
           </div>
         </div>
@@ -639,10 +669,6 @@
             </div>
             <div class="acc-img-gallery" id="acc-gallery-1">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg" alt="Arsimi" onerror="this.style.display='none'">
-              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(1)" title="Shto foto">
-                <span>📤</span><small>Shto foto</small>
-                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,1)">
-              </div>
             </div>
           </div>
         </div>
@@ -669,10 +695,6 @@
             </div>
             <div class="acc-img-gallery" id="acc-gallery-2">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg" alt="Dialog" onerror="this.style.display='none'">
-              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(2)">
-                <span>📤</span><small>Shto foto</small>
-                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,2)">
-              </div>
             </div>
           </div>
         </div>
@@ -709,10 +731,6 @@
             </div>
             <div class="acc-img-gallery" id="acc-gallery-3">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg" alt="Festat" onerror="this.style.display='none'">
-              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(3)">
-                <span>📤</span><small>Shto foto</small>
-                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,3)">
-              </div>
             </div>
           </div>
         </div>
@@ -738,10 +756,6 @@
             </div>
             <div class="acc-img-gallery" id="acc-gallery-4">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg" alt="Humanitare" onerror="this.style.display='none'">
-              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(4)">
-                <span>📤</span><small>Shto foto</small>
-                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,4)">
-              </div>
             </div>
           </div>
         </div>
@@ -780,10 +794,6 @@
             </div>
             <div class="acc-img-gallery" id="acc-gallery-5">
               <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4741-1-scaled.jpg" alt="Jugendtreff" onerror="this.style.display='none'">
-              <div class="acc-img-upload admin-only-el" onclick="triggerImgUpload(5)">
-                <span>📤</span><small>Shto foto</small>
-                <input type="file" accept="image/*" class="hidden-file-input" onchange="handleActivityImgUpload(event,5)">
-              </div>
             </div>
           </div>
         </div>
@@ -979,6 +989,7 @@
           <button class="admin-tab-pill" id="apill-news" onclick="showAdminTab('news')">📰 Lajmet</button>
           <button class="admin-tab-pill admin-only" id="apill-condolences" onclick="showAdminTab('condolences')" style="display:none">🕊️ Ngushëllimet</button>
           <button class="admin-tab-pill" id="apill-media" onclick="showAdminTab('media')">🖼️ Media</button>
+          <button class="admin-tab-pill admin-only" id="apill-partners" onclick="showAdminTab('partners')" style="display:none">🤝 Partnerët</button>
           <button class="admin-tab-pill" id="apill-profile" onclick="showAdminTab('profile')">⚙️ Profili</button>
         </div>
       </div>
@@ -1049,14 +1060,41 @@
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px" id="media-grid">
             <!-- Populated by JS -->
           </div>
-          <div style="margin-top:24px;padding:24px;border:2px dashed var(--border);border-radius:12px;text-align:center">
-            <div style="font-size:36px;margin-bottom:8px">📤</div>
-            <p style="font-weight:600;color:var(--ink);margin-bottom:4px">Shto foto nga URL</p>
-            <p style="font-size:13px;color:var(--ink-lt);margin-bottom:16px">Fut URL-në e fotos dhe shtoje në galeri</p>
-            <div style="display:flex;gap:8px;max-width:500px;margin:0 auto">
-              <input type="text" id="media-url-input" placeholder="https://example.com/foto.jpg" style="flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
+          <div class="media-upload-zone" onclick="document.getElementById('media-file-input').click()">
+            <input type="file" id="media-file-input" accept="image/*,video/mp4,video/webm,video/quicktime" multiple style="display:none" onchange="uploadMediaFiles(event)">
+            <div style="font-size:38px;margin-bottom:8px">📤</div>
+            <p style="font-weight:700;color:var(--ink);margin-bottom:4px">Ngarko foto ose video</p>
+            <p style="font-size:13px;color:var(--ink-lt)">Kliko këtu dhe zgjidh skedarët nga telefoni ose kompjuteri.<br>Fotot zvogëlohen automatikisht · Videot deri në 50MB</p>
+          </div>
+          <div style="margin-top:16px;padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:4px;font-size:14px">🔗 Ose shto nga një link</p>
+            <p style="font-size:12.5px;color:var(--ink-lt);margin-bottom:14px">URL e një fotoje, videoje — ose linku i një videoje nga Facebook</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="text" id="media-url-input" placeholder="https://facebook.com/... ose https://.../foto.jpg" style="flex:1;min-width:220px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
               <input type="text" id="media-caption-input" placeholder="Përshkrimi..." style="width:140px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
               <button class="btn btn-primary" onclick="addMediaItem()" style="white-space:nowrap">+ Shto</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PARTNERS TAB ── -->
+        <div class="admin-panel" id="apanel-partners">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🤝 Organizatat Partnere</h2>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Shfaqen në ballinë te "Bashkëpunimet"</p>
+          <div id="partners-admin-list" style="display:grid;gap:10px;margin-bottom:24px"></div>
+          <div style="padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:14px;font-size:14px">➕ Shto partner të ri</p>
+            <div style="display:grid;gap:10px">
+              <div class="form-group" style="margin:0"><label>Emri</label><input type="text" id="partner-name" placeholder="p.sh. Parandalo.ch"></div>
+              <div class="form-group" style="margin:0"><label>Webfaqja (opsionale)</label><input type="text" id="partner-url" placeholder="https://..."></div>
+              <div class="form-group" style="margin:0"><label>Logo (opsionale)</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" id="partner-logo" placeholder="https://... ose ngarko →" style="flex:1">
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('partner-logo-file').click()">📤 Ngarko</button>
+                  <input type="file" id="partner-logo-file" accept="image/*" style="display:none" onchange="uploadPartnerLogo(event)">
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="addPartner()" style="justify-self:start">+ Shto Partnerin</button>
             </div>
           </div>
         </div>
@@ -1151,6 +1189,13 @@
       <label>Koha e namazit të xhenazes (opsionale)</label>
       <input type="text" id="cond-funeral" placeholder="p.sh. E shtunë 15 Qershor, ora 14:00 – Xhamia Schwamendingen">
     </div>
+    <div class="form-group"><label>Fotoja e të ndjerit (opsionale)</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="cond-photo" placeholder="https://... ose ngarko →" style="flex:1">
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('cond-photo-file').click()">📤 Ngarko</button>
+        <input type="file" id="cond-photo-file" accept="image/*" style="display:none" onchange="uploadCondPhoto(event)">
+      </div>
+    </div>
     <div style="display:flex;gap:10px;margin-top:4px">
       <button class="btn btn-primary" onclick="saveCondolence()" style="flex:1;justify-content:center;background:#2d3561">🕊️ Publiko Njoftimin</button>
       <button class="btn btn-outline" onclick="closeModal('condolence-modal')" style="padding:11px 20px">Anulo</button>
@@ -1205,8 +1250,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=5"></script>
+<script src="js/config.js?v=6"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=5"></script>
+<script src="js/app.js?v=6"></script>
 </body>
 </html>
