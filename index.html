@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=10">
+<link rel="stylesheet" href="css/styles.css?v=11">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -101,6 +101,16 @@
     <div class="activity-modal-icon" id="am-icon">🕌</div>
     <h2 id="am-title"></h2>
     <p id="am-body"></p>
+  </div>
+</div>
+
+<!-- PHOTO PICKER MODAL -->
+<div class="modal-overlay" id="photo-picker-modal">
+  <div class="modal" style="max-width:640px">
+    <button class="modal-close" onclick="closeModal('photo-picker-modal')">×</button>
+    <h2 style="font-size:20px;color:var(--green);margin-bottom:4px">Zgjidhni një foto</h2>
+    <p class="sub">Klikoni foton që doni ta përdorni</p>
+    <div id="photo-picker-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;max-height:50vh;overflow-y:auto"></div>
   </div>
 </div>
 
@@ -380,6 +390,12 @@
         <div class="prayer-step"><div class="step-icon">🌙</div><div><a href="https://hausdesfriedens.ch/wp-content/uploads/2020/02/05_Namazi_i_Jacis.pdf" target="_blank" id="ps5">Namazi i Jacisë</a><small id="ps5-s">Natë</small></div></div>
         <div class="prayer-step"><div class="step-icon">📺</div><div><a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" id="ps6">Kohët e Namazit Live</a><small>SwissMosque TV</small></div></div>
       </div>
+    <div id="docs-section" style="margin-top:40px;display:none">
+        <h3 style="font-size:19px;color:var(--green);margin-bottom:14px">📄 <span data-sq="Dokumente për shkarkim" data-de="Dokumente zum Herunterladen">Dokumente për shkarkim</span></h3>
+        <div id="docs-list" class="prayer-download-grid"></div>
+      </div>
+    </div>
+  </section>
     </div>
   </section>
 
@@ -1139,10 +1155,10 @@
             <!-- Populated by JS -->
           </div>
           <div class="media-upload-zone" onclick="document.getElementById('media-file-input').click()">
-            <input type="file" id="media-file-input" accept="image/*,video/mp4,video/webm,video/quicktime,audio/mpeg,audio/mp4,audio/aac,audio/ogg,audio/wav,.mp3,.m4a" multiple style="display:none" onchange="uploadMediaFiles(event)">
+            <input type="file" id="media-file-input" accept="image/*,video/mp4,video/webm,video/quicktime,audio/mpeg,audio/mp4,audio/aac,audio/ogg,audio/wav,.mp3,.m4a,application/pdf,.pdf" multiple style="display:none" onchange="uploadMediaFiles(event)">
             <div style="font-size:38px;margin-bottom:8px">📤</div>
             <p style="font-weight:700;color:var(--ink);margin-bottom:4px">Ngarko foto ose video</p>
-            <p style="font-size:13px;color:var(--ink-lt)">Kliko këtu dhe zgjidh skedarët nga telefoni ose kompjuteri.<br>Fotot zvogëlohen automatikisht · Video & MP3 deri në 50MB</p>
+            <p style="font-size:13px;color:var(--ink-lt)">Kliko këtu dhe zgjidh skedarët nga telefoni ose kompjuteri.<br>Fotot zvogëlohen automatikisht · Video, MP3 & PDF deri në 50MB</p>
           </div>
           <div style="margin-top:16px;padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
             <p style="font-weight:600;color:var(--ink);margin-bottom:4px;font-size:14px">🔗 Ose shto nga një link</p>
@@ -1152,6 +1168,12 @@
               <input type="text" id="media-caption-input" placeholder="Përshkrimi..." style="width:140px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
               <button class="btn btn-primary" onclick="addMediaItem()" style="white-space:nowrap">+ Shto</button>
             </div>
+          </div>
+
+          <div style="margin-top:28px;padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:4px;font-size:14px">🖼️ Fotot e seksionit "Çfarë Ofrojmë"</p>
+            <p style="font-size:12.5px;color:var(--ink-lt);margin-bottom:14px">Zgjidhni një foto nga galeria për secilin aktivitet — shfaqet si sfond i kartës në ballinë</p>
+            <div id="activity-photos-list" style="display:grid;gap:8px"></div>
           </div>
         </div>
 
@@ -1330,8 +1352,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=10"></script>
+<script src="js/config.js?v=11"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=10"></script>
+<script src="js/app.js?v=11"></script>
 </body>
 </html>

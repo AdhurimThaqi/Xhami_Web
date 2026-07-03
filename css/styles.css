@@ -478,6 +478,13 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 .g-fb-link:hover{filter:brightness(1.1)}
 .media-audio-tile{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:32px;background:linear-gradient(135deg,var(--green),#2d7a4f);color:#fff}
 .media-audio-tile small{font-size:11px;font-weight:600;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.media-pdf-tile{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:32px;background:linear-gradient(135deg,#b34040,#8c2f2f);color:#fff}
+.media-pdf-tile small{font-size:11px;font-weight:600;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Activity cards with admin-assigned photo backgrounds */
+.activity-card.has-photo{background-size:cover;background-position:center;border-color:rgba(200,168,75,.35)}
+.activity-card.has-photo:hover{border-color:var(--gold)}
+.activity-card.has-photo p{opacity:.92}
 
 /* ── LIGHTBOX ── */
 #lightbox{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(8,18,12,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}

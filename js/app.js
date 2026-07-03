@@ -70,6 +70,7 @@ function saveState(){
       condolences,
       mediaItems,
       partners,
+      settings,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -84,6 +85,7 @@ function loadState(){
   if(Array.isArray(s.condolences))condolences=s.condolences;
   if(Array.isArray(s.mediaItems))mediaItems=s.mediaItems;
   if(Array.isArray(s.partners))partners=s.partners;
+  if(s.settings)settings=s.settings;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -115,6 +117,20 @@ async function remoteLoadAll(){
     const {data:pr}=await sb.from('partners').select('*').order('created_at',{ascending:true});
     if(pr)partners=pr.map(p=>({id:p.id,name:p.name,url:p.url||'',logo:p.logo||''}));
   }catch(e){/* partners table may not exist yet (migration 003) */}
+  try{
+    const {data:st}=await sb.from('settings').select('*');
+    if(st){settings={};st.forEach(r=>settings[r.key]=r.value);}
+  }catch(e){/* settings table may not exist yet (migration 006) */}
+}
+
+let settings={};
+async function saveSetting(key,value){
+  settings[key]=value;
+  if(REMOTE){
+    const {error}=await sb.from('settings').upsert({key,value,updated_at:new Date().toISOString()});
+    if(error){showToast('Gabim: '+error.message,'error');return false;}
+  }else saveState();
+  return true;
 }
 
 async function setUserFromSession(u){
@@ -615,6 +631,7 @@ function detectMediaKind(url){
   if(/facebook\.com|fb\.watch/i.test(url))return'facebook';
   if(/\.(mp4|webm|mov|m4v)(\?|$)/i.test(url))return'video';
   if(/\.(mp3|m4a|aac|ogg|wav)(\?|$)/i.test(url))return'audio';
+  if(/\.pdf(\?|$)/i.test(url))return'pdf';
   return'image';
 }
 // Facebook Reels and share/watch short links refuse to embed — link out instead
@@ -653,18 +670,19 @@ async function uploadMediaFiles(ev){
   let ok=0;
   for(const f of files){
     const isVideo=/^video\//.test(f.type),isAudio=/^audio\//.test(f.type)||/\.(mp3|m4a)$/i.test(f.name);
-    if((isVideo||isAudio)&&f.size>50*1024*1024){showToast(f.name+': maksimumi 50MB!','error');continue;}
-    if(!isVideo&&!isAudio&&!/^image\//.test(f.type)){showToast(f.name+': vetëm foto, video ose MP3!','error');continue;}
+    const isPdf=f.type==='application/pdf'||/\.pdf$/i.test(f.name);
+    if((isVideo||isAudio||isPdf)&&f.size>50*1024*1024){showToast(f.name+': maksimumi 50MB!','error');continue;}
+    if(!isVideo&&!isAudio&&!isPdf&&!/^image\//.test(f.type)){showToast(f.name+': vetëm foto, video, MP3 ose PDF!','error');continue;}
     try{
       const url=await uploadToStorage(f);
-      const kind=isVideo?'video':(isAudio?'audio':'image');
+      const kind=isVideo?'video':(isAudio?'audio':(isPdf?'pdf':'image'));
       const {error}=await sb.from('media').insert({url,caption:f.name.replace(/\.\w+$/,''),kind});
       if(error)throw error;
       ok++;
     }catch(e){showToast('Gabim te '+f.name+': '+e.message,'error');}
   }
   if(ok){
-    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();updateHeroSlides();
+    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();updateHeroSlides();renderDocsList();
     showToast('✅ '+ok+' skedar(ë) u ngarkuan!','success');
   }
 }
@@ -674,6 +692,7 @@ function mediaThumbHtml(m,i){
   if(m.kind==='video')inner=`<video src="${m.url}" preload="metadata" muted playsinline></video><div class="media-kind-badge">🎬</div>`;
   else if(m.kind==='facebook')inner=`<div class="media-fb-tile">📘<small>Facebook</small></div>`;
   else if(m.kind==='audio')inner=`<div class="media-audio-tile">🎧<small>${(m.cap||'Audio').slice(0,22)}</small></div>`;
+  else if(m.kind==='pdf')inner=`<div class="media-pdf-tile">📄<small>${(m.cap||'PDF').slice(0,22)}</small></div>`;
   else inner=`<img src="${m.url}" alt="${m.cap}" loading="lazy" onerror="this.style.display='none'"><button class="media-star${m.featured?' on':''}" title="Foto e ballinës (max 6)" onclick="event.stopPropagation();toggleFeatured(${i})">★</button>`;
   return `<div class="media-thumb${m.featured?' featured':''}">${inner}
     <div class="media-thumb-overlay">
@@ -695,7 +714,7 @@ function renderMediaTab(){
 // Public homepage gallery mirrors the media library once it has content
 function renderPublicGallery(){
   const g=document.querySelector('#page-home .gallery-grid');if(!g)return;
-  const items=mediaItems.filter(m=>m.kind!=='audio');
+  const items=mediaItems.filter(m=>m.kind!=='audio'&&m.kind!=='pdf');
   if(!REMOTE||!items.length)return; // keep the static fallback gallery
   const zoomSvg='<div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>';
   g.innerHTML=items.map(m=>{
@@ -706,6 +725,68 @@ function renderPublicGallery(){
     }
     return `<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`;
   }).join('');
+}
+
+// ── PDF DOCUMENTS LIST (public) ──
+function renderDocsList(){
+  const sec=document.getElementById('docs-section'),list=document.getElementById('docs-list');
+  if(!sec||!list)return;
+  const pdfs=mediaItems.filter(m=>m.kind==='pdf');
+  sec.style.display=pdfs.length?'block':'none';
+  list.innerHTML=pdfs.map(p=>`<a class="prayer-dl-btn" href="${p.url}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span>${p.cap||'PDF'}</span></a>`).join('');
+}
+
+// ── ACTIVITY SECTION PHOTOS (admin-assigned backgrounds) ──
+function applyActivityPhotos(){
+  document.querySelectorAll('#page-home .activities-grid .activity-card').forEach((card,i)=>{
+    const url=settings['act_photo_'+i];
+    if(url){
+      card.classList.add('has-photo');
+      card.style.backgroundImage=`linear-gradient(rgba(9,30,18,.72),rgba(9,30,18,.82)),url('${url}')`;
+    }else{
+      card.classList.remove('has-photo');
+      card.style.backgroundImage='';
+    }
+  });
+}
+
+function renderActivityPhotosAdmin(){
+  const list=document.getElementById('activity-photos-list');if(!list)return;
+  list.innerHTML=ACTIVITY_DETAILS.map((d,i)=>{
+    const url=settings['act_photo_'+i];
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+      <span style="font-size:20px">${d.icon}</span>
+      <strong style="flex:1;font-size:13px">${d.sq.t}</strong>
+      ${url?`<img src="${url}" style="width:44px;height:32px;object-fit:cover;border-radius:6px">`:'<span style="font-size:12px;color:var(--ink-lt)">—</span>'}
+      <button class="btn-edit" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="openPhotoPicker('act_photo_${i}')">🖼️ Zgjidh</button>
+      ${url?`<button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="clearActivityPhoto(${i})">✕</button>`:''}
+    </div>`;
+  }).join('');
+}
+
+let pickerTargetKey=null;
+function openPhotoPicker(key){
+  pickerTargetKey=key;
+  const grid=document.getElementById('photo-picker-grid');
+  const imgs=mediaItems.filter(m=>m.kind==='image');
+  grid.innerHTML=imgs.length
+    ?imgs.map(m=>`<img src="${m.url}" alt="${m.cap||''}" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;cursor:pointer" onclick="pickPhoto('${m.url.replace(/'/g,"\\'")}')">`).join('')
+    :'<p style="grid-column:1/-1;color:var(--ink-lt)">Ngarkoni fillimisht foto në galeri.</p>';
+  openModal('photo-picker-modal');
+}
+async function pickPhoto(url){
+  if(!pickerTargetKey)return;
+  if(await saveSetting(pickerTargetKey,url)){
+    closeModal('photo-picker-modal');
+    applyActivityPhotos();renderActivityPhotosAdmin();
+    showToast('✅ Fotoja u caktua!','success');
+  }
+}
+async function clearActivityPhoto(i){
+  if(await saveSetting('act_photo_'+i,'')){
+    applyActivityPhotos();renderActivityPhotosAdmin();
+    showToast('Fotoja u hoq.','');
+  }
 }
 
 // Toggle a photo as one of the (max 6) hand-picked homepage slides
@@ -1133,7 +1214,7 @@ function showAdminTab(name) {
   if (name === 'news')         renderAdminNews();
   if (name === 'condolences')  renderCondolenceAdmin();
   if (name === 'members')      renderMembersTab();
-  if (name === 'media')        renderMediaTab();
+  if (name === 'media')        {renderMediaTab();renderActivityPhotosAdmin();}
   if (name === 'partners')     renderPartnersAdmin();
 }
 
@@ -1217,6 +1298,8 @@ async function initApp(){
   renderPartners();
   renderAudioList();
   updateHeroSlides();
+  renderDocsList();
+  applyActivityPhotos();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
