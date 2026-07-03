@@ -110,7 +110,7 @@ async function remoteLoadAll(){
   if(posts.error)throw posts.error;
   DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',date:fmtDateEn(p.created_at)}));
   condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',photo:c.photo||'',postedAt:fmtDateSq(c.created_at)}));
-  mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption,kind:m.kind||'image'}));
+  mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption,kind:m.kind||'image',featured:!!m.featured}));
   try{
     const {data:pr}=await sb.from('partners').select('*').order('created_at',{ascending:true});
     if(pr)partners=pr.map(p=>({id:p.id,name:p.name,url:p.url||'',logo:p.logo||''}));
@@ -674,8 +674,8 @@ function mediaThumbHtml(m,i){
   if(m.kind==='video')inner=`<video src="${m.url}" preload="metadata" muted playsinline></video><div class="media-kind-badge">🎬</div>`;
   else if(m.kind==='facebook')inner=`<div class="media-fb-tile">📘<small>Facebook</small></div>`;
   else if(m.kind==='audio')inner=`<div class="media-audio-tile">🎧<small>${(m.cap||'Audio').slice(0,22)}</small></div>`;
-  else inner=`<img src="${m.url}" alt="${m.cap}" loading="lazy" onerror="this.style.display='none'">`;
-  return `<div class="media-thumb">${inner}
+  else inner=`<img src="${m.url}" alt="${m.cap}" loading="lazy" onerror="this.style.display='none'"><button class="media-star${m.featured?' on':''}" title="Foto e ballinës (max 6)" onclick="event.stopPropagation();toggleFeatured(${i})">★</button>`;
+  return `<div class="media-thumb${m.featured?' featured':''}">${inner}
     <div class="media-thumb-overlay">
       <button class="media-thumb-del" onclick="deleteMediaItem(${i})">🗑️ Fshi</button>
       <span style="color:white;font-size:11px;font-weight:600;opacity:0;transition:opacity .2s" class="media-cap">${m.cap||''}</span>
@@ -708,16 +708,38 @@ function renderPublicGallery(){
   }).join('');
 }
 
+// Toggle a photo as one of the (max 6) hand-picked homepage slides
+async function toggleFeatured(i){
+  const m=mediaItems[i];if(!m||m.kind!=='image')return;
+  if(!m.featured&&mediaItems.filter(x=>x.featured).length>=6){
+    showToast('Maksimumi 6 foto për ballinën! Hiqni një yll fillimisht.','error');return;
+  }
+  const next=!m.featured;
+  if(REMOTE){
+    const {error}=await sb.from('media').update({featured:next}).eq('id',m.id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+  }
+  m.featured=next;saveState();
+  renderMediaTab();updateHeroSlides();
+  showToast(next?'⭐ Fotoja u shtua në ballinë!':'Fotoja u hoq nga ballina.','success');
+}
+
 // Hero slideshow + about photo rebuilt from the uploaded media library
 function updateHeroSlides(){
   const imgs=mediaItems.filter(m=>m.kind==='image');
   if(!REMOTE||!imgs.length)return; // keep the static fallback slides
+  const feat=imgs.filter(m=>m.featured);
   const about=document.querySelector('.about-image-main');
-  if(about)about.src=imgs[0].url;
+  if(about)about.src=(feat[0]||imgs[0]).url;
   if(imgs.length<2)return;
-  const pick=imgs.slice();
-  for(let i=pick.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pick[i],pick[j]]=[pick[j],pick[i]];}
-  const chosen=pick.slice(0,6);
+  let chosen;
+  if(feat.length){
+    chosen=feat.slice(0,6);
+  }else{
+    const pick=imgs.slice();
+    for(let i=pick.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pick[i],pick[j]]=[pick[j],pick[i]];}
+    chosen=pick.slice(0,6);
+  }
   document.getElementById('heroSlides').innerHTML=
     chosen.map((m,i)=>`<div class="hero-slide${i===0?' active':''}" style="background-image:url('${m.url}')"></div>`).join('');
   const dots=document.getElementById('slideDots');
