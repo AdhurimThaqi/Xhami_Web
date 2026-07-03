@@ -664,7 +664,7 @@ async function uploadMediaFiles(ev){
     }catch(e){showToast('Gabim te '+f.name+': '+e.message,'error');}
   }
   if(ok){
-    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();
+    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();updateHeroSlides();
     showToast('✅ '+ok+' skedar(ë) u ngarkuan!','success');
   }
 }
@@ -706,6 +706,24 @@ function renderPublicGallery(){
     }
     return `<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`;
   }).join('');
+}
+
+// Hero slideshow + about photo rebuilt from the uploaded media library
+function updateHeroSlides(){
+  const imgs=mediaItems.filter(m=>m.kind==='image');
+  if(!REMOTE||!imgs.length)return; // keep the static fallback slides
+  const about=document.querySelector('.about-image-main');
+  if(about)about.src=imgs[0].url;
+  if(imgs.length<2)return;
+  const pick=imgs.slice();
+  for(let i=pick.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pick[i],pick[j]]=[pick[j],pick[i]];}
+  const chosen=pick.slice(0,6);
+  document.getElementById('heroSlides').innerHTML=
+    chosen.map((m,i)=>`<div class="hero-slide${i===0?' active':''}" style="background-image:url('${m.url}')"></div>`).join('');
+  const dots=document.getElementById('slideDots');
+  if(dots)dots.innerHTML='';
+  slideIndex=0;
+  initSlideshow();
 }
 
 // ── IMAGE LIGHTBOX ──
@@ -1176,6 +1194,7 @@ async function initApp(){
   renderPublicGallery();
   renderPartners();
   renderAudioList();
+  updateHeroSlides();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
