@@ -63,13 +63,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 #navbar.scrolled{box-shadow:0 4px 32px rgba(0,0,0,.1);border-color:var(--border)}
 .nav-inner{display:flex;align-items:center;height:74px;gap:20px}
 /* Logo with mosque icon */
-.nav-logo{display:flex;align-items:center;gap:10px;flex-shrink:0;cursor:pointer}
-.nav-logo-icon{width:42px;height:42px;background:var(--green);border-radius:10px;display:flex;align-items:center;justify-content:center;transition:transform .25s,box-shadow .25s;overflow:hidden}
-.nav-logo:hover .nav-logo-icon{transform:rotate(-5deg) scale(1.08);box-shadow:0 4px 16px rgba(26,74,46,.35)}
-.nav-logo-icon svg{width:28px;height:28px}
-.nav-logo-text{line-height:1.15}
-.nav-logo-text .top{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--green);white-space:nowrap}
-.nav-logo-text .btm{font-size:9.5px;color:var(--ink-lt);text-transform:uppercase;letter-spacing:1.4px;white-space:nowrap;margin-top:1px}
+.nav-logo{display:flex;align-items:center;gap:11px;flex-shrink:0;cursor:pointer}
+.nav-logo-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;transition:transform .3s cubic-bezier(.34,1.5,.64,1)}
+.nav-logo:hover .nav-logo-icon{transform:rotate(-5deg) scale(1.1)}
+.nav-logo-icon svg{width:40px;height:40px}
+.nav-logo-text{line-height:1.55}
+.nav-logo-text .top,.nav-logo-text .btm{font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:400;color:var(--ink);text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
+.nav-logo-text strong{font-weight:700}
 /* Main nav — tighter to stay one line */
 #main-nav{display:flex;align-items:center;gap:2px;margin:0 auto;flex-wrap:nowrap;white-space:nowrap}
 #main-nav > a,.nav-dropdown > a{
@@ -121,6 +121,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .lang-switch{display:flex;gap:2px;background:var(--cream);border:1px solid var(--border);border-radius:9px;padding:3px}
 .lang-btn{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:6px;color:var(--ink-mid);cursor:pointer;transition:all .2s;background:none;border:none;white-space:nowrap}
 .lang-btn .flag{font-size:16px;line-height:1}
+.lang-btn .flag-img{width:20px;height:auto;border-radius:2.5px;display:block;box-shadow:0 0 0 1px rgba(0,0,0,.1)}
 .lang-btn:hover{background:var(--border)}
 .lang-btn.active{background:var(--green);color:var(--white);box-shadow:0 1px 6px rgba(26,74,46,.3)}
 
@@ -364,6 +365,10 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
   .prayer-inner{justify-content:center}
   .prayer-addr{display:none}
 }
+@media(max-width:640px){
+  .nav-logo-text .top,.nav-logo-text .btm{font-size:8.5px;letter-spacing:.4px}
+  .nav-actions .lang-switch{display:none}
+}
 @media(max-width:480px){
   .gallery-grid{grid-template-columns:1fr}.g-item:first-child{grid-column:span 1}
   .footer-top{grid-template-columns:1fr}
@@ -544,3 +549,35 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 
 /* Modal entrance */
 .modal-overlay.active .modal{animation:fadeInScale .28s cubic-bezier(.34,1.2,.64,1)}
+
+/* ── ACTIVITY DETAIL MODAL (zoom + blurred background) ── */
+#activity-modal{background:rgba(8,22,14,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#activity-modal .activity-modal-box{max-width:540px;text-align:center;padding:44px 40px}
+#activity-modal.active .modal{animation:zoomPop .42s cubic-bezier(.34,1.45,.64,1)}
+@keyframes zoomPop{from{transform:scale(.55);opacity:0}to{transform:scale(1);opacity:1}}
+.activity-modal-icon{width:80px;height:80px;margin:0 auto 20px;background:linear-gradient(135deg,var(--gold),#b8943b);border-radius:22px;font-size:38px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 28px rgba(200,168,75,.45);animation:floatUp 3.5s ease-in-out infinite}
+#am-title{color:var(--green);font-size:26px;margin-bottom:14px}
+#am-body{color:var(--ink-mid);font-size:15px;line-height:1.85;text-align:left}
+
+/* Activity card interactivity */
+.activity-card{cursor:pointer}
+.act-hint{display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:.4px;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.activity-card:hover .act-hint{opacity:1;transform:none}
+.activity-icon{transition:transform .3s cubic-bezier(.34,1.5,.64,1)}
+.activity-card:hover .activity-icon{transform:rotate(-8deg) scale(1.12)}
+
+/* Button shine sweep on hover */
+.btn,.hero-btn-gold,.hero-btn-outline{position:relative;overflow:hidden}
+.btn::after,.hero-btn-gold::after,.hero-btn-outline::after{content:'';position:absolute;top:0;left:-75%;width:50%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.4),transparent);transform:skewX(-20deg);transition:left .5s ease;pointer-events:none}
+.btn:hover::after,.hero-btn-gold:hover::after,.hero-btn-outline:hover::after{left:125%}
+
+/* Hero entrance stagger */
+#hero .hero-badge-wrap{animation:fadeUpIn .6s .05s both}
+#hero h1{animation:fadeUpIn .7s .18s both}
+#hero .hero-quote{animation:fadeUpIn .7s .34s both}
+#hero .hero-actions{animation:fadeUpIn .7s .5s both}
+
+/* ── QIBLA CURSOR (compass badge with Kaaba) ── */
+body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M4 1v20l5-4.2 3 8 3.4-1.4-3-7.7H19Z' fill='%231a4a2e' stroke='%23fff' stroke-width='1.4'/%3E%3Ccircle cx='22' cy='22' r='7' fill='%23fff' stroke='%231a4a2e' stroke-width='1.6'/%3E%3Crect x='19.4' y='19.4' width='5.2' height='5.2' fill='%23161616'/%3E%3Crect x='19.4' y='20.6' width='5.2' height='1.2' fill='%23c8a84b'/%3E%3C/svg%3E") 4 1,auto}
+a,button,[onclick],.lang-btn,.filter-pill,.g-item,.news-card,.activity-card,.acc-header,.prayer-live-link,.quick-action-btn,.slide-dot,.slide-arrow,.sidebar-item,.hamburger{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M4 1v20l5-4.2 3 8 3.4-1.4-3-7.7H19Z' fill='%23c8a84b' stroke='%23fff' stroke-width='1.4'/%3E%3Ccircle cx='22' cy='22' r='7' fill='%23fff' stroke='%231a4a2e' stroke-width='1.6'/%3E%3Crect x='19.4' y='19.4' width='5.2' height='5.2' fill='%23161616'/%3E%3Crect x='19.4' y='20.6' width='5.2' height='1.2' fill='%23c8a84b'/%3E%3C/svg%3E") 4 1,pointer}
+input,textarea,select{cursor:auto}

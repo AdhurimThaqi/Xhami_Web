@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Kulturzentrum Haus des Friedens – Qendra Kulturore Shtëpia e Paqës. Xhamia islame shqiptare në Zürich Schwamendingen.">
 <title>Haus des Friedens – Shtëpia e Paqës</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='8,18 56,30 56,54 8,54' fill='%23161616'/%3E%3Cpolygon points='8,23 56,35 56,40 8,28' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
@@ -65,39 +66,31 @@
   </div>
 </div>
 
+<!-- ACTIVITY DETAIL MODAL (zoom-in with blurred background) -->
+<div class="modal-overlay" id="activity-modal">
+  <div class="modal activity-modal-box">
+    <button class="modal-close" onclick="closeModal('activity-modal')">×</button>
+    <div class="activity-modal-icon" id="am-icon">🕌</div>
+    <h2 id="am-title"></h2>
+    <p id="am-body"></p>
+  </div>
+</div>
+
 <!-- NAVBAR -->
 <header id="navbar">
   <div class="container">
     <div class="nav-inner">
       <div class="nav-logo" onclick="navigate('home')">
         <div class="nav-logo-icon">
-          <!-- Mosque logo: dome + minaret + crescent -->
-          <svg viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-            <!-- Minaret left -->
-            <rect x="4" y="18" width="4" height="16" rx="1" fill="rgba(255,255,255,.9)"/>
-            <rect x="3" y="16" width="6" height="3" rx="1" fill="var(--gold)"/>
-            <rect x="4.5" y="12" width="3" height="4" rx="1" fill="rgba(255,255,255,.9)"/>
-            <polygon points="6,8 4,12 8,12" fill="var(--gold)"/>
-            <!-- Minaret right -->
-            <rect x="36" y="18" width="4" height="16" rx="1" fill="rgba(255,255,255,.9)"/>
-            <rect x="35" y="16" width="6" height="3" rx="1" fill="var(--gold)"/>
-            <rect x="36.5" y="12" width="3" height="4" rx="1" fill="rgba(255,255,255,.9)"/>
-            <polygon points="38,8 36,12 40,12" fill="var(--gold)"/>
-            <!-- Main dome -->
-            <ellipse cx="22" cy="20" rx="10" ry="9" fill="rgba(255,255,255,.95)"/>
-            <!-- Dome base / body -->
-            <rect x="12" y="20" width="20" height="14" rx="1" fill="rgba(255,255,255,.95)"/>
-            <!-- Arch door -->
-            <path d="M18 34 Q18 28 22 28 Q26 28 26 34Z" fill="var(--green)"/>
-            <!-- Ground line -->
-            <rect x="3" y="34" width="38" height="2" rx="1" fill="var(--gold)"/>
-            <!-- Crescent on dome top -->
-            <path d="M22 11 A4 4 0 1 1 26 13 A3 3 0 1 0 22 11Z" fill="var(--gold)"/>
+          <!-- Official mark: black slab with green band (Kulturzentrum Haus des Friedens) -->
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="8,18 56,30 56,54 8,54" fill="#161616"/>
+            <polygon points="8,23 56,35 56,40 8,28" fill="#4a8a2f"/>
           </svg>
         </div>
         <div class="nav-logo-text">
-          <div class="top">Haus des Friedens</div>
-          <div class="btm" id="nav-subtitle">Shtëpia e Paqës • Zürich</div>
+          <div class="top">Kulturzentrum – <strong>Haus des Friedens</strong></div>
+          <div class="btm">Qendra Kulturore – <strong>Shtëpia e Paqës</strong></div>
         </div>
       </div>
 
@@ -139,10 +132,10 @@
       <div class="nav-actions">
         <div class="lang-switch">
           <button class="lang-btn active" id="btn-sq" onclick="setLang('sq')" title="Shqip">
-            <span class="flag">🇦🇱</span><span>SQ</span>
+            <img class="flag-img" src="https://flagcdn.com/w40/al.png" alt="AL" onerror="this.remove()"><span>SQ</span>
           </button>
           <button class="lang-btn" id="btn-de" onclick="setLang('de')" title="Deutsch">
-            <span class="flag">🇩🇪</span><span>DE</span>
+            <img class="flag-img" src="https://flagcdn.com/w40/de.png" alt="DE" onerror="this.remove()"><span>DE</span>
           </button>
         </div>
         <div id="auth-nav-area">
@@ -176,8 +169,8 @@
     <a onclick="navigate('contact');toggleMobile()" data-sq="Kontakti" data-de="Kontakt">Kontakti</a>
   </nav>
   <div class="mob-lang">
-    <button class="lang-btn active" id="mob-btn-sq" onclick="setLang('sq')"><span class="flag">🇦🇱</span> Shqip</button>
-    <button class="lang-btn" id="mob-btn-de" onclick="setLang('de')"><span class="flag">🇩🇪</span> Deutsch</button>
+    <button class="lang-btn active" id="mob-btn-sq" onclick="setLang('sq')"><img class="flag-img" src="https://flagcdn.com/w40/al.png" alt="AL" onerror="this.remove()"> Shqip</button>
+    <button class="lang-btn" id="mob-btn-de" onclick="setLang('de')"><img class="flag-img" src="https://flagcdn.com/w40/de.png" alt="DE" onerror="this.remove()"> Deutsch</button>
   </div>
   <div style="margin-top:16px">
     <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openModal('auth-modal');toggleMobile()" id="mob-login-btn" data-sq="Hyrja / Regjistrim" data-de="Anmelden / Registrieren">Hyrja / Regjistrim</button>
@@ -285,12 +278,12 @@
         <p id="act-sub" style="color:rgba(255,255,255,.7)">Xhamia jonë është qendër e jetës fetare, kulturore dhe sociale</p>
       </div>
       <div class="activities-grid">
-        <div class="activity-card"><div class="activity-icon">🕌</div><h3 id="act1-h">Namazet e Përditshme</h3><p id="act1-p">Pesë namazet e përditshme të organizuara me imam të kualifikuar.</p></div>
-        <div class="activity-card"><div class="activity-icon">📚</div><h3 id="act2-h">Arsimi Fetar</h3><p id="act2-p">Mësime fetare për fëmijë dhe të rinj, kontribut në edukimin e tyre.</p></div>
-        <div class="activity-card"><div class="activity-icon">🤝</div><h3 id="act3-h">Dialog Ndërfetar</h3><p id="act3-p">Bashkëpunim me Kishën Reformierte dhe Zürcher Forum der Religionen.</p></div>
-        <div class="activity-card"><div class="activity-icon">🌙</div><h3 id="act4-h">Festat Islame</h3><p id="act4-p">Organizim i Ramazanit, Bajrameve dhe festave tjera islame.</p></div>
-        <div class="activity-card"><div class="activity-icon">💙</div><h3 id="act5-h">Ndihmë Humane</h3><p id="act5-p">Ndihma për familjet në nevojë dhe projekte humanitare.</p></div>
-        <div class="activity-card"><div class="activity-icon">🎓</div><h3 id="act6-h">Ligjëratat e Hoxhës</h3><p id="act6-p">Ligjërata javore të imamit për komunitetin tonë.</p></div>
+        <div class="activity-card" onclick="openActivity(0)"><div class="activity-icon">🕌</div><h3 id="act1-h">Namazet e Përditshme</h3><p id="act1-p">Pesë namazet e përditshme të organizuara me imam të kualifikuar.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(1)"><div class="activity-icon">📚</div><h3 id="act2-h">Arsimi Fetar</h3><p id="act2-p">Mësime fetare për fëmijë dhe të rinj, kontribut në edukimin e tyre.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(2)"><div class="activity-icon">🤝</div><h3 id="act3-h">Dialog Ndërfetar</h3><p id="act3-p">Bashkëpunim me Kishën Reformierte dhe Zürcher Forum der Religionen.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(3)"><div class="activity-icon">🌙</div><h3 id="act4-h">Festat Islame</h3><p id="act4-p">Organizim i Ramazanit, Bajrameve dhe festave tjera islame.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(4)"><div class="activity-icon">💙</div><h3 id="act5-h">Ndihmë Humane</h3><p id="act5-p">Ndihma për familjet në nevojë dhe projekte humanitare.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(5)"><div class="activity-icon">🎓</div><h3 id="act6-h">Ligjëratat e Hoxhës</h3><p id="act6-p">Ligjërata javore të imamit për komunitetin tonë.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
       </div>
     </div>
   </section>
@@ -1169,8 +1162,8 @@
     <div class="footer-top">
       <div class="footer-brand">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
-          <div style="width:36px;height:36px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 3L4 9v12h5v-7h6v7h5V9L12 3z"/></svg></div>
-          <div style="color:white;font-family:'Playfair Display',serif;font-size:16px">Haus des Friedens</div>
+          <div style="width:38px;height:38px;background:#f5f2ea;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:5px"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><polygon points="8,18 56,30 56,54 8,54" fill="#161616"/><polygon points="8,23 56,35 56,40 8,28" fill="#4a8a2f"/></svg></div>
+          <div style="color:white;font-size:13px;letter-spacing:.5px;line-height:1.5;text-transform:uppercase">Kulturzentrum<br><strong>Haus des Friedens</strong></div>
         </div>
         <p id="footer-desc">Kulturzentrum Haus des Friedens – Qendra Kulturore Islame Shqiptare në Zürich Schwamendingen. Themeluar 2004.</p>
         <div style="display:flex;gap:10px;margin-top:16px">

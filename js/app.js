@@ -812,6 +812,51 @@ function showAdminTab(name) {
   if (name === 'media')        renderMediaTab();
 }
 
+// ── ACTIVITY DETAIL MODAL ──
+const ACTIVITY_DETAILS=[
+  {icon:'🕌',
+   sq:{t:'Namazet e Përditshme',b:'Xhamia jonë është e hapur për të pesë kohët e namazit, çdo ditë të vitit. Namazet udhëhiqen nga Imam Fahredin Bunjaku, imam i kualifikuar me arsim fetar. Çdo të premte mbahet namazi i Xhumasë me hutbe në gjuhën shqipe, duke filluar pas thirrjes së drekës. Kohët e sakta merren drejtpërdrejt nga SwissMosque dhe i gjeni gjithmonë në faqen tonë kryesore.'},
+   de:{t:'Tägliche Gebete',b:'Unsere Moschee ist für alle fünf täglichen Gebete geöffnet, jeden Tag im Jahr. Die Gebete werden von Imam Fahredin Bunjaku geleitet, einem qualifizierten Imam mit religiöser Ausbildung. Jeden Freitag findet das Freitagsgebet mit Predigt in albanischer Sprache statt. Die genauen Gebetszeiten stammen direkt von SwissMosque und sind stets auf unserer Startseite zu finden.'}},
+  {icon:'📚',
+   sq:{t:'Arsimi Fetar',b:'Ofrojmë mësim-besim për fëmijë dhe të rinj: leximi i Kuranit, edukata islame dhe historia e Islamit, të përshtatura sipas moshës. Mësimet mbahen gjatë fundjavës në ambientet e xhamisë dhe udhëhiqen nga imami ynë. Qëllimi ynë është që brezat e rinj të rriten me identitet të shëndoshë fetar dhe integrim të suksesshëm në shoqërinë zvicerane.'},
+   de:{t:'Religiöse Bildung',b:'Wir bieten Religionsunterricht für Kinder und Jugendliche an: Koranlesen, islamische Erziehung und Geschichte des Islams, altersgerecht aufbereitet. Der Unterricht findet am Wochenende in den Räumen der Moschee statt und wird von unserem Imam geleitet. Unser Ziel ist, dass junge Generationen mit einer gesunden religiösen Identität und erfolgreicher Integration in die Schweizer Gesellschaft aufwachsen.'}},
+  {icon:'🤝',
+   sq:{t:'Dialog Ndërfetar',b:'Jemi krenarë për bashkëpunimin tonë të gjatë me Kishën Reformierte të Schwamendingen dhe Zürcher Forum der Religionen. Organizojmë iftare të përbashkëta ndërfetare — në vitin 2025 me rreth 320 pjesëmarrës — dhe marrim pjesë aktive në nismat kundër racizmit dhe për mirëkuptim mes komuniteteve. Xhamia jonë është anëtare e VIOZ, DAIGS dhe FIDS.'},
+   de:{t:'Interreligiöser Dialog',b:'Wir sind stolz auf unsere langjährige Zusammenarbeit mit der Reformierten Kirche Schwamendingen und dem Zürcher Forum der Religionen. Wir organisieren gemeinsame interreligiöse Iftar-Abende — 2025 mit rund 320 Teilnehmenden — und beteiligen uns aktiv an Initiativen gegen Rassismus und für Verständigung zwischen den Gemeinschaften. Unsere Moschee ist Mitglied von VIOZ, DAIGS und FIDS.'}},
+  {icon:'🌙',
+   sq:{t:'Festat Islame',b:'Gjatë muajit të Ramazanit organizojmë iftare të përbashkëta, teravi dhe programe të veçanta për netët e mëdha. Festat e Fitër Bajramit dhe Kurban Bajramit festohen së bashku me namaz, program festiv dhe shoqërim për të gjithë familjet. Kalendarin e ditëve dhe netëve të mëdha e gjeni në faqen tonë.'},
+   de:{t:'Islamische Feste',b:'Während des Ramadans organisieren wir gemeinsame Iftar-Abende, Tarawih-Gebete und besondere Programme für die grossen Nächte. Die Feste Eid al-Fitr und Eid al-Adha feiern wir gemeinsam mit Gebet, festlichem Programm und Beisammensein für alle Familien. Den Kalender der besonderen Tage und Nächte finden Sie auf unserer Website.'}},
+  {icon:'💙',
+   sq:{t:'Ndihmë Humane',b:'Solidariteti është pjesë e misionit tonë. Kemi organizuar aksione bamirësie për familjet në nevojë në Zvicër dhe në trojet tona — përfshirë ndërtimin e një shtëpie për familjen e një dëshmori në Kosovë. Mbledhim sadaka dhe zeqat dhe i shpërndajmë me transparencë të plotë atje ku nevojiten më së shumti.'},
+   de:{t:'Humanitäre Hilfe',b:'Solidarität ist Teil unserer Mission. Wir haben Wohltätigkeitsaktionen für bedürftige Familien in der Schweiz und in unserer Heimat organisiert — einschliesslich des Baus eines Hauses für die Familie eines Gefallenen im Kosovo. Wir sammeln Sadaqa und Zakat und verteilen sie mit voller Transparenz dort, wo sie am dringendsten gebraucht werden.'}},
+  {icon:'🎓',
+   sq:{t:'Ligjëratat e Hoxhës',b:'Çdo javë imami ynë mban ligjërata për tema fetare dhe shoqërore aktuale. Përmes takimit të të rinjve (Jugendtreff) trajtohen tema si "Kurani dhe shkenca moderne" me mysafirë të ftuar si Dr. Lumni Ademi. Ligjëratat janë të hapura për të gjithë — ejani dhe merrni pjesë!'},
+   de:{t:'Vorträge des Imams',b:'Jede Woche hält unser Imam Vorträge zu aktuellen religiösen und gesellschaftlichen Themen. Im Jugendtreff werden Themen wie «Der Koran und die moderne Wissenschaft» mit eingeladenen Gästen wie Dr. Lumni Ademi behandelt. Die Vorträge sind offen für alle — kommen Sie vorbei!'}},
+];
+
+function openActivity(i){
+  const d=ACTIVITY_DETAILS[i];if(!d)return;
+  const L=d[currentLang]||d.sq;
+  document.getElementById('am-icon').textContent=d.icon;
+  document.getElementById('am-title').textContent=L.t;
+  document.getElementById('am-body').textContent=L.b;
+  openModal('activity-modal');
+}
+
+// ── STAT COUNT-UP ──
+function animateStats(){
+  document.querySelectorAll('.stat-num').forEach(el=>{
+    const m=el.textContent.trim().match(/^(\d+)(.*)$/);if(!m)return;
+    const target=+m[1],suffix=m[2]||'',dur=1400,t0=performance.now();
+    function tick(t){
+      const p=Math.min((t-t0)/dur,1),eased=1-Math.pow(1-p,3);
+      el.textContent=Math.round(target*eased)+suffix;
+      if(p<1)requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+}
+
 // ── SCROLL REVEAL ──
 function initScrollReveal() {
   const obs = new IntersectionObserver(entries => {
@@ -847,6 +892,7 @@ async function initApp(){
 }
 initApp();
 initSlideshow();
+animateStats();
 setTimeout(initScrollReveal, 400);
 
 // ── LIVE CLOCK ──
