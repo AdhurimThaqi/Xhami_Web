@@ -450,6 +450,20 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 /* Admin-only elements are hidden until an admin session reveals them */
 .admin-only-el{display:none}
 
+/* ── PAYMENTS PAGE ── */
+.payments-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.payment-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:30px 26px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;transition:transform .25s,box-shadow .25s,border-color .25s}
+.payment-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg);border-color:var(--gold)}
+.payment-icon{width:58px;height:58px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:6px}
+.payment-card h3{font-size:18px;color:var(--green)}
+.payment-card p{font-size:13.5px;color:var(--ink-mid);flex:1;line-height:1.6}
+.payment-card .btn{width:100%;margin-top:8px}
+.membership-cta{margin-top:32px;background:linear-gradient(135deg,var(--green),#1e5c38);border-radius:16px;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;border:1px solid rgba(200,168,75,.4)}
+.membership-cta h3{color:#fff;font-size:21px;margin-bottom:6px}
+.membership-cta p{color:rgba(255,255,255,.75);font-size:14px}
+.membership-cta .btn-primary{background:var(--gold)}
+.membership-cta .btn-primary:hover{background:#b8943b}
+
 /* ── SOCIAL ICONS ── */
 .s-ico{width:16px;height:16px;fill:currentColor;flex-shrink:0}
 .footer-social{width:36px;height:36px;background:rgba(255,255,255,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.85);transition:background .2s,color .2s,transform .2s}
