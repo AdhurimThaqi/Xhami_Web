@@ -110,7 +110,7 @@ async function remoteLoadAll(){
     sb.from('media').select('*').order('created_at',{ascending:true}),
   ]);
   if(posts.error)throw posts.error;
-  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',date:fmtDateEn(p.created_at)}));
+  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',video:p.video||'',date:fmtDateEn(p.created_at)}));
   condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',photo:c.photo||'',postedAt:fmtDateSq(c.created_at)}));
   mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption,kind:m.kind||'image',featured:!!m.featured}));
   try{
@@ -427,6 +427,7 @@ function newsCard(p){
       <div class="news-card-img-placeholder">📰</div>
       ${p.img?`<img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'">`:''}
       <span class="news-card-chip">${p.category}</span>
+      ${p.video?'<span class="news-card-play">▶</span>':''}
     </div>
     <div class="news-card-body">
       <div class="news-card-meta"><span class="news-card-date">📅 ${p.date}</span></div>
@@ -451,6 +452,18 @@ function setFilter(f,el){
   document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');renderNewsPage();
 }
+// Build a responsive video embed from an MP4/YouTube/Facebook URL
+function videoEmbedHtml(url){
+  if(!url)return'';
+  const yt=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([\w-]{11})/);
+  if(yt)return`<div class="article-video"><iframe src="https://www.youtube.com/embed/${yt[1]}" title="YouTube" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>`;
+  if(/facebook\.com|fb\.watch/i.test(url)){
+    if(!fbEmbeddable(url))return`<a class="btn btn-primary" href="${url}" target="_blank" rel="noopener" style="margin-bottom:20px">▶ Shiko videon në Facebook</a>`;
+    return`<div class="article-video"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false" allowfullscreen title="Facebook video"></iframe></div>`;
+  }
+  return`<div class="article-video"><video src="${url}" controls playsinline preload="metadata"></video></div>`;
+}
+
 // ── SINGLE ARTICLE PAGE (own URL via #lajmi-<id>) ──
 function openArticle(id,pushHash=true){
   const p=DB.posts.find(x=>x.id===id);if(!p)return;
@@ -460,7 +473,8 @@ function openArticle(id,pushHash=true){
   const img=document.getElementById('article-img');
   if(p.img){img.src=p.img;img.alt=p.title;img.style.display='block';img.onerror=()=>img.style.display='none';}
   else img.style.display='none';
-  document.getElementById('article-body').innerHTML='<p>'+p.body.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
+  const body='<p>'+p.body.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
+  document.getElementById('article-body').innerHTML=body+videoEmbedHtml(p.video);
   if(pushHash){try{history.pushState(null,'','#lajmi-'+id);}catch(e){}}
   navigate('article');
 }
@@ -731,9 +745,24 @@ function mediaThumbHtml(m,i){
   </div>`;
 }
 
+let mediaFilter='all';
+function setMediaFilter(kind,btn){
+  mediaFilter=kind;
+  document.querySelectorAll('.media-filter-tab').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  renderMediaTab();
+}
 function renderMediaTab(){
   const grid=document.getElementById('media-grid');if(!grid)return;
-  grid.innerHTML=mediaItems.map(mediaThumbHtml).join('');
+  // update counts on the filter tabs
+  const counts={all:mediaItems.length,image:0,video:0,facebook:0,audio:0,pdf:0};
+  mediaItems.forEach(m=>{counts[m.kind]=(counts[m.kind]||0)+1;});
+  Object.entries(counts).forEach(([k,n])=>{const el=document.getElementById('mf-'+k);if(el)el.textContent=n;});
+  // render only the selected kind, keeping each item's original index
+  const rows=mediaItems.map((m,i)=>[m,i]).filter(([m])=>mediaFilter==='all'||m.kind===mediaFilter);
+  grid.innerHTML=rows.map(([m,i])=>mediaThumbHtml(m,i)).join('');
+  const empty=document.getElementById('media-empty');
+  if(empty)empty.style.display=rows.length?'none':'block';
   grid.querySelectorAll('.media-thumb').forEach(el=>{
     el.addEventListener('mouseenter',()=>{const c=el.querySelector('.media-cap');if(c)c.style.opacity='1';});
     el.addEventListener('mouseleave',()=>{const c=el.querySelector('.media-cap');if(c)c.style.opacity='0';});
@@ -1004,6 +1033,21 @@ async function uploadPostImage(ev){
   }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
+// Upload a video straight from the post editor
+async function uploadPostVideo(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  if(!/^video\//.test(f.type)){showToast('Zgjidhni një video!','error');return;}
+  if(f.size>50*1024*1024){showToast('Video deri në 50MB!','error');return;}
+  showToast('⏳ Duke ngarkuar videon...','');
+  try{
+    const url=await uploadToStorage(f);
+    document.getElementById('post-video').value=url;
+    showToast('✅ Video u ngarkua! Tani klikoni Publiko.','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
 // Show/hide member tab (old references compatibility)
 function showMTab(name,el){showAdminTab(name);}
 
@@ -1015,18 +1059,19 @@ function openPostModal(postId){
   editingPostId=postId;
   const isEdit=postId!==null;
   document.getElementById('post-modal-title').textContent=isEdit?'✏️ Edito Artikullin':'✍️ Artikull i ri';
-  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-img').value=p.img||'';}
-  else{['post-title','post-body','post-img'].forEach(id=>document.getElementById(id).value='');}
+  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-img').value=p.img||'';document.getElementById('post-video').value=p.video||'';}
+  else{['post-title','post-body','post-img','post-video'].forEach(id=>document.getElementById(id).value='');}
   openModal('post-modal');
 }
 async function savePost(){
   const title=document.getElementById('post-title').value.trim(),body=document.getElementById('post-body').value.trim();
   if(!title||!body){showToast('Plotësoni titullin dhe përmbajtjen!','error');return;}
   const category=document.getElementById('post-cat').value,img=document.getElementById('post-img').value.trim();
+  const video=document.getElementById('post-video').value.trim();
   if(REMOTE){
     const q=editingPostId!==null
-      ?sb.from('posts').update({title,category,body,img}).eq('id',editingPostId)
-      :sb.from('posts').insert({title,category,body,img});
+      ?sb.from('posts').update({title,category,body,img,video}).eq('id',editingPostId)
+      :sb.from('posts').insert({title,category,body,img,video});
     const {error}=await q;
     if(error){showToast('Gabim: '+error.message,'error');return;}
     await remoteLoadAll();
@@ -1034,7 +1079,7 @@ async function savePost(){
     showToast(editingPostId!==null?'✅ Artikulli u përditësua!':'🎉 Artikulli u publikua!','success');
     return;
   }
-  const data={title,category,body,img,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
+  const data={title,category,body,img,video,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
   if(editingPostId!==null){const i=DB.posts.findIndex(p=>p.id===editingPostId);DB.posts[i]={...DB.posts[i],...data};showToast('✅ Artikulli u përditësua!','success');}
   else{DB.posts.unshift({id:DB.nextPostId++,...data});showToast('🎉 Artikulli u publikua!','success');}
   closeModal('post-modal');saveState();renderAdminNews();renderHomeNews();renderDashboard();

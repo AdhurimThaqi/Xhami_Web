@@ -508,6 +508,20 @@ body.lang-switching .container,body.lang-switching .page{opacity:.55;transition:
 .g-fb-link:hover{filter:brightness(1.1)}
 .media-audio-tile{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:32px;background:linear-gradient(135deg,var(--green),#2d7a4f);color:#fff}
 .media-audio-tile small{font-size:11px;font-weight:600;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Media filter tabs */
+.media-filter-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.media-filter-tab{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);background:var(--white);font-size:13px;font-weight:600;color:var(--ink-mid);font-family:inherit;cursor:pointer;transition:all .2s}
+.media-filter-tab:hover{border-color:var(--green);color:var(--green)}
+.media-filter-tab.active{background:var(--green);border-color:var(--green);color:#fff}
+.mf-count{font-size:11px;font-weight:700;background:rgba(0,0,0,.12);padding:1px 7px;border-radius:10px}
+.media-filter-tab.active .mf-count{background:rgba(255,255,255,.25)}
+
+/* Article video + news card play badge */
+.article-video{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;margin:24px 0;background:#000;box-shadow:var(--shadow)}
+.article-video iframe,.article-video video{position:absolute;inset:0;width:100%;height:100%;border:0}
+.news-card-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(26,74,46,.82);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;padding-left:3px;z-index:1;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:transform .25s}
+.news-card:hover .news-card-play{transform:translate(-50%,-50%) scale(1.12)}
+
 .media-pdf-tile{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:32px;background:linear-gradient(135deg,#b34040,#8c2f2f);color:#fff}
 .media-pdf-tile small{font-size:11px;font-weight:600;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
