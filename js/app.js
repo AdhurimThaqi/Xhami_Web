@@ -1142,6 +1142,14 @@ async function deliverContact(btn,fields,clearIds){
   }
   const label=btn.textContent;
   btn.disabled=true;btn.textContent=currentLang==='de'?'Wird gesendet...':'Duke dërguar...';
+  // Branded sending overlay (same bar as page/login), min 1.6s so it reads as "sending"
+  const overlay=document.getElementById('login-loading');
+  const p=overlay&&overlay.querySelector('p');
+  const prevMsg=p?p.textContent:'';
+  if(p)p.textContent=currentLang==='de'?'Nachricht wird gesendet...':'Duke dërguar mesazhin...';
+  showLoginLoading(true);
+  const t0=Date.now();
+  let okSent=false;
   try{
     const res=await fetch('https://formsubmit.co/ajax/'+CONTACT_EMAIL,{
       method:'POST',
@@ -1154,9 +1162,15 @@ async function deliverContact(btn,fields,clearIds){
       })
     });
     if(!res.ok)throw new Error('HTTP '+res.status);
+    okSent=true;
+  }catch(e){okSent=false;}
+  await new Promise(r=>setTimeout(r,Math.max(0,1600-(Date.now()-t0))));
+  showLoginLoading(false);
+  if(p)p.textContent=prevMsg;
+  if(okSent){
     clearIds.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     showToast(currentLang==='de'?'✅ Nachricht gesendet!':'✅ Mesazhi u dërgua në xhami!','success');
-  }catch(e){
+  }else{
     showToast(currentLang==='de'?'Senden fehlgeschlagen - versuchen Sie es später.':'Dërgimi dështoi - provoni më vonë.','error');
   }
   btn.disabled=false;btn.textContent=label;
