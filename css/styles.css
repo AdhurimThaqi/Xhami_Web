@@ -508,6 +508,10 @@ body.lang-switching .container,body.lang-switching .page{opacity:.55;transition:
 .g-fb-link:hover{filter:brightness(1.1)}
 .media-audio-tile{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:32px;background:linear-gradient(135deg,var(--green),#2d7a4f);color:#fff}
 .media-audio-tile small{font-size:11px;font-weight:600;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Terms & conditions checkbox on registration */
+.terms-check{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--ink-mid);line-height:1.5;margin:6px 0 4px;cursor:pointer}
+.terms-check input{width:17px;height:17px;flex-shrink:0;margin-top:1px;accent-color:var(--green);cursor:pointer}
+
 /* ── ADMIN STATISTICS ── */
 .stats-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px}
 .stat-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;transition:box-shadow .2s,transform .2s}

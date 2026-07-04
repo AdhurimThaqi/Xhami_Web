@@ -397,6 +397,8 @@ async function doRegister(){
   if(!name||!email||!pass){showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;}
   if(pass!==pass2){showToast(currentLang==='de'?'Passwörter stimmen nicht überein!':'Fjalëkalimet nuk përputhen!','error');return;}
   if(pass.length<8){showToast('Min. 8 '+(currentLang==='de'?'Zeichen!':'karaktere!'),'error');return;}
+  const terms=document.getElementById('reg-terms');
+  if(terms&&!terms.checked){showToast(currentLang==='de'?'Bitte akzeptieren Sie die Bedingungen!':'Ju lutem pranoni Kushtet e Përdorimit!','error');return;}
   if(REMOTE){
     const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
     if(error){showToast(error.message,'error');return;}

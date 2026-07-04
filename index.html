@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=22">
+<link rel="stylesheet" href="css/styles.css?v=23">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -88,6 +88,7 @@
       <div class="form-group"><label>Email</label><input type="email" id="reg-email" placeholder="email@example.com"></div>
       <div class="form-group"><label id="lbl-pass2">Fjalëkalimi</label><input type="password" id="reg-pass" placeholder="Min. 8 karaktere"></div>
       <div class="form-group"><label id="lbl-pass3">Konfirmo</label><input type="password" id="reg-pass2" placeholder="••••••••"></div>
+      <label class="terms-check"><input type="checkbox" id="reg-terms"><span data-sq="Pranoj Kushtet e Përdorimit dhe Politikën e Privatësisë" data-de="Ich akzeptiere die Nutzungsbedingungen und die Datenschutzerklärung">Pranoj <a onclick="closeModal('auth-modal');navigate('datenschutz')" style="color:var(--green);font-weight:600;cursor:pointer">Kushtet e Përdorimit dhe Politikën e Privatësisë</a></span></label>
       <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="doRegister()" id="reg-submit-btn">Regjistrohu</button>
     </div>
   </div>
@@ -1091,6 +1092,64 @@
   </div></div></div>
 </div>
 
+<!-- IMPRESSUM -->
+<div class="page" id="page-impressum">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Impressum</span></div>
+    <h1>Impressum</h1>
+  </div></div>
+  <div class="page-content"><div class="container"><div class="prose">
+    <h2 data-sq="Përgjegjës për përmbajtjen" data-de="Verantwortlich für den Inhalt">Përgjegjës për përmbajtjen</h2>
+    <p>
+      <strong>Kulturzentrum Haus des Friedens</strong><br>
+      Qendra Kulturore - Shtëpia e Paqës<br>
+      Saatlenstrasse 23<br>
+      8051 Zürich - Schwamendingen<br>
+      <span data-sq="Zvicër" data-de="Schweiz">Zvicër</span>
+    </p>
+    <h3 data-sq="Kontakti" data-de="Kontakt">Kontakti</h3>
+    <p>
+      E-Mail: <a href="mailto:xhamiaepaqes@hotmail.com" style="color:var(--green);font-weight:600">xhamiaepaqes@hotmail.com</a><br>
+      Web: hausdesfriedens.ch<br>
+      Instagram: @kulturzentrum_hausdesfriedens
+    </p>
+    <h3 data-sq="Forma juridike" data-de="Rechtsform">Forma juridike</h3>
+    <p data-sq="Shoqatë fetare jofitimprurëse sipas Art. 60 e vijues të Kodit Civil Zviceran (ZGB). Anëtare e VIOZ, DAIGS dhe FIDS." data-de="Gemeinnütziger religiöser Verein gemäss Art. 60 ff. des Schweizerischen Zivilgesetzbuches (ZGB). Mitglied von VIOZ, DAIGS und FIDS.">Shoqatë fetare jofitimprurëse sipas Art. 60 e vijues të Kodit Civil Zviceran (ZGB). Anëtare e VIOZ, DAIGS dhe FIDS.</p>
+    <h3 data-sq="Përjashtim përgjegjësie" data-de="Haftungsausschluss">Përjashtim përgjegjësie</h3>
+    <p data-sq="Përmbajtja e kësaj webfaqeje është përgatitur me kujdes. Megjithatë, nuk marrim përgjegjësi për saktësinë, plotësinë ose aktualitetin e informacioneve. Për përmbajtjen e faqeve të jashtme të lidhura përgjigjen vetëm operatorët e tyre." data-de="Die Inhalte dieser Website wurden mit Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr. Für die Inhalte verlinkter externer Seiten sind ausschliesslich deren Betreiber verantwortlich.">Përmbajtja e kësaj webfaqeje është përgatitur me kujdes. Megjithatë, nuk marrim përgjegjësi për saktësinë, plotësinë ose aktualitetin e informacioneve. Për përmbajtjen e faqeve të jashtme të lidhura përgjigjen vetëm operatorët e tyre.</p>
+    <h3 data-sq="E drejta e autorit" data-de="Urheberrecht">E drejta e autorit</h3>
+    <p data-sq="© 2004-2026 Kulturzentrum Haus des Friedens. Të gjitha përmbajtjet (tekstet, fotot, logot) janë pronë e xhamisë dhe mbrohen nga e drejta e autorit. Riprodhimi kërkon leje me shkrim." data-de="© 2004-2026 Kulturzentrum Haus des Friedens. Alle Inhalte (Texte, Bilder, Logos) sind Eigentum der Moschee und urheberrechtlich geschützt. Eine Vervielfältigung bedarf der schriftlichen Genehmigung.">© 2004-2026 Kulturzentrum Haus des Friedens. Të gjitha përmbajtjet (tekstet, fotot, logot) janë pronë e xhamisë dhe mbrohen nga e drejta e autorit. Riprodhimi kërkon leje me shkrim.</p>
+  </div></div></div>
+</div>
+
+<!-- DATENSCHUTZ / PRIVACY -->
+<div class="page" id="page-datenschutz">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Datenschutz</span></div>
+    <h1 data-sq="Politika e Privatësisë" data-de="Datenschutzerklärung">Politika e Privatësisë</h1>
+  </div></div>
+  <div class="page-content"><div class="container"><div class="prose">
+    <p data-sq="Ne e marrim seriozisht mbrojtjen e të dhënave tuaja personale dhe veprojmë në përputhje me Ligjin Zviceran për Mbrojtjen e të Dhënave (revDSG)." data-de="Wir nehmen den Schutz Ihrer persönlichen Daten ernst und handeln im Einklang mit dem Schweizer Datenschutzgesetz (revDSG).">Ne e marrim seriozisht mbrojtjen e të dhënave tuaja personale dhe veprojmë në përputhje me Ligjin Zviceran për Mbrojtjen e të Dhënave (revDSG).</p>
+
+    <h2 data-sq="1. Përgjegjësi" data-de="1. Verantwortliche Stelle">1. Përgjegjësi</h2>
+    <p>Kulturzentrum Haus des Friedens, Saatlenstrasse 23, 8051 Zürich · xhamiaepaqes@hotmail.com</p>
+
+    <h2 data-sq="2. Formulari i kontaktit" data-de="2. Kontaktformular">2. Formulari i kontaktit</h2>
+    <p data-sq="Kur na dërgoni një mesazh, ne mbledhim emrin, email-in, numrin e telefonit dhe përmbajtjen e mesazhit tuaj. Këto të dhëna përdoren vetëm për t'iu përgjigjur kërkesës suaj dhe përcillen përmes shërbimit FormSubmit te email-i ynë. Nuk i ndajmë me palë të treta për qëllime marketingu." data-de="Wenn Sie uns eine Nachricht senden, erheben wir Ihren Namen, Ihre E-Mail, Ihre Telefonnummer und den Inhalt Ihrer Nachricht. Diese Daten werden ausschliesslich zur Beantwortung Ihrer Anfrage verwendet und über den Dienst FormSubmit an unsere E-Mail übermittelt. Wir geben sie nicht zu Marketingzwecken an Dritte weiter.">Kur na dërgoni një mesazh, ne mbledhim emrin, email-in, numrin e telefonit dhe përmbajtjen e mesazhit tuaj. Këto të dhëna përdoren vetëm për t'iu përgjigjur kërkesës suaj dhe përcillen përmes shërbimit FormSubmit te email-i ynë. Nuk i ndajmë me palë të treta për qëllime marketingu.</p>
+
+    <h2 data-sq="3. Statistikat e vizitave" data-de="3. Besuchsstatistik">3. Statistikat e vizitave</h2>
+    <p data-sq="Për të kuptuar sa shpesh vizitohet faqja, ruajmë të dhëna plotësisht anonime: një kod të rastësishëm në shfletuesin tuaj, faqen e vizituar dhe kohën. NUK ruajmë adresa IP, emra apo cookie gjurmuese. Këto të dhëna nuk mund t'ju identifikojnë personalisht." data-de="Um zu verstehen, wie oft die Seite besucht wird, speichern wir vollständig anonyme Daten: einen zufälligen Code in Ihrem Browser, die besuchte Seite und die Uhrzeit. Wir speichern KEINE IP-Adressen, Namen oder Tracking-Cookies. Diese Daten können Sie nicht persönlich identifizieren.">Për të kuptuar sa shpesh vizitohet faqja, ruajmë të dhëna plotësisht anonime: një kod të rastësishëm në shfletuesin tuaj, faqen e vizituar dhe kohën. NUK ruajmë adresa IP, emra apo cookie gjurmuese. Këto të dhëna nuk mund t'ju identifikojnë personalisht.</p>
+
+    <h2 data-sq="4. Llogaria e anëtarit" data-de="4. Mitgliedskonto">4. Llogaria e anëtarit</h2>
+    <p data-sq="Nëse regjistroheni, ruajmë emrin dhe email-in tuaj (fjalëkalimi ruhet i enkriptuar) përmes Supabase, për të mundësuar hyrjen tuaj. Mund të kërkoni fshirjen e llogarisë në çdo kohë." data-de="Wenn Sie sich registrieren, speichern wir Ihren Namen und Ihre E-Mail (das Passwort wird verschlüsselt gespeichert) über Supabase, um Ihre Anmeldung zu ermöglichen. Sie können die Löschung Ihres Kontos jederzeit verlangen.">Nëse regjistroheni, ruajmë emrin dhe email-in tuaj (fjalëkalimi ruhet i enkriptuar) përmes Supabase, për të mundësuar hyrjen tuaj. Mund të kërkoni fshirjen e llogarisë në çdo kohë.</p>
+
+    <h2 data-sq="5. Të drejtat tuaja" data-de="5. Ihre Rechte">5. Të drejtat tuaja</h2>
+    <p data-sq="Ju keni të drejtë të kërkoni qasje, korrigjim ose fshirje të të dhënave tuaja. Për çdo kërkesë na shkruani te xhamiaepaqes@hotmail.com." data-de="Sie haben das Recht, Auskunft, Berichtigung oder Löschung Ihrer Daten zu verlangen. Für jede Anfrage schreiben Sie uns an xhamiaepaqes@hotmail.com.">Ju keni të drejtë të kërkoni qasje, korrigjim ose fshirje të të dhënave tuaja. Për çdo kërkesë na shkruani te xhamiaepaqes@hotmail.com.</p>
+
+    <p style="margin-top:24px;font-size:13px;color:var(--ink-lt)" data-sq="Përditësuar së fundmi: Korrik 2026" data-de="Zuletzt aktualisiert: Juli 2026">Përditësuar së fundmi: Korrik 2026</p>
+  </div></div></div>
+</div>
+
 <!-- MEMBER AREA -->
 <div class="page" id="page-member">
   <div style="background:var(--white);min-height:80vh">
@@ -1437,17 +1496,17 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <div>© 2004-2026 <span>Haus des Friedens</span> · Zürich Schwamendingen</div>
+      <div>© 2004-2026 <span>Kulturzentrum Haus des Friedens</span> · Zürich Schwamendingen · <span data-sq="Të gjitha të drejtat e rezervuara" data-de="Alle Rechte vorbehalten">Të gjitha të drejtat e rezervuara</span></div>
       <div style="display:flex;gap:16px">
-        <span style="color:rgba(255,255,255,.4);font-size:13px">Impressum</span>
-        <span style="color:rgba(255,255,255,.4);font-size:13px">Datenschutz</span>
+        <a onclick="navigate('impressum')" style="color:rgba(255,255,255,.6);font-size:13px;cursor:pointer">Impressum</a>
+        <a onclick="navigate('datenschutz')" style="color:rgba(255,255,255,.6);font-size:13px;cursor:pointer">Datenschutz</a>
       </div>
     </div>
   </div>
 </footer>
 
-<script src="js/config.js?v=22"></script>
+<script src="js/config.js?v=23"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=22"></script>
+<script src="js/app.js?v=23"></script>
 </body>
 </html>
