@@ -1137,7 +1137,7 @@ function deleteAccount(){
 // CONTACT - delivers to the mosque inbox via FormSubmit
 const CONTACT_EMAIL='xhamiaepaqes@hotmail.com';
 async function deliverContact(btn,fields,clearIds){
-  if(!fields.name||!fields.email||!fields.message){
+  if(!fields.name||!fields.email||!fields.phone||!fields.message){
     showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;
   }
   const label=btn.textContent;
@@ -1155,7 +1155,7 @@ async function deliverContact(btn,fields,clearIds){
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({
-        name:fields.name,email:fields.email,
+        name:fields.name,email:fields.email,phone:fields.phone,
         subject:fields.subject||'',message:fields.message,
         _subject:'Mesazh nga webfaqja: '+fields.name,
         _template:'table',_captcha:'false'
@@ -1179,16 +1179,18 @@ function sendContact(){
   deliverContact(document.getElementById('contact-send-btn'),{
     name:document.getElementById('cf-name').value.trim(),
     email:document.getElementById('cf-email').value.trim(),
+    phone:document.getElementById('cf-phone').value.trim(),
     message:document.getElementById('cf-msg').value.trim(),
-  },['cf-name','cf-email','cf-msg']);
+  },['cf-name','cf-email','cf-phone','cf-msg']);
 }
 function sendContact2(){
   deliverContact(document.getElementById('contact-send-btn2'),{
     name:document.getElementById('cf2-name').value.trim(),
     email:document.getElementById('cf2-email').value.trim(),
+    phone:document.getElementById('cf2-phone').value.trim(),
     subject:document.getElementById('cf2-sub').value.trim(),
     message:document.getElementById('cf2-msg').value.trim(),
-  },['cf2-name','cf2-email','cf2-sub','cf2-msg']);
+  },['cf2-name','cf2-email','cf2-phone','cf2-sub','cf2-msg']);
 }
 
 // TOAST

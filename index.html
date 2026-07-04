@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=18">
+<link rel="stylesheet" href="css/styles.css?v=19">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -518,6 +518,7 @@
           <h3 id="contact-form-h3" style="font-size:20px;color:var(--green);margin-bottom:20px">Dërgoni Mesazh</h3>
           <div class="form-group"><label id="cf-name-lbl">Emri juaj</label><input type="text" id="cf-name"></div>
           <div class="form-group"><label>Email</label><input type="email" id="cf-email"></div>
+          <div class="form-group"><label data-sq="Numri i telefonit" data-de="Telefonnummer">Numri i telefonit</label><input type="tel" id="cf-phone" placeholder="+41 ..."></div>
           <div class="form-group"><label id="cf-msg-lbl">Mesazhi</label><textarea id="cf-msg" rows="4"></textarea></div>
           <button class="btn btn-primary" onclick="sendContact()" id="contact-send-btn">Dërgo Mesazhin →</button>
         </div>
@@ -1082,6 +1083,7 @@
       <h3 style="font-size:20px;color:var(--green);margin-bottom:20px" data-sq="Dërgoni Mesazh" data-de="Nachricht senden">Dërgoni Mesazh</h3>
       <div class="form-group"><label data-sq="Emri" data-de="Name">Emri</label><input type="text" id="cf2-name"></div>
       <div class="form-group"><label>Email</label><input type="email" id="cf2-email"></div>
+      <div class="form-group"><label data-sq="Numri i telefonit" data-de="Telefonnummer">Numri i telefonit</label><input type="tel" id="cf2-phone" placeholder="+41 ..."></div>
       <div class="form-group"><label data-sq="Tema" data-de="Betreff">Tema</label><input type="text" id="cf2-sub"></div>
       <div class="form-group"><label data-sq="Mesazhi" data-de="Ihre Nachricht">Mesazhi</label><textarea rows="5" id="cf2-msg"></textarea></div>
       <button class="btn btn-primary" id="contact-send-btn2" onclick="sendContact2()" data-sq="Dërgo →" data-de="Absenden →">Dërgo →</button>
@@ -1408,8 +1410,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=18"></script>
+<script src="js/config.js?v=19"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=18"></script>
+<script src="js/app.js?v=19"></script>
 </body>
 </html>
