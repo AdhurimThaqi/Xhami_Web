@@ -133,6 +133,23 @@ async function saveSetting(key,value){
   return true;
 }
 
+// ── ANALYTICS (privacy-friendly: anonymous token, no IP/PII) ──
+function visitorToken(){
+  let t=null;
+  try{t=localStorage.getItem('hdf_visitor');}catch(e){}
+  if(!t){t='v'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);try{localStorage.setItem('hdf_visitor',t);}catch(e){}}
+  return t;
+}
+async function logAnalytics(kind,path){
+  if(!REMOTE||!sb)return;
+  try{await sb.from('analytics').insert({kind,path:path||'',visitor:visitorToken()});}catch(e){}
+}
+function trackVisit(){
+  // one visit per browser session (survives SPA navigation, not tab reloads)
+  try{if(sessionStorage.getItem('hdf_visited'))return;sessionStorage.setItem('hdf_visited','1');}catch(e){}
+  logAnalytics('visit',location.hash||'/');
+}
+
 async function setUserFromSession(u){
   let role='member',name=(u.user_metadata&&u.user_metadata.name)||u.email;
   const {data:prof}=await sb.from('profiles').select('name,role').eq('id',u.id).maybeSingle();
@@ -1168,6 +1185,7 @@ async function deliverContact(btn,fields,clearIds){
   showLoginLoading(false);
   if(p)p.textContent=prevMsg;
   if(okSent){
+    logAnalytics('contact',location.hash||'/');
     clearIds.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     showToast(currentLang==='de'?'✅ Nachricht gesendet!':'✅ Mesazhi u dërgua në xhami!','success');
   }else{
@@ -1341,6 +1359,7 @@ function showAdminTab(name) {
   if (name === 'members')      renderMembersTab();
   if (name === 'media')        {renderMediaTab();renderActivityPhotosAdmin();}
   if (name === 'partners')     renderPartnersAdmin();
+  if (name === 'stats')        renderStats();
 }
 
 // ── ACTIVITY DETAIL MODAL ──
@@ -1396,6 +1415,78 @@ function initScrollReveal() {
   document.querySelectorAll('.news-card,.activity-card,.acc-item,.g-item,.contact-item,.about-grid,.donations-inner,.partner-card').forEach(el => {
     el.classList.add('reveal'); obs.observe(el);
   });
+}
+
+// ── ADMIN STATISTICS REPORT ──
+async function renderStats(){
+  const empty=document.getElementById('stats-empty');
+  const cards=document.getElementById('stats-cards');
+  if(!REMOTE||!sb){
+    if(empty){empty.style.display='block';empty.textContent='Statistikat kërkojnë lidhje me serverin (Supabase).';}
+    return;
+  }
+  // pull the last 90 days of events (bounded so it stays fast)
+  const since=new Date(Date.now()-90*864e5).toISOString();
+  let rows=[];
+  try{
+    const {data,error}=await sb.from('analytics').select('kind,path,visitor,created_at').gte('created_at',since).order('created_at',{ascending:false});
+    if(error)throw error;
+    rows=data||[];
+  }catch(e){
+    if(empty){empty.style.display='block';empty.textContent='Nuk mund të lexohen statistikat: '+e.message;}
+    return;
+  }
+  const visits=rows.filter(r=>r.kind==='visit');
+  const contacts=rows.filter(r=>r.kind==='contact');
+  if(empty)empty.style.display=(visits.length||contacts.length)?'none':'block';
+
+  const now=new Date();
+  const startOfDay=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x;};
+  const todayStart=startOfDay(now).getTime();
+  const dayMs=864e5;
+  const within=(list,days)=>list.filter(r=>new Date(r.created_at).getTime()>=now.getTime()-days*dayMs).length;
+
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('st-total',visits.length);
+  set('st-unique',new Set(visits.map(v=>v.visitor).filter(Boolean)).size);
+  set('st-today',visits.filter(v=>new Date(v.created_at).getTime()>=todayStart).length);
+  set('st-7',within(visits,7));
+  set('st-contacts',contacts.length);
+  set('st-contacts-30',within(contacts,30));
+
+  // 14-day bar chart
+  const chart=document.getElementById('stats-chart');
+  if(chart){
+    const days=[];
+    for(let i=13;i>=0;i--){
+      const d=startOfDay(new Date(now.getTime()-i*dayMs));
+      days.push({label:d.toLocaleDateString('sq-AL',{day:'numeric',month:'short'}),ts:d.getTime(),count:0});
+    }
+    visits.forEach(v=>{
+      const t=startOfDay(new Date(v.created_at)).getTime();
+      const slot=days.find(d=>d.ts===t);if(slot)slot.count++;
+    });
+    const max=Math.max(1,...days.map(d=>d.count));
+    chart.innerHTML=days.map(d=>`
+      <div class="chart-col" title="${d.label}: ${d.count} vizita">
+        <div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.round(d.count/max*100)}%"><span>${d.count||''}</span></div></div>
+        <div class="chart-x">${d.label}</div>
+      </div>`).join('');
+  }
+
+  // top pages
+  const top=document.getElementById('stats-top-pages');
+  if(top){
+    const names={'/':'Ballina','':'Ballina'};
+    const counts={};
+    visits.forEach(v=>{let p=v.path||'/';if(/^#lajmi-/.test(p))p='Artikull lajmi';else p=names[p]||p;counts[p]=(counts[p]||0)+1;});
+    const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    top.innerHTML=sorted.length?sorted.map(([p,n])=>`
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+        <span style="flex:1;font-size:13.5px;font-weight:600;color:var(--ink)">${p}</span>
+        <span style="font-size:13px;color:var(--green);font-weight:700">${n} vizita</span>
+      </div>`).join(''):'<p style="color:var(--ink-lt);font-size:13px">Ende asnjë faqe e regjistruar.</p>';
+  }
 }
 
 // ── ANIMATED CUSTOM CURSOR ──
@@ -1467,6 +1558,7 @@ async function initApp(){
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
+  trackVisit();
 }
 
 // First-load splash: keep it up ~1.4s (or until data loads), then fade out
