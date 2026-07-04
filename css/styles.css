@@ -85,9 +85,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
   transform:scaleX(0);transform-origin:center;
   transition:transform .25s cubic-bezier(.4,0,.2,1);
 }
-#main-nav > a:hover,.nav-dropdown > a:hover{color:var(--green);background:var(--green-lt)}
+#main-nav > a:hover,.nav-dropdown > a:hover{color:var(--green);background:var(--green-lt);transform:translateY(-2px)}
+#main-nav > a:hover::after,.nav-dropdown > a:hover::after{transform:scaleX(1)}
 #main-nav > a.active,.nav-dropdown > a.active{color:var(--green);background:var(--green-lt)}
 #main-nav > a.active::after,.nav-dropdown > a.active::after{transform:scaleX(1)}
+/* Logo gentle bob on hover */
+.nav-logo:hover .nav-logo-text .top{color:var(--green-mid);transition:color .25s}
 
 /* Ripple */
 .ripple{position:absolute;border-radius:50%;background:rgba(26,74,46,.18);transform:scale(0);animation:rippleAnim .55s linear;pointer-events:none}
@@ -153,7 +156,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .hero-slides{position:absolute;inset:0;z-index:0}
 .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out;background-size:cover;background-position:center}
 .hero-slide.active{opacity:1}
-.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(125deg,rgba(5,25,15,.9) 0%,rgba(10,35,20,.68) 55%,rgba(10,35,20,.28) 100%)}
+.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(120deg,rgba(3,14,8,.72) 0%,rgba(6,20,12,.42) 50%,rgba(6,20,12,.12) 100%)}
 .slide-dots{position:absolute;top:50%;transform:translateY(-50%);right:28px;z-index:3;display:flex;flex-direction:column;gap:8px}
 .slide-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.32);cursor:pointer;transition:all .3s;border:none}
 .slide-dot.active{background:var(--gold);transform:scale(1.35)}
@@ -449,6 +452,23 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 
 /* Admin-only elements are hidden until an admin session reveals them */
 .admin-only-el{display:none}
+
+/* ── FIRST-LOAD SPLASH ── */
+#page-splash{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;background:var(--cream);transition:opacity .5s ease,visibility .5s ease}
+#page-splash.hide{opacity:0;visibility:hidden}
+.splash-name{font-size:12px;font-weight:400;color:var(--ink);text-transform:uppercase;letter-spacing:1.4px;line-height:1.7;text-align:center}
+.splash-name strong{font-weight:700}
+
+/* Section headers: title lifts and gold divider widens on hover */
+.section-header{transition:transform .3s ease}
+.section-header h2{transition:letter-spacing .3s ease,color .3s ease}
+.section-header:hover h2{letter-spacing:.4px}
+.section-header .divider{transition:width .35s cubic-bezier(.34,1.4,.64,1)}
+.section-header:hover .divider{width:90px}
+
+/* Language switch cross-fade */
+#page-home,.page{transition:opacity .3s ease}
+body.lang-switching .container,body.lang-switching .page{opacity:.55;transition:opacity .4s ease}
 
 /* ── LOGIN LOADING OVERLAY ── */
 #login-loading{position:fixed;inset:0;z-index:1500;display:none;align-items:center;justify-content:center;background:rgba(250,248,244,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}

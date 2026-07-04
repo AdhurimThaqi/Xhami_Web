@@ -304,10 +304,14 @@ const T={
   }
 };
 
+let langSwitching=false;
 function setLang(lang){
-  if(currentLang===lang)return;
+  if(currentLang===lang||langSwitching)return;
+  langSwitching=true;
   currentLang=lang;
   document.documentElement.lang=lang==='sq'?'sq':'de';
+  // gentle whole-page cross-fade while the translation swaps over ~1s
+  document.body.classList.add('lang-switching');
   ['btn-sq','btn-de','mob-btn-sq','mob-btn-de'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.classList.toggle('active',id.includes(lang));
@@ -315,15 +319,15 @@ function setLang(lang){
   const htmlIds=['hero-h1','about-h2','about-card-lbl'];
   Object.entries(T[lang]).forEach(([id,val])=>{
     const el=document.getElementById(id);if(!el)return;
-    el.style.transition='opacity .16s';el.style.opacity='0';
+    el.style.transition='opacity .4s';el.style.opacity='0';
     setTimeout(()=>{
       if(htmlIds.includes(id))el.innerHTML=val;else el.textContent=val;
       el.style.opacity='1';
-    },160);
+    },400);
   });
   document.querySelectorAll('[data-sq]').forEach(el=>{
     const v=el.getAttribute('data-'+lang);
-    if(v){el.style.transition='opacity .16s';el.style.opacity='0';setTimeout(()=>{el.textContent=v;el.style.opacity='1';},160);}
+    if(v){el.style.transition='opacity .4s';el.style.opacity='0';setTimeout(()=>{el.textContent=v;el.style.opacity='1';},400);}
   });
   if(currentUser){
     const w=document.getElementById('member-welcome');
@@ -331,6 +335,7 @@ function setLang(lang){
   }
   try{localStorage.setItem('hdf_lang',lang);}catch(e){}
   saveState();
+  setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
 
 // AUTH
@@ -1363,7 +1368,19 @@ async function initApp(){
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
 }
-initApp();
+
+// First-load splash: keep it up ~1.4s (or until data loads), then fade out
+function hideSplash(){
+  const s=document.getElementById('page-splash');
+  if(s)s.classList.add('hide');
+}
+const splashStart=Date.now();
+initApp().finally(()=>{
+  const wait=Math.max(0,1400-(Date.now()-splashStart));
+  setTimeout(hideSplash,wait);
+});
+// Safety net: never let the splash trap the page if init hangs
+setTimeout(hideSplash,4000);
 initSlideshow();
 animateStats();
 setTimeout(initScrollReveal, 400);
