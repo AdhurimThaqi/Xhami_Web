@@ -1396,6 +1396,45 @@ function initScrollReveal() {
   });
 }
 
+// ── ANIMATED CUSTOM CURSOR ──
+function initCursor(){
+  // Only on devices with a precise pointer (desktops); skip touch
+  if(!window.matchMedia||!window.matchMedia('(hover:hover) and (pointer:fine)').matches)return;
+  const mark=document.getElementById('cursor-mark'),ring=document.getElementById('cursor-ring');
+  if(!mark||!ring)return;
+  document.body.classList.add('custom-cursor');
+  let mx=innerWidth/2,my=innerHeight/2;   // mouse target
+  let rx=mx,ry=my;                          // ring (eased, trails behind)
+  window.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    mark.style.transform=`translate(${mx}px,${my}px)`;
+    // hover / text-field detection
+    const t=e.target;
+    const interactive=t.closest&&t.closest('a,button,[onclick],.news-card,.activity-card,.g-item,.partner-card,.lang-btn,.filter-pill,.media-thumb,.audio-row,.acc-header,.slide-dot,.slide-arrow,.sidebar-item,.admin-tab-pill,.media-filter-tab,.payment-card,.dash-card,.quick-action-btn');
+    const isText=t.matches&&t.matches('input,textarea,select,[contenteditable]');
+    document.body.classList.toggle('cursor-hover',!!interactive&&!isText);
+    document.body.classList.toggle('cursor-text',!!isText);
+  },{passive:true});
+  window.addEventListener('mousedown',()=>document.body.classList.add('cursor-down'));
+  window.addEventListener('mouseup',()=>document.body.classList.remove('cursor-down'));
+  window.addEventListener('mouseleave',()=>{mark.style.opacity='0';ring.style.opacity='0';});
+  window.addEventListener('mouseenter',()=>{mark.style.opacity='';ring.style.opacity='';});
+  // ring follows with easing for a smooth trailing effect
+  (function loop(){
+    rx+=(mx-rx)*0.18;ry+=(my-ry)*0.18;
+    ring.style.transform=`translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(loop);
+  })();
+  // click ripple burst in mosque gold
+  window.addEventListener('click',e=>{
+    const r=document.createElement('div');
+    r.className='cursor-burst';
+    r.style.cssText=`left:${e.clientX}px;top:${e.clientY}px`;
+    document.body.appendChild(r);
+    setTimeout(()=>r.remove(),520);
+  });
+}
+
 // ── INIT ──
 async function initApp(){
   if(sb){
@@ -1442,6 +1481,7 @@ initApp().finally(()=>{
 setTimeout(hideSplash,4000);
 initSlideshow();
 animateStats();
+initCursor();
 setTimeout(initScrollReveal, 400);
 
 // ── LIVE CLOCK ──

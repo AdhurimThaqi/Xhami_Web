@@ -8,10 +8,21 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=17">
+<link rel="stylesheet" href="css/styles.css?v=18">
 </head>
 <body>
 <div id="toast-container"></div>
+
+<!-- ANIMATED CURSOR -->
+<div id="cursor-ring"></div>
+<div id="cursor-mark">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="spin">
+    <polygon points="6,20 26,28 26,58 6,50" fill="#161616"/>
+    <polygon points="26,28 58,18 58,46 26,58" fill="#161616"/>
+    <polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/>
+    <polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/>
+  </svg>
+</div>
 
 <!-- FIRST-LOAD SPLASH -->
 <div id="page-splash">
@@ -1397,8 +1408,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=17"></script>
+<script src="js/config.js?v=18"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=17"></script>
+<script src="js/app.js?v=18"></script>
 </body>
 </html>
