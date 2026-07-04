@@ -38,7 +38,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @keyframes slideIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.52);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay{position:fixed;inset:0;background:rgba(8,22,14,.5);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
 .modal-overlay.active{opacity:1;pointer-events:all}
 .modal{background:var(--white);border-radius:16px;padding:36px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;transform:translateY(24px);transition:transform .28s cubic-bezier(.4,0,.2,1);position:relative}
 .modal-overlay.active .modal{transform:translateY(0)}
@@ -70,7 +70,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .nav-logo-text{line-height:1.55}
 .nav-logo-text .top,.nav-logo-text .btm{font-family:'DM Sans',sans-serif;font-size:10.5px;font-weight:400;color:var(--ink);text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
 .nav-logo-text strong{font-weight:700}
-/* Main nav — tighter to stay one line */
+/* Main nav - tighter to stay one line */
 #main-nav{display:flex;align-items:center;gap:2px;margin:0 auto;flex-wrap:nowrap;white-space:nowrap}
 #main-nav > a,.nav-dropdown > a{
   display:inline-flex;align-items:center;gap:4px;
@@ -148,7 +148,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .mob-lang .lang-btn{flex:1;justify-content:center;padding:11px;border-radius:8px;border:1.5px solid var(--border);font-size:13px}
 .mob-lang .lang-btn.active{background:var(--green);color:white;border-color:var(--green)}
 
-/* ═══ HERO — fixed layout, buttons always visible ═══ */
+/* ═══ HERO - fixed layout, buttons always visible ═══ */
 #hero{position:relative;min-height:86vh;display:flex;flex-direction:column;overflow:hidden;background:var(--green)}
 .hero-slides{position:absolute;inset:0;z-index:0}
 .hero-slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease-in-out;background-size:cover;background-position:center}
@@ -161,7 +161,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:1200px){.slide-arrow{display:none}}
 .slide-arrow:hover{background:rgba(255,255,255,.28)}
 .slide-arrow.prev{left:24px}.slide-arrow.next{right:24px}
-.hero-pattern{position:absolute;inset:0;z-index:1;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E")}
 /* Hero body flex-grows to push stats to bottom */
 #hero > .container{flex:1;display:flex;align-items:center;padding-top:96px;padding-bottom:64px;position:relative;z-index:2;width:100%}
 .hero-content{max-width:720px}
@@ -177,7 +176,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .hero-btn-gold:hover{background:#b8943b;border-color:#b8943b;transform:translateY(-2px);box-shadow:0 8px 28px rgba(200,168,75,.5)}
 .hero-btn-outline{background:rgba(255,255,255,.1);color:#fff;border:2px solid rgba(255,255,255,.5);backdrop-filter:blur(6px)}
 .hero-btn-outline:hover{background:rgba(255,255,255,.2);border-color:#fff;transform:translateY(-2px)}
-/* Stats bar — pinned at very bottom of hero inside flex */
+/* Stats bar - pinned at very bottom of hero inside flex */
 .hero-stats{position:relative;z-index:2;background:rgba(4,20,12,.55);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.12)}
 .hero-stats-inner{display:grid;grid-template-columns:repeat(4,1fr);max-width:760px;margin:0 auto}
 .stat-item{padding:18px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.1)}
@@ -185,14 +184,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 .stat-num{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);font-weight:700}
 .stat-lbl{font-size:10.5px;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:1px;margin-top:3px}
 
-/* PRAYER STRIP — utility bar linking to live SwissMosque times */
+/* PRAYER STRIP - utility bar linking to live SwissMosque times */
 #prayer-strip{background:var(--green);border-bottom:3px solid var(--gold);padding:13px 0}
 .prayer-inner{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
 .prayer-clock{display:flex;align-items:baseline;gap:12px;color:#fff}
 .prayer-clock-time{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;min-width:104px}
 .prayer-clock-date{font-size:12.5px;opacity:.78;letter-spacing:.4px}
-.prayer-live-link{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.24);padding:9px 20px;border-radius:24px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .2s,transform .2s}
-.prayer-live-link:hover{background:rgba(255,255,255,.2);transform:translateY(-1px)}
+.prayer-live-link{display:inline-flex;align-items:center;gap:9px;background:var(--gold);border:none;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;letter-spacing:.3px;box-shadow:0 3px 14px rgba(200,168,75,.4);transition:background .2s,transform .2s,box-shadow .2s}
+.prayer-live-link:hover{background:#b8943b;transform:translateY(-2px);box-shadow:0 6px 20px rgba(200,168,75,.5)}
+.prayer-live-link .live-dot{background:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.35);animation:livePulse 2s infinite}
 .prayer-addr{font-size:12.5px;color:rgba(255,255,255,.72)}
 
 /* ABOUT */
@@ -660,7 +660,7 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 /* Toast bounce */
 .toast{animation:slideIn .35s cubic-bezier(.34,1.56,.64,1)}
 
-/* Nav link underline animation already in place – enhance */
+/* Nav link underline animation already in place - enhance */
 #main-nav > a,.nav-dropdown > a{transition:color .18s,background .18s,transform .15s}
 #main-nav > a:active{transform:scale(.96)}
 

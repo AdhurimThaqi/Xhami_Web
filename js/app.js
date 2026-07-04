@@ -46,8 +46,8 @@ const DB={
   users:[{id:1,name:'Admin User',email:'admin@hausdesfriedens.ch',password:'admin123',role:'admin'},{id:2,name:'Anëtar Demo',email:'demo@test.ch',password:'demo1234',role:'member'}],
   posts:[
     {id:1,title:'Iftar i përbashkët në Schwamendingen',category:'Aktivitete',date:'March 2, 2026',body:'Të shtunën, në mbrëmjen e 28 shkurt 2026, Xhamia e Schwamendingen organizoi iftar të përbashkët ndërfetar. Ky event ishte shembull i shkëlqyer i dialogut ndërfetar dhe respektit të ndërsjellë në Cyrih.',img:'https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg'},
-    {id:2,title:'Shenjë kundër racizmit antimusliman',category:'Bashkëpunimi',date:'May 25, 2025',body:'"Ne të gjithë i përkasim Zvicrës" – një shenjë e fuqishme kundër racizmit antimusliman dhe antisemitizmit. Xhamia jonë bashkë me organizata tjera mori pjesë në këtë iniciativë të rëndësishme.',img:''},
-    {id:3,title:'Takimi me rininë – Jugendtreff',category:'Aktivitete',date:'May 23, 2025',body:'Falënderim i madh për Dr. Lumni Ademi për ligjëratën jashtëzakonisht interesante me temën "Kurani dhe shkenca moderne". Jugendtreff vazhdon të jetë hapësirë frytdhënëse.',img:''},
+    {id:2,title:'Shenjë kundër racizmit antimusliman',category:'Bashkëpunimi',date:'May 25, 2025',body:'"Ne të gjithë i përkasim Zvicrës" - një shenjë e fuqishme kundër racizmit antimusliman dhe antisemitizmit. Xhamia jonë bashkë me organizata tjera mori pjesë në këtë iniciativë të rëndësishme.',img:''},
+    {id:3,title:'Takimi me rininë - Jugendtreff',category:'Aktivitete',date:'May 23, 2025',body:'Falënderim i madh për Dr. Lumni Ademi për ligjëratën jashtëzakonisht interesante me temën "Kurani dhe shkenca moderne". Jugendtreff vazhdon të jetë hapësirë frytdhënëse.',img:''},
     {id:4,title:'Kuvendi i rregullt i Xhamisë 2026',category:'Lajme',date:'March 31, 2026',body:'Kuvendi vjetor i rregullt i xhamisë u mbajt me sukses. Anëtarët diskutuan planin e aktiviteteve, buxhetin dhe çështje të tjera të rëndësishme për komunitetin tonë.',img:''},
     {id:5,title:'Pranimi i Imamëve nga Qyteti i Cyrihut',category:'Lajme',date:'May 28, 2025',body:'Imamët e xhamive të Cyrihut u pritën zyrtarisht nga Qyteti i Cyrihut. Kjo takim u bë rast për dialog dhe forcim të marrëdhënieve ndërmjet institucioneve fetare dhe pushtetit lokal.',img:''},
     {id:6,title:'Bashkatdhetarët ndërtuan shtëpi për familjen e dëshmorit',category:'Lajme',date:'April 10, 2019',body:'Me ndihmën e xhematit të xhamisë Schwamendingen, familja e Fadil Sylejmanit mori shtëpi të re. Ky akt solidariteti tregoi fuqinë e komunitetit tonë.',img:''},
@@ -58,7 +58,7 @@ let currentUser=null,currentFilter='ALL',editingPostId=null,currentLang='sq';
 
 // ═══════════════════════════════════════
 //  PERSISTENCE (localStorage)
-//  Interim storage until the real backend lands — same shape the
+//  Interim storage until the real backend lands - same shape the
 //  future API will use, so swapping it out stays a one-file change.
 const STORE_KEY='hdf_state_v1';
 
@@ -202,13 +202,13 @@ const T={
     'nav-subtitle':'Shtëpia e Paqës • Zürich','hero-badge':'🕌 Zürich Schwamendingen • Est. 2004',
     'hero-h1':'Kulturzentrum<br><em>Haus des Friedens</em><br>Shtëpia e Paqës',
     'hero-quote-text':'O ju njerëz, vërtet Ne ju krijuam prej një mashkulli dhe një femre, ju bëmë popuj e fise që të njiheni ndërmjet vete, e s\'ka dyshim se te All-llahu më i ndershmi ndër ju është ai që më tepër është ruajtur.',
-    'hero-quote-cite':'— Kurani i Shenjtë, El-Huxhurat 49:13',
+    'hero-quote-cite':'- Kurani i Shenjtë, El-Huxhurat 49:13',
     'hero-btn1':'Lajmet e Fundit','hero-btn2':'Anëtarësohu',
     'stat1-lbl':'Themeluar','stat2-lbl':'Vjet Shërbim','stat3-lbl':'Shqiptar','stat4-lbl':'Organizata Partnere',
     'pn-sabah':'Sabahu','pn-dreka':'Dreka','pn-ikindia':'Ikindia','pn-akshami':'Akshami','pn-jacia':'Jacia',
     'about-badge':'🕌 Rreth Nesh','about-h2':'Qendra Kulturore<br>Islame Shqiptare',
     'about-p1':'Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Është vend ku çdo besimtar ka të drejtë t\'i kryejë ritet e tij fetare.',
-    'about-p2':'Shumica e besimtarëve, mbi 90%, janë shqiptarë nga trojet tona etnike – Shqipëria, Kosova, Maqedonia, Lugina e Preshevës.',
+    'about-p2':'Shumica e besimtarëve, mbi 90%, janë shqiptarë nga trojet tona etnike - Shqipëria, Kosova, Maqedonia, Lugina e Preshevës.',
     'about-btn':'Lexo Historikun →','about-card-lbl':'Adresa e re<br>Saatlenstr. 23',
     'news-badge':'📰 Lajmet','news-h2':'Lajmet e Fundit','news-sub':'Ndiqni aktivitetet dhe lajmet e xhamisë sonë','news-all-btn':'Shiko të gjitha lajmet →',
     'act-badge':'Aktivitetet','act-h2':'Çfarë Ofrojmë','act-sub':'Xhamia jonë është qendër e jetës fetare, kulturore dhe sociale',
@@ -219,19 +219,19 @@ const T={
     'act5-h':'Ndihmë Humane','act5-p':'Ndihma për familjet në nevojë dhe projekte humanitare.',
     'act6-h':'Ligjëratat e Hoxhës','act6-p':'Ligjërata javore të imamit për komunitetin tonë.',
     'prayer-badge':'Namazi','prayer-h2':'Kohët e Namazit 2026','prayer-sub':'Shkarkoni kalendarin e kohëve të namazit për çdo muaj',
-    'live-label':'Live — Orari i namazit','open-new-tab':'Hap në tab të re','iframe-credit':'Orari shfaqet drejtpërdrejt nga SwissMosque TV',
+    'live-label':'Live - Orari i namazit','open-new-tab':'Hap në tab të re','iframe-credit':'Orari shfaqet drejtpërdrejt nga SwissMosque TV',
     'prayer-special-btn':'📥 Ditë dhe netë të mëdha fetare 2026',
     'ps1':'Namazi i Sabahut','ps1-s':'Mëngjes','ps2':'Namazi i Drekës','ps2-s':'Mesdite',
     'ps3':'Namazi i Ikindisë','ps3-s':'Pasdite','ps4':'Namazi i Akshamit','ps4-s':'Mbrëmje','ps5':'Namazi i Jacisë','ps5-s':'Natë','ps6':'Kohët e Namazit Live',
     'don-badge':'💚 Ndihmat Tuaja','don-h2':'Mbështesni Xhaminë Tonë',
     'don-p':'Mbështetja juaj financiare ndihmon xhaminë të vazhdojë shërbimin ndaj komunitetit. Ju jemi mirënjohës për çdo ndihmë!',
     'bank-name-lbl':'Emri','bank-addr-lbl':'Adresa','bank-konto-lbl':'Konto',
-    'don-circle-p':'Bamirësi — Sadaka','don-circle-strong':'🤲 Jepni','don-circle-small':'Me zemër të hapur',
+    'don-circle-p':'Bamirësi - Sadaka','don-circle-strong':'🤲 Jepni','don-circle-small':'Me zemër të hapur',
     'gallery-badge':'Galeria','gallery-h2':'Galeria e Fotografive',
     'contact-badge':'Kontakti','contact-h2':'Na Kontaktoni','contact-info-h3':'Informacione të Kontaktit',
     'ci-addr-lbl':'Adresa','ci-prayer-lbl':'Koha e Namazeve','ci-prayer-p':'Pesë herë në ditë · Sipas orarit të publikuar',
     'contact-form-h3':'Dërgoni Mesazh','cf-name-lbl':'Emri juaj','cf-msg-lbl':'Mesazhi','contact-send-btn':'Dërgo Mesazhin →',
-    'footer-desc':'Kulturzentrum Haus des Friedens – Qendra Kulturore Islame Shqiptare në Zürich Schwamendingen. Themeluar 2004.',
+    'footer-desc':'Kulturzentrum Haus des Friedens - Qendra Kulturore Islame Shqiptare në Zürich Schwamendingen. Themeluar 2004.',
     'footer-col1-h':'Rreth Nesh','footer-col2-h':'Shërbime','footer-col3-h':'Kontakti',
     'footer-history':'Historiku','footer-statute':'Rregullorja','footer-imam':'Imami','footer-activities':'Aktivitetet',
     'footer-islamic':'Festat Islame','footer-quran':'Kurani','footer-lectures':'Ligjëratat','footer-membership':'Anëtarësimi','footer-contact-link':'Dërgoni mesazh',
@@ -254,13 +254,13 @@ const T={
     'nav-subtitle':'Haus des Friedens • Zürich','hero-badge':'🕌 Zürich Schwamendingen • Gegr. 2004',
     'hero-h1':'Kulturzentrum<br><em>Haus des Friedens</em><br>Moschee Schwamendingen',
     'hero-quote-text':'O ihr Menschen! Wir haben euch aus einem Mann und einer Frau erschaffen und euch zu Völkern und Stämmen gemacht, damit ihr einander kennenlernt. Der Edelste von euch bei Allah ist der Gottesfürchtigste.',
-    'hero-quote-cite':'— Der Heilige Quran, Al-Hujurat 49:13',
+    'hero-quote-cite':'- Der Heilige Quran, Al-Hujurat 49:13',
     'hero-btn1':'Aktuelle Neuigkeiten','hero-btn2':'Mitglied werden',
     'stat1-lbl':'Gegründet','stat2-lbl':'Jahre Dienst','stat3-lbl':'Albanischsprachig','stat4-lbl':'Partnerorganisationen',
     'pn-sabah':'Fadschr','pn-dreka':'Dhuhr','pn-ikindia':'Asr','pn-akshami':'Maghrib','pn-jacia':'Ischa',
     'about-badge':'🕌 Über uns','about-h2':'Islamisches<br>Kulturzentrum',
     'about-p1':'Das „Jugendkulturzentrum Haus des Friedens" wurde 2004 gegründet. Es ist ein Ort, an dem jeder Gläubige das Recht hat, seine religiösen Pflichten zu erfüllen.',
-    'about-p2':'Die Mehrheit der Gläubigen – über 90% – sind Albaner aus Albanien, Kosovo, Nordmazedonien und dem Presevo-Tal.',
+    'about-p2':'Die Mehrheit der Gläubigen - über 90% - sind Albaner aus Albanien, Kosovo, Nordmazedonien und dem Presevo-Tal.',
     'about-btn':'Geschichte lesen →','about-card-lbl':'Neue Adresse<br>Saatlenstr. 23',
     'news-badge':'📰 Neuigkeiten','news-h2':'Aktuelle Nachrichten','news-sub':'Bleiben Sie über die Aktivitäten unserer Moschee informiert','news-all-btn':'Alle Nachrichten anzeigen →',
     'act-badge':'Aktivitäten','act-h2':'Was wir anbieten','act-sub':'Unsere Moschee ist ein Zentrum des religiösen, kulturellen und sozialen Lebens',
@@ -271,19 +271,19 @@ const T={
     'act5-h':'Humanitäre Hilfe','act5-p':'Unterstützung für bedürftige Familien und humanitäre Projekte.',
     'act6-h':'Imam-Vorträge','act6-p':'Wöchentliche Vorträge des Imams für unsere Gemeinschaft.',
     'prayer-badge':'Gebet','prayer-h2':'Gebetszeiten 2026','prayer-sub':'Laden Sie den Gebetszeitenkalender für jeden Monat herunter',
-    'live-label':'Live — Gebetszeiten','open-new-tab':'In neuem Tab öffnen','iframe-credit':'Die Zeiten werden direkt von SwissMosque TV angezeigt',
+    'live-label':'Live - Gebetszeiten','open-new-tab':'In neuem Tab öffnen','iframe-credit':'Die Zeiten werden direkt von SwissMosque TV angezeigt',
     'prayer-special-btn':'📥 Besondere islamische Tage und Nächte 2026',
     'ps1':'Morgengebet (Fadschr)','ps1-s':'Morgen','ps2':'Mittagsgebet (Dhuhr)','ps2-s':'Mittag',
     'ps3':'Nachmittagsgebet (Asr)','ps3-s':'Nachmittag','ps4':'Abendgebet (Maghrib)','ps4-s':'Abend','ps5':'Nachtgebet (Ischa)','ps5-s':'Nacht','ps6':'Gebetszeiten Live',
     'don-badge':'💚 Ihre Spende','don-h2':'Unterstützen Sie unsere Moschee',
     'don-p':'Ihre finanzielle Unterstützung hilft der Moschee, weiterhin der Gemeinschaft zu dienen. Wir sind für jede Hilfe dankbar!',
     'bank-name-lbl':'Name','bank-addr-lbl':'Adresse','bank-konto-lbl':'Konto',
-    'don-circle-p':'Wohltätigkeit — Sadaqa','don-circle-strong':'🤲 Spenden','don-circle-small':'Von ganzem Herzen',
+    'don-circle-p':'Wohltätigkeit - Sadaqa','don-circle-strong':'🤲 Spenden','don-circle-small':'Von ganzem Herzen',
     'gallery-badge':'Galerie','gallery-h2':'Fotogalerie',
     'contact-badge':'Kontakt','contact-h2':'Kontaktieren Sie uns','contact-info-h3':'Kontaktinformationen',
     'ci-addr-lbl':'Adresse','ci-prayer-lbl':'Gebetszeiten','ci-prayer-p':'Fünfmal täglich · Gemäß veröffentlichtem Zeitplan',
     'contact-form-h3':'Nachricht senden','cf-name-lbl':'Ihr Name','cf-msg-lbl':'Ihre Nachricht','contact-send-btn':'Nachricht absenden →',
-    'footer-desc':'Kulturzentrum Haus des Friedens – Islamisches Kulturzentrum in Zürich Schwamendingen. Gegründet 2004.',
+    'footer-desc':'Kulturzentrum Haus des Friedens - Islamisches Kulturzentrum in Zürich Schwamendingen. Gegründet 2004.',
     'footer-col1-h':'Über uns','footer-col2-h':'Dienstleistungen','footer-col3-h':'Kontakt',
     'footer-history':'Geschichte','footer-statute':'Satzung','footer-imam':'Imam','footer-activities':'Aktivitäten',
     'footer-islamic':'Islamische Feste','footer-quran':'Quran','footer-lectures':'Vorträge','footer-membership':'Mitgliedschaft','footer-contact-link':'Nachricht senden',
@@ -393,17 +393,25 @@ async function doRegister(){
   DB.users.push(nu);currentUser=nu;closeModal('auth-modal');updateAuthUI();saveState();
   showToast((currentLang==='de'?'Konto erstellt! Willkommen, ':'Llogaria u krijua! Mirë se vini, ')+name+'!','success');
 }
-function doLogout(){
-  if(REMOTE)sb.auth.signOut();
-  currentUser=null;updateAuthUI();saveState();navigate('home');
-  showToast(currentLang==='de'?'Erfolgreich abgemeldet.':'U dilët nga llogaria.','');
+async function doLogout(){
+  const overlay=document.getElementById('login-loading');
+  const label=overlay&&overlay.querySelector('p');
+  if(label)label.textContent=currentLang==='de'?'Abmeldung...':'Duke u çkyçur...';
+  showLoginLoading(true);
+  if(REMOTE)await sb.auth.signOut();
+  currentUser=null;updateAuthUI();saveState();
+  await new Promise(r=>setTimeout(r,1400));
+  navigate('home');
+  showLoginLoading(false);
+  if(label)label.textContent=currentLang==='de'?'Anmeldung läuft...':'Duke u kyçur...';
+  showToast(currentLang==='de'?'Erfolgreich abgemeldet.':'U çkyçët nga llogaria.','');
 }
 function updateAuthUI(){
   const area=document.getElementById('auth-nav-area');
   if(currentUser){
     area.innerHTML=`<div style="display:flex;align-items:center;gap:8px;cursor:pointer" onclick="navigate('member')"><div class="user-avatar">${currentUser.name.charAt(0)}</div><span style="font-size:13px;font-weight:600;color:var(--ink)">${currentUser.name.split(' ')[0]}</span></div>`;
   }else{
-    area.innerHTML=`<button class="btn btn-outline" onclick="openModal('auth-modal')" style="padding:8px 18px;font-size:13px">${currentLang==='de'?'Anmelden':'Hyrja'}</button>`;
+    area.innerHTML=`<button class="btn btn-outline" onclick="openModal('auth-modal')" style="padding:8px 18px;font-size:13px">${currentLang==='de'?'Als Admin anmelden':'Kyqu si Admin'}</button>`;
   }
 }
 
@@ -469,9 +477,9 @@ function openNewsModal(id){
 // ── PARTNERS ──
 let partners=[
   {name:'Parandalo.ch',url:'https://parandalo.ch',logo:''},
-  {name:'VIOZ – Vereinigung der Islamischen Organisationen in Zürich',url:'',logo:''},
-  {name:'DAIGS – Dachverband der Albanisch-Islamischen Gemeinschaften',url:'',logo:''},
-  {name:'FIDS – Föderation Islamischer Dachorganisationen Schweiz',url:'',logo:''},
+  {name:'VIOZ - Vereinigung der Islamischen Organisationen in Zürich',url:'',logo:''},
+  {name:'DAIGS - Dachverband der Albanisch-Islamischen Gemeinschaften',url:'',logo:''},
+  {name:'FIDS - Föderation Islamischer Dachorganisationen Schweiz',url:'',logo:''},
   {name:'Zürcher Forum der Religionen',url:'',logo:''},
 ];
 
@@ -498,7 +506,7 @@ function renderPartnersAdmin(){
       <div style="width:40px;height:40px;border-radius:8px;background:var(--green-lt);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
         ${p.logo?`<img src="${p.logo}" style="width:100%;height:100%;object-fit:contain">`:`<strong style="color:var(--green)">${p.name.charAt(0)}</strong>`}
       </div>
-      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</strong><small style="color:var(--ink-lt)">${p.url||'—'}</small></div>
+      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</strong><small style="color:var(--ink-lt)">${p.url||'-'}</small></div>
       <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deletePartner(${i})">🗑️</button>
     </div>`).join('');
 }
@@ -650,7 +658,7 @@ function detectMediaKind(url){
   if(/\.pdf(\?|$)/i.test(url))return'pdf';
   return'image';
 }
-// Facebook Reels and share/watch short links refuse to embed — link out instead
+// Facebook Reels and share/watch short links refuse to embed - link out instead
 function fbEmbeddable(url){return !/\/reel\/|fb\.watch|\/share\//i.test(url);}
 
 async function resizeImage(file,maxW=1600,quality=.85){
@@ -773,7 +781,7 @@ function renderActivityPhotosAdmin(){
     return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
       <span style="font-size:20px">${d.icon}</span>
       <strong style="flex:1;font-size:13px">${d.sq.t}</strong>
-      ${url?`<img src="${url}" style="width:44px;height:32px;object-fit:cover;border-radius:6px">`:'<span style="font-size:12px;color:var(--ink-lt)">—</span>'}
+      ${url?`<img src="${url}" style="width:44px;height:32px;object-fit:cover;border-radius:6px">`:'<span style="font-size:12px;color:var(--ink-lt)">-</span>'}
       <button class="btn-edit" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="openPhotoPicker('act_photo_${i}')">🖼️ Zgjidh</button>
       ${url?`<button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="clearActivityPhoto(${i})">✕</button>`:''}
     </div>`;
@@ -924,7 +932,7 @@ function playerClose(){
 }
 function updatePlayerBar(){
   const a=pAudio(),t=audioQueue[audioIndex];
-  document.getElementById('pb-title').textContent=t?(t.cap||'Audio'):'—';
+  document.getElementById('pb-title').textContent=t?(t.cap||'Audio'):'-';
   document.getElementById('pb-toggle').textContent=a.paused?'▶':'⏸';
   document.getElementById('pb-cur').textContent=fmtTime(a.currentTime);
   document.getElementById('pb-dur').textContent=fmtTime(a.duration);
@@ -1076,7 +1084,7 @@ function deleteAccount(){
   DB.users=DB.users.filter(u=>u.id!==currentUser.id);doLogout();saveState();showToast('Llogaria u fshi.','');
 }
 
-// CONTACT — delivers to the mosque inbox via FormSubmit
+// CONTACT - delivers to the mosque inbox via FormSubmit
 const CONTACT_EMAIL='xhamiaepaqes@hotmail.com';
 async function deliverContact(btn,fields,clearIds){
   if(!fields.name||!fields.email||!fields.message){
@@ -1099,7 +1107,7 @@ async function deliverContact(btn,fields,clearIds){
     clearIds.forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
     showToast(currentLang==='de'?'✅ Nachricht gesendet!':'✅ Mesazhi u dërgua në xhami!','success');
   }catch(e){
-    showToast(currentLang==='de'?'Senden fehlgeschlagen — versuchen Sie es später.':'Dërgimi dështoi — provoni më vonë.','error');
+    showToast(currentLang==='de'?'Senden fehlgeschlagen - versuchen Sie es später.':'Dërgimi dështoi - provoni më vonë.','error');
   }
   btn.disabled=false;btn.textContent=label;
 }
@@ -1208,7 +1216,7 @@ function renderCondolenceAdmin() {
     <div class="condolence-card">
       <div class="condolence-card-header">
         ${c.photo?`<img src="${c.photo}" alt="${c.name}" class="cond-photo" onerror="this.outerHTML='<div style=font-size:28px>🕊️</div>'">`:'<div style="font-size:28px">🕊️</div>'}
-        <div><h3>${c.name}</h3><p>${c.born ? c.born + ' – ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
+        <div><h3>${c.name}</h3><p>${c.born ? c.born + ' - ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
       </div>
       <div class="condolence-card-body">
         ${c.msg ? `<p style="font-style:italic">"${c.msg}"</p>` : ''}
@@ -1232,7 +1240,7 @@ function renderCondolencesPublic() {
     <div class="condolence-card" style="margin-bottom:20px;animation:fadeUpIn .4s ease">
       <div class="condolence-card-header">
         ${c.photo?`<img src="${c.photo}" alt="${c.name}" class="cond-photo" onerror="this.outerHTML='<div style=font-size:32px>🕊️</div>'">`:'<div style="font-size:32px">🕊️</div>'}
-        <div><h3>${c.name}</h3><p>${c.born ? c.born + ' – ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
+        <div><h3>${c.name}</h3><p>${c.born ? c.born + ' - ' : ''}${c.date ? new Date(c.date).toLocaleDateString('sq-AL',{day:'numeric',month:'long',year:'numeric'}) : ''} ${c.city ? '· ' + c.city : ''}</p></div>
       </div>
       <div class="condolence-card-body">
         <div class="arabic-small">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</div>
@@ -1278,17 +1286,17 @@ const ACTIVITY_DETAILS=[
    sq:{t:'Arsimi Fetar',b:'Ofrojmë mësim-besim për fëmijë dhe të rinj: leximi i Kuranit, edukata islame dhe historia e Islamit, të përshtatura sipas moshës. Mësimet mbahen gjatë fundjavës në ambientet e xhamisë dhe udhëhiqen nga imami ynë. Qëllimi ynë është që brezat e rinj të rriten me identitet të shëndoshë fetar dhe integrim të suksesshëm në shoqërinë zvicerane.'},
    de:{t:'Religiöse Bildung',b:'Wir bieten Religionsunterricht für Kinder und Jugendliche an: Koranlesen, islamische Erziehung und Geschichte des Islams, altersgerecht aufbereitet. Der Unterricht findet am Wochenende in den Räumen der Moschee statt und wird von unserem Imam geleitet. Unser Ziel ist, dass junge Generationen mit einer gesunden religiösen Identität und erfolgreicher Integration in die Schweizer Gesellschaft aufwachsen.'}},
   {icon:'🤝',
-   sq:{t:'Dialog Ndërfetar',b:'Jemi krenarë për bashkëpunimin tonë të gjatë me Kishën Reformierte të Schwamendingen dhe Zürcher Forum der Religionen. Organizojmë iftare të përbashkëta ndërfetare — në vitin 2025 me rreth 320 pjesëmarrës — dhe marrim pjesë aktive në nismat kundër racizmit dhe për mirëkuptim mes komuniteteve. Xhamia jonë është anëtare e VIOZ, DAIGS dhe FIDS.'},
-   de:{t:'Interreligiöser Dialog',b:'Wir sind stolz auf unsere langjährige Zusammenarbeit mit der Reformierten Kirche Schwamendingen und dem Zürcher Forum der Religionen. Wir organisieren gemeinsame interreligiöse Iftar-Abende — 2025 mit rund 320 Teilnehmenden — und beteiligen uns aktiv an Initiativen gegen Rassismus und für Verständigung zwischen den Gemeinschaften. Unsere Moschee ist Mitglied von VIOZ, DAIGS und FIDS.'}},
+   sq:{t:'Dialog Ndërfetar',b:'Jemi krenarë për bashkëpunimin tonë të gjatë me Kishën Reformierte të Schwamendingen dhe Zürcher Forum der Religionen. Organizojmë iftare të përbashkëta ndërfetare - në vitin 2025 me rreth 320 pjesëmarrës - dhe marrim pjesë aktive në nismat kundër racizmit dhe për mirëkuptim mes komuniteteve. Xhamia jonë është anëtare e VIOZ, DAIGS dhe FIDS.'},
+   de:{t:'Interreligiöser Dialog',b:'Wir sind stolz auf unsere langjährige Zusammenarbeit mit der Reformierten Kirche Schwamendingen und dem Zürcher Forum der Religionen. Wir organisieren gemeinsame interreligiöse Iftar-Abende - 2025 mit rund 320 Teilnehmenden - und beteiligen uns aktiv an Initiativen gegen Rassismus und für Verständigung zwischen den Gemeinschaften. Unsere Moschee ist Mitglied von VIOZ, DAIGS und FIDS.'}},
   {icon:'🌙',
    sq:{t:'Festat Islame',b:'Gjatë muajit të Ramazanit organizojmë iftare të përbashkëta, teravi dhe programe të veçanta për netët e mëdha. Festat e Fitër Bajramit dhe Kurban Bajramit festohen së bashku me namaz, program festiv dhe shoqërim për të gjithë familjet. Kalendarin e ditëve dhe netëve të mëdha e gjeni në faqen tonë.'},
    de:{t:'Islamische Feste',b:'Während des Ramadans organisieren wir gemeinsame Iftar-Abende, Tarawih-Gebete und besondere Programme für die grossen Nächte. Die Feste Eid al-Fitr und Eid al-Adha feiern wir gemeinsam mit Gebet, festlichem Programm und Beisammensein für alle Familien. Den Kalender der besonderen Tage und Nächte finden Sie auf unserer Website.'}},
   {icon:'💙',
-   sq:{t:'Ndihmë Humane',b:'Solidariteti është pjesë e misionit tonë. Kemi organizuar aksione bamirësie për familjet në nevojë në Zvicër dhe në trojet tona — përfshirë ndërtimin e një shtëpie për familjen e një dëshmori në Kosovë. Mbledhim sadaka dhe zeqat dhe i shpërndajmë me transparencë të plotë atje ku nevojiten më së shumti.'},
-   de:{t:'Humanitäre Hilfe',b:'Solidarität ist Teil unserer Mission. Wir haben Wohltätigkeitsaktionen für bedürftige Familien in der Schweiz und in unserer Heimat organisiert — einschliesslich des Baus eines Hauses für die Familie eines Gefallenen im Kosovo. Wir sammeln Sadaqa und Zakat und verteilen sie mit voller Transparenz dort, wo sie am dringendsten gebraucht werden.'}},
+   sq:{t:'Ndihmë Humane',b:'Solidariteti është pjesë e misionit tonë. Kemi organizuar aksione bamirësie për familjet në nevojë në Zvicër dhe në trojet tona - përfshirë ndërtimin e një shtëpie për familjen e një dëshmori në Kosovë. Mbledhim sadaka dhe zeqat dhe i shpërndajmë me transparencë të plotë atje ku nevojiten më së shumti.'},
+   de:{t:'Humanitäre Hilfe',b:'Solidarität ist Teil unserer Mission. Wir haben Wohltätigkeitsaktionen für bedürftige Familien in der Schweiz und in unserer Heimat organisiert - einschliesslich des Baus eines Hauses für die Familie eines Gefallenen im Kosovo. Wir sammeln Sadaqa und Zakat und verteilen sie mit voller Transparenz dort, wo sie am dringendsten gebraucht werden.'}},
   {icon:'🎓',
-   sq:{t:'Ligjëratat e Hoxhës',b:'Çdo javë imami ynë mban ligjërata për tema fetare dhe shoqërore aktuale. Përmes takimit të të rinjve (Jugendtreff) trajtohen tema si "Kurani dhe shkenca moderne" me mysafirë të ftuar si Dr. Lumni Ademi. Ligjëratat janë të hapura për të gjithë — ejani dhe merrni pjesë!'},
-   de:{t:'Vorträge des Imams',b:'Jede Woche hält unser Imam Vorträge zu aktuellen religiösen und gesellschaftlichen Themen. Im Jugendtreff werden Themen wie «Der Koran und die moderne Wissenschaft» mit eingeladenen Gästen wie Dr. Lumni Ademi behandelt. Die Vorträge sind offen für alle — kommen Sie vorbei!'}},
+   sq:{t:'Ligjëratat e Hoxhës',b:'Çdo javë imami ynë mban ligjërata për tema fetare dhe shoqërore aktuale. Përmes takimit të të rinjve (Jugendtreff) trajtohen tema si "Kurani dhe shkenca moderne" me mysafirë të ftuar si Dr. Lumni Ademi. Ligjëratat janë të hapura për të gjithë - ejani dhe merrni pjesë!'},
+   de:{t:'Vorträge des Imams',b:'Jede Woche hält unser Imam Vorträge zu aktuellen religiösen und gesellschaftlichen Themen. Im Jugendtreff werden Themen wie «Der Koran und die moderne Wissenschaft» mit eingeladenen Gästen wie Dr. Lumni Ademi behandelt. Die Vorträge sind offen für alle - kommen Sie vorbei!'}},
 ];
 
 function openActivity(i){
@@ -1332,7 +1340,7 @@ async function initApp(){
       REMOTE=true;
       await remoteRestoreSession();
     }catch(e){
-      console.warn('Backend i paarritshëm — kalim në modalitetin lokal demo:',e);
+      console.warn('Backend i paarritshëm - kalim në modalitetin lokal demo:',e);
       loadState();
     }
   }else{
