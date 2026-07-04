@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=20">
+<link rel="stylesheet" href="css/styles.css?v=21">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -1240,7 +1240,10 @@
         <div class="admin-panel" id="apanel-stats">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
             <h2 style="font-size:24px;color:var(--green)">📈 Statistika e Vizitave</h2>
-            <button class="btn btn-outline" style="padding:8px 16px;font-size:13px" onclick="renderStats()">🔄 Rifresko</button>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline" style="padding:8px 16px;font-size:13px" onclick="renderStats()">🔄 Rifresko</button>
+              <button class="btn-del" style="padding:8px 16px;font-size:13px;font-weight:700;border-radius:10px;border:none" onclick="resetStats()">🗑️ Rivendos</button>
+            </div>
           </div>
           <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Sa shpesh vizitohet webfaqja dhe sa persona ju kanë kontaktuar. Të dhënat janë anonime (pa IP apo emra).</p>
 
@@ -1260,6 +1263,12 @@
           <div id="stats-top-pages" style="display:grid;gap:8px"></div>
 
           <p id="stats-empty" style="display:none;color:var(--ink-lt);text-align:center;padding:30px;font-size:14px">Ende nuk ka të dhëna. Statistikat mblidhen ndërsa vizitorët hapin webfaqen.</p>
+
+          <div id="stats-archive-wrap" style="display:none;margin-top:36px">
+            <h3 style="font-size:16px;color:var(--ink);margin-bottom:6px;font-family:'DM Sans',sans-serif;font-weight:600">🗄️ Arkivi (backup për vite)</h3>
+            <p style="font-size:12.5px;color:var(--ink-lt);margin-bottom:14px">Kopjet rezervë ruhen automatikisht sa herë rivendosni statistikat.</p>
+            <div id="stats-archive" style="display:grid;gap:8px"></div>
+          </div>
         </div>
 
         <!-- ── PARTNERS TAB ── -->
@@ -1437,8 +1446,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=20"></script>
+<script src="js/config.js?v=21"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=20"></script>
+<script src="js/app.js?v=21"></script>
 </body>
 </html>

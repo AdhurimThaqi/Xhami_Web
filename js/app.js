@@ -1154,8 +1154,18 @@ function deleteAccount(){
 // CONTACT - delivers to the mosque inbox via FormSubmit
 const CONTACT_EMAIL='xhamiaepaqes@hotmail.com';
 async function deliverContact(btn,fields,clearIds){
+  const de=currentLang==='de';
   if(!fields.name||!fields.email||!fields.phone||!fields.message){
-    showToast(currentLang==='de'?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;
+    showToast(de?'Alle Felder ausfüllen!':'Plotësoni të gjitha fushat!','error');return;
+  }
+  // Email must be a real address (something@domain.tld)
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email)){
+    showToast(de?'Ungültige E-Mail-Adresse!':'Email jo valid! Përdorni formatin emri@domain.com','error');return;
+  }
+  // Phone must be a number (digits, may start with + and contain spaces/-/()); at least 7 digits
+  const phoneDigits=(fields.phone.match(/\d/g)||[]).length;
+  if(!/^\+?[\d\s()\/-]+$/.test(fields.phone)||phoneDigits<7){
+    showToast(de?'Ungültige Telefonnummer!':'Numri i telefonit jo valid! Përdorni vetëm numra.','error');return;
   }
   const label=btn.textContent;
   btn.disabled=true;btn.textContent=currentLang==='de'?'Wird gesendet...':'Duke dërguar...';
@@ -1487,6 +1497,54 @@ async function renderStats(){
         <span style="font-size:13px;color:var(--green);font-weight:700">${n} vizita</span>
       </div>`).join(''):'<p style="color:var(--ink-lt);font-size:13px">Ende asnjë faqe e regjistruar.</p>';
   }
+
+  // archived backups
+  const wrap=document.getElementById('stats-archive-wrap'),arch=document.getElementById('stats-archive');
+  if(wrap&&arch){
+    try{
+      const {data:ar}=await sb.from('analytics_archive').select('*').order('created_at',{ascending:false});
+      if(ar&&ar.length){
+        wrap.style.display='block';
+        arch.innerHTML=ar.map(a=>`
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--cream);border:1px solid var(--border);border-radius:10px;flex-wrap:wrap">
+            <span style="font-size:20px">🗄️</span>
+            <div style="flex:1;min-width:160px"><strong style="font-size:13px;color:var(--ink);display:block">${a.label||'Periudhë e mëparshme'}</strong><small style="color:var(--ink-lt)">Ruajtur: ${fmtDateSq(a.created_at)}</small></div>
+            <span style="font-size:12.5px;color:var(--ink-mid)">👁️ <strong>${a.total_visits}</strong> vizita</span>
+            <span style="font-size:12.5px;color:var(--ink-mid)">🧑 <strong>${a.unique_visitors}</strong> unikë</span>
+            <span style="font-size:12.5px;color:var(--ink-mid)">✉️ <strong>${a.total_contacts}</strong> kontakte</span>
+          </div>`).join('');
+      }else{wrap.style.display='none';}
+    }catch(e){wrap.style.display='none';}
+  }
+}
+
+// Reset the live counters, saving a summary snapshot to the archive first
+async function resetStats(){
+  if(!REMOTE||!sb){showToast('Rivendosja kërkon lidhje me serverin!','error');return;}
+  if(!confirm('⚠️ RIVENDOS STATISTIKAT?\n\nNumëruesit (vizita, vizitorë, kontakte) do të kthehen në ZERO.\n\nNjë kopje rezervë (backup) e totaleve aktuale ruhet automatikisht në "Arkivi" për referencë të mëvonshme vjetore.\n\nDoni të vazhdoni?'))return;
+  try{
+    const {data,error}=await sb.from('analytics').select('kind,visitor,created_at');
+    if(error)throw error;
+    const rows=data||[];
+    if(rows.length){
+      const visits=rows.filter(r=>r.kind==='visit');
+      const contacts=rows.filter(r=>r.kind==='contact');
+      const times=rows.map(r=>new Date(r.created_at).getTime());
+      const from=new Date(Math.min(...times)).toISOString();
+      const to=new Date(Math.max(...times)).toISOString();
+      const label=fmtDateSq(from)+' - '+fmtDateSq(to);
+      const {error:e1}=await sb.from('analytics_archive').insert({
+        label,total_visits:visits.length,
+        unique_visitors:new Set(visits.map(v=>v.visitor).filter(Boolean)).size,
+        total_contacts:contacts.length,from_date:from,to_date:to
+      });
+      if(e1)throw e1;
+      const {error:e2}=await sb.from('analytics').delete().neq('id',0);
+      if(e2)throw e2;
+    }
+    await renderStats();
+    showToast('✅ Statistikat u rivendosën. Backup u ruajt në Arkiv.','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
 // ── ANIMATED CUSTOM CURSOR ──
