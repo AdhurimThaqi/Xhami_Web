@@ -201,12 +201,8 @@ function renderStatuteDoc(){
 function openModal(id){document.getElementById(id).classList.add('active')}
 function closeModal(id){document.getElementById(id).classList.remove('active')}
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id)}));
-function switchAuthTab(t){
-  document.getElementById('login-form').classList.toggle('hidden',t!=='login');
-  document.getElementById('register-form').classList.toggle('hidden',t!=='register');
-  document.getElementById('tab-login-btn').classList.toggle('active',t==='login');
-  document.getElementById('tab-reg-btn').classList.toggle('active',t==='register');
-}
+// Registration was removed (admin-only login); kept as a safe no-op
+function switchAuthTab(){}
 
 // NAVBAR RIPPLE + DROPDOWN
 function addRipple(el,e){
@@ -274,10 +270,6 @@ const T={
     'footer-col1-h':'Rreth Nesh','footer-col2-h':'Shërbime','footer-col3-h':'Kontakti',
     'footer-history':'Historiku','footer-statute':'Rregullorja','footer-imam':'Imami','footer-activities':'Aktivitetet',
     'footer-islamic':'Festat Islame','footer-quran':'Kurani','footer-lectures':'Ligjëratat','footer-membership':'Anëtarësimi','footer-contact-link':'Dërgoni mesazh',
-    'tab-login-btn':'Hyrja','tab-reg-btn':'Regjistrim','login-h2':'Mirë se vini','login-sub':'Hyni në llogarinë tuaj','login-submit-btn':'Hyr',
-    'lbl-or':'ose','switch-to-reg':'Nuk keni llogari?','switch-reg-link':'Regjistrohu',
-    'reg-h2':'Regjistrohu','reg-sub':'Krijoni llogarinë tuaj falas','lbl-fullname':'Emri i plotë','lbl-pass2':'Fjalëkalimi','lbl-pass3':'Konfirmo','reg-submit-btn':'Regjistrohu',
-    'nav-login-btn':'Hyrja','mob-login-btn':'Hyrja / Regjistrim',
     'bc-home':'Ballina','bc-news':'Media/Blog','news-page-h1':'Media & Blog','news-page-sub':'Lajmet dhe artikujt e fundit nga xhamia jonë','search-btn':'Kërko',
     'memb-h1':'Anëtarësimi','memb-sub':'Bashkohuni me komunitetin tonë','memb-h2':'Pagesat Online & Anëtarësimi','memb-p1':'Duke u anëtarësuar, kontribuoni drejtpërdrejt në komunitetin tonë fetar dhe kulturor në Zürich.',
     'memb-h3':'Përfitimet e Anëtarësimit','memb-li1':'Akses në të gjitha aktivitetet e xhamisë','memb-li2':'E drejta e votës në kuvende','memb-li3':'Mbështetje fetare dhe spirituale','memb-li4':'Pjesëmarrje në ngjarje speciale','memb-li5':'Newsletter dhe informacione të drejtpërdrejta',
@@ -326,10 +318,7 @@ const T={
     'footer-col1-h':'Über uns','footer-col2-h':'Dienstleistungen','footer-col3-h':'Kontakt',
     'footer-history':'Geschichte','footer-statute':'Satzung','footer-imam':'Imam','footer-activities':'Aktivitäten',
     'footer-islamic':'Islamische Feste','footer-quran':'Quran','footer-lectures':'Vorträge','footer-membership':'Mitgliedschaft','footer-contact-link':'Nachricht senden',
-    'tab-login-btn':'Anmelden','tab-reg-btn':'Registrieren','login-h2':'Willkommen','login-sub':'Melden Sie sich in Ihrem Konto an','login-submit-btn':'Anmelden',
-    'lbl-or':'oder','switch-to-reg':'Noch kein Konto?','switch-reg-link':'Registrieren',
-    'reg-h2':'Registrieren','reg-sub':'Erstellen Sie Ihr kostenloses Konto','lbl-fullname':'Vollständiger Name','lbl-pass2':'Passwort','lbl-pass3':'Passwort bestätigen','reg-submit-btn':'Registrieren',
-    'nav-login-btn':'Anmelden','mob-login-btn':'Anmelden / Registrieren',
+    'nav-login-btn':'Anmelden',
     'bc-home':'Startseite','bc-news':'Medien/Blog','news-page-h1':'Medien & Blog','news-page-sub':'Neueste Nachrichten und Artikel aus unserer Moschee','search-btn':'Suchen',
     'memb-h1':'Mitgliedschaft','memb-sub':'Treten Sie unserer Gemeinschaft bei','memb-h2':'Online-Zahlung & Mitgliedschaft','memb-p1':'Durch Ihre Mitgliedschaft tragen Sie direkt zur Erhaltung unserer Gemeinschaft in Zürich bei.',
     'memb-h3':'Vorteile der Mitgliedschaft','memb-li1':'Zugang zu allen Aktivitäten der Moschee','memb-li2':'Stimmrecht bei Versammlungen','memb-li3':'Religiöse und spirituelle Unterstützung','memb-li4':'Teilnahme an besonderen Veranstaltungen','memb-li5':'Newsletter und direkte Informationen',
@@ -373,6 +362,7 @@ function setLang(lang){
     if(w)w.textContent=(lang==='de'?'Willkommen, ':'Mirë se vini, ')+currentUser.name.split(' ')[0]+'!';
   }
   try{localStorage.setItem('hdf_lang',lang);}catch(e){}
+  updateAuthUI();
   saveState();
   setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
