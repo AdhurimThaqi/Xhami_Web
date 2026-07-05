@@ -173,6 +173,28 @@ function navigate(p){
   if(p==='news')renderNewsPage();
   if(p==='member')renderMemberArea();
   if(p==='home')renderHomeNews();
+  if(p==='statute')renderStatuteDoc();
+}
+
+// Fill the statute page viewer from the uploaded PDF (caption contains "statut"/"rregull")
+function renderStatuteDoc(){
+  const frame=document.getElementById('statute-frame');if(!frame)return;
+  const missing=document.getElementById('statute-missing');
+  const dl=document.getElementById('statute-download');
+  const fs=document.getElementById('statute-fs');
+  const pdf=mediaItems.find(m=>m.kind==='pdf'&&/statut|rregull|satzung/i.test(m.cap||''))
+          ||mediaItems.find(m=>m.kind==='pdf'); // fallback: any uploaded PDF
+  if(pdf){
+    frame.style.display='block';if(missing)missing.style.display='none';
+    frame.src=pdf.url+'#view=FitH';
+    if(dl){dl.href=pdf.url;}
+    if(fs){fs.href=pdf.url;}
+    const title=document.getElementById('statute-doc-title');
+    if(title&&pdf.cap)title.textContent=pdf.cap+' - PDF';
+  }else{
+    frame.style.display='none';if(missing)missing.style.display='block';
+    if(dl)dl.style.display='none';
+  }
 }
 
 // MODALS
@@ -1615,6 +1637,7 @@ async function initApp(){
   updateHeroSlides();
   renderDocsList();
   applyActivityPhotos();
+  renderStatuteDoc();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);

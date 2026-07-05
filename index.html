@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=23">
+<link rel="stylesheet" href="css/styles.css?v=24">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -666,29 +666,23 @@
       </div>
       <!-- Right: PDF viewer + download -->
       <div>
-        <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:16px">📄 Dokumentet Zyrtare</h3>
-        <!-- PDF Embed -->
-        <div style="border:1.5px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:var(--shadow)">
-          <div style="background:var(--green);color:white;padding:12px 16px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px">
-            📄 Rregullorja e Xhamisë - PDF
+        <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:16px">📄 <span data-sq="Dokumenti Zyrtar" data-de="Offizielles Dokument">Dokumenti Zyrtar</span></h3>
+        <!-- PDF Embed (filled from the uploaded statute PDF) -->
+        <div class="pdf-viewer">
+          <div class="pdf-viewer-bar">
+            📄 <span id="statute-doc-title" data-sq="Statuti i Xhamisë - PDF" data-de="Satzung der Moschee - PDF">Statuti i Xhamisë - PDF</span>
+            <a id="statute-fs" href="#" target="_blank" rel="noopener" style="margin-left:auto;color:rgba(255,255,255,.85);font-size:12px" data-sq="⤢ Ekran i plotë" data-de="⤢ Vollbild">⤢ Ekran i plotë</a>
           </div>
-          <iframe src="https://hausdesfriedens.ch/wp-content/uploads/2022/10/Rregullorja-e-Xhamisë-Shtëpia-e-Paqës.pdf"
-            width="100%" height="480" style="display:block;border:none;background:#f5f5f5">
-            <div style="padding:32px;text-align:center;background:var(--cream)">
-              <div style="font-size:48px;margin-bottom:12px">📄</div>
-              <p style="font-weight:600;color:var(--ink);margin-bottom:8px">PDF viewer nuk është i disponueshëm</p>
-              <p style="font-size:13px;color:var(--ink-lt)">Shkarkoni dokumentin duke klikuar butonin më poshtë</p>
-            </div>
-          </iframe>
+          <iframe id="statute-frame" title="Statuti i Xhamisë" style="display:block;border:none;width:100%;height:560px;background:#f5f5f5"></iframe>
+          <div id="statute-missing" style="display:none;padding:40px 24px;text-align:center;background:var(--cream)">
+            <div style="font-size:48px;margin-bottom:12px">📄</div>
+            <p style="font-weight:600;color:var(--ink);margin-bottom:8px" data-sq="Dokumenti ende nuk është ngarkuar" data-de="Dokument noch nicht hochgeladen">Dokumenti ende nuk është ngarkuar</p>
+            <p style="font-size:13px;color:var(--ink-lt)" data-sq="Admini mund ta ngarkojë PDF-në te paneli Media (emërtojeni me fjalën 'Statuti')." data-de="Der Administrator kann das PDF im Media-Panel hochladen (mit dem Wort 'Statut' benennen).">Admini mund ta ngarkojë PDF-në te paneli Media (emërtojeni me fjalën 'Statuti').</p>
+          </div>
         </div>
-        <!-- Download buttons -->
-        <div style="display:grid;gap:10px">
-          <a href="https://hausdesfriedens.ch/wp-content/uploads/2022/10/Rregullorja-e-Xhamisë-Shtëpia-e-Paqës.pdf" target="_blank" class="btn btn-primary" style="justify-content:center">
-            📥 Shkarko Rregulloren (PDF)
-          </a>
-          <a href="https://hausdesfriedens.ch/rregullorja/" target="_blank" class="btn btn-outline" style="justify-content:center">
-            🌐 Shiko faqen origjinale
-          </a>
+        <!-- Download button -->
+        <div style="display:grid;gap:10px;margin-top:16px">
+          <a id="statute-download" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="justify-content:center" data-sq="📥 Shkarko Statutin (PDF)" data-de="📥 Satzung herunterladen (PDF)">📥 Shkarko Statutin (PDF)</a>
         </div>
         <!-- Info cards -->
         <div style="display:grid;gap:10px;margin-top:24px">
@@ -1505,8 +1499,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=23"></script>
+<script src="js/config.js?v=24"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=23"></script>
+<script src="js/app.js?v=24"></script>
 </body>
 </html>
