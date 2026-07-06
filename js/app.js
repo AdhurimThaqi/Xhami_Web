@@ -71,6 +71,7 @@ function saveState(){
       mediaItems,
       partners,
       settings,
+      quizzes,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -86,6 +87,7 @@ function loadState(){
   if(Array.isArray(s.mediaItems))mediaItems=s.mediaItems;
   if(Array.isArray(s.partners))partners=s.partners;
   if(s.settings)settings=s.settings;
+  if(Array.isArray(s.quizzes))quizzes=s.quizzes;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -121,6 +123,10 @@ async function remoteLoadAll(){
     const {data:st}=await sb.from('settings').select('*');
     if(st){settings={};st.forEach(r=>settings[r.key]=r.value);}
   }catch(e){/* settings table may not exist yet (migration 006) */}
+  try{
+    const {data:qz}=await sb.from('quizzes').select('*').order('created_at',{ascending:false});
+    if(qz)quizzes=qz.map(q=>({id:q.id,title:q.title,description:q.description||'',type:q.type||'native',kahoot_url:q.kahoot_url||'',questions:q.questions||[]}));
+  }catch(e){/* quizzes table may not exist yet (migration 010) */}
 }
 
 let settings={};
@@ -175,6 +181,217 @@ function navigate(p){
   if(p==='home')renderHomeNews();
   if(p==='statute')renderStatuteDoc();
   if(p==='home')wirePrayerDocs();
+  if(p==='quiz')renderQuizList();
+}
+
+// ═══════════════════════════════════════
+//  QUIZZES (native on-site + Kahoot links)
+// ═══════════════════════════════════════
+let quizzes=[];
+let activeQuiz=null,quizIndex=0,quizScore=0,quizAnswered=false;
+
+function renderQuizList(){
+  // reset to the list view
+  const player=document.getElementById('quiz-player'),result=document.getElementById('quiz-result');
+  const list=document.getElementById('quiz-list'),empty=document.getElementById('quiz-empty');
+  if(player)player.style.display='none';
+  if(result)result.style.display='none';
+  if(list)list.style.display='';
+  if(!list)return;
+  if(!quizzes.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  list.innerHTML=quizzes.map(q=>{
+    const isK=q.type==='kahoot';
+    const meta=isK?'📎 Kahoot':(q.questions.length+' '+(q.questions.length===1?'pyetje':'pyetje'));
+    const action=isK
+      ?`onclick="window.open('${(q.kahoot_url||'#').replace(/'/g,"\\'")}','_blank')"`
+      :`onclick="startNativeQuiz(${q.id})"`;
+    return `<div class="quiz-card" ${action}>
+      <div class="quiz-card-badge">${isK?'📎':'🎯'}</div>
+      <div class="quiz-card-body">
+        <h3>${q.title}</h3>
+        ${q.description?`<p>${q.description}</p>`:''}
+        <div class="quiz-card-meta">${meta} <span class="quiz-card-go">${isK?'Luaj në Kahoot ↗':'Fillo →'}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function startNativeQuiz(id){
+  const q=quizzes.find(x=>x.id===id);
+  if(!q||!q.questions.length){showToast('Ky kuiz nuk ka pyetje.','error');return;}
+  activeQuiz=q;quizIndex=0;quizScore=0;
+  document.getElementById('quiz-list').style.display='none';
+  document.getElementById('quiz-result').style.display='none';
+  document.getElementById('quiz-player').style.display='block';
+  document.getElementById('quiz-qtotal').textContent=q.questions.length;
+  document.getElementById('quiz-retry').onclick=()=>startNativeQuiz(id);
+  showQuizQuestion();
+}
+
+function showQuizQuestion(){
+  quizAnswered=false;
+  const q=activeQuiz.questions[quizIndex];
+  document.getElementById('quiz-qnum').textContent=quizIndex+1;
+  document.getElementById('quiz-question').textContent=q.q;
+  document.getElementById('quiz-feedback').textContent='';
+  document.getElementById('quiz-next').style.display='none';
+  const shapes=['🔺','🔷','🟡','🟩'];
+  const ans=document.getElementById('quiz-answers');
+  ans.innerHTML=q.answers.map((a,i)=>a?`<button class="quiz-answer qa-${i}" onclick="answerQuiz(${i})"><span class="qa-shape">${shapes[i]}</span>${a}</button>`:'').join('');
+}
+
+function answerQuiz(i){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=activeQuiz.questions[quizIndex];
+  const btns=document.querySelectorAll('#quiz-answers .quiz-answer');
+  btns.forEach((b,idx)=>{
+    b.classList.add('locked');
+    if(idx===q.correct)b.classList.add('correct');
+    else if(idx===i)b.classList.add('wrong');
+  });
+  const fb=document.getElementById('quiz-feedback');
+  if(i===q.correct){quizScore++;fb.textContent='✅ Saktë!';fb.className='quiz-feedback ok';}
+  else{fb.textContent='❌ Gabim. Përgjigjja e saktë është e theksuar.';fb.className='quiz-feedback bad';}
+  const next=document.getElementById('quiz-next');
+  next.textContent=(quizIndex+1<activeQuiz.questions.length)?'Vazhdo →':'Shiko rezultatin →';
+  next.style.display='';
+}
+
+function nextQuizQuestion(){
+  quizIndex++;
+  if(quizIndex<activeQuiz.questions.length)showQuizQuestion();
+  else showQuizResult();
+}
+
+function showQuizResult(){
+  document.getElementById('quiz-player').style.display='none';
+  const total=activeQuiz.questions.length,pct=Math.round(quizScore/total*100);
+  document.getElementById('quiz-score').textContent=quizScore;
+  document.getElementById('quiz-score-total').textContent=total;
+  const emoji=pct===100?'🏆':pct>=60?'🎉':'📚';
+  const title=pct===100?'Përsosur!':pct>=60?'Shumë mirë!':'Vazhdo të mësosh!';
+  const msg=pct===100?'Të gjitha përgjigjet të sakta - MashaAllah!':pct>=60?'Rezultat i mirë, vazhdo kështu!':'Provo përsëri për të mësuar më shumë.';
+  document.getElementById('quiz-result-emoji').textContent=emoji;
+  document.getElementById('quiz-result-title').textContent=title;
+  document.getElementById('quiz-result-msg').textContent=msg;
+  document.getElementById('quiz-result').style.display='block';
+}
+
+function quitQuiz(){activeQuiz=null;renderQuizList();}
+
+// ── ADMIN: quiz management ──
+let editingQuizId=null,quizEditorType='native';
+
+function renderQuizzesAdmin(){
+  const list=document.getElementById('quizzes-admin-list');if(!list)return;
+  if(!quizzes.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë kuiz.</p>';return;}
+  list.innerHTML=quizzes.map(q=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:12px">
+      <span style="font-size:22px">${q.type==='kahoot'?'📎':'🎯'}</span>
+      <div style="flex:1;min-width:0">
+        <strong style="font-size:14px;display:block">${q.title}</strong>
+        <small style="color:var(--ink-lt)">${q.type==='kahoot'?'Kahoot link':q.questions.length+' pyetje'}</small>
+      </div>
+      <button class="btn-edit" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="openQuizEditor(${q.id})">✏️</button>
+      <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deleteQuiz(${q.id})">🗑️</button>
+    </div>`).join('');
+}
+
+function setQuizType(t){
+  quizEditorType=t;
+  document.getElementById('qtype-native').classList.toggle('active',t==='native');
+  document.getElementById('qtype-kahoot').classList.toggle('active',t==='kahoot');
+  document.getElementById('quiz-native-fields').style.display=t==='native'?'':'none';
+  document.getElementById('quiz-kahoot-fields').style.display=t==='kahoot'?'':'none';
+}
+
+function questionRowHtml(q){
+  q=q||{q:'',answers:['','','',''],correct:0};
+  const a=q.answers.concat(['','','','']).slice(0,4);
+  const shapes=['🔺','🔷','🟡','🟩'];
+  return `<div class="quiz-q-row">
+    <input type="text" class="qq-text" placeholder="Pyetja" value="${(q.q||'').replace(/"/g,'&quot;')}">
+    ${a.map((ans,i)=>`<label class="qq-ans"><input type="radio" name="qq-correct-${quizRowSeq}" ${q.correct===i?'checked':''} value="${i}"><span>${shapes[i]}</span><input type="text" class="qq-a" placeholder="Përgjigje ${i+1}" value="${(ans||'').replace(/"/g,'&quot;')}"></label>`).join('')}
+    <button type="button" class="qq-del" onclick="this.closest('.quiz-q-row').remove()">🗑️ Fshi pyetjen</button>
+  </div>`;
+}
+let quizRowSeq=0;
+function addQuizQuestion(q){
+  quizRowSeq++;
+  const wrap=document.getElementById('quiz-questions');
+  wrap.insertAdjacentHTML('beforeend',questionRowHtml(q));
+}
+
+function openQuizEditor(id){
+  editingQuizId=id;
+  document.getElementById('quiz-editor-title').textContent=id?'Edito Kuizin':'Kuiz i ri';
+  document.getElementById('quiz-questions').innerHTML='';
+  const q=id?quizzes.find(x=>x.id===id):null;
+  document.getElementById('quiz-title').value=q?q.title:'';
+  document.getElementById('quiz-desc').value=q?q.description:'';
+  document.getElementById('quiz-kahoot-url').value=q?q.kahoot_url:'';
+  setQuizType(q?q.type:'native');
+  if(q&&q.questions.length)q.questions.forEach(addQuizQuestion);
+  else{addQuizQuestion();addQuizQuestion();}
+  openModal('quiz-modal');
+}
+
+function collectQuizQuestions(){
+  const rows=[...document.querySelectorAll('#quiz-questions .quiz-q-row')];
+  const out=[];
+  for(const row of rows){
+    const qt=row.querySelector('.qq-text').value.trim();
+    const answers=[...row.querySelectorAll('.qq-a')].map(i=>i.value.trim());
+    const correctEl=row.querySelector('input[type=radio]:checked');
+    const correct=correctEl?+correctEl.value:0;
+    if(!qt||answers.filter(Boolean).length<2)continue; // need question + >=2 answers
+    out.push({q:qt,answers,correct});
+  }
+  return out;
+}
+
+async function saveQuiz(){
+  const title=document.getElementById('quiz-title').value.trim();
+  if(!title){showToast('Shkruani titullin e kuizit!','error');return;}
+  const description=document.getElementById('quiz-desc').value.trim();
+  let payload={title,description,type:quizEditorType,kahoot_url:'',questions:[]};
+  if(quizEditorType==='kahoot'){
+    const url=document.getElementById('quiz-kahoot-url').value.trim();
+    if(!url){showToast('Shtoni linkun e Kahoot!','error');return;}
+    payload.kahoot_url=url;
+  }else{
+    const qs=collectQuizQuestions();
+    if(!qs.length){showToast('Shtoni të paktën një pyetje me 2+ përgjigje!','error');return;}
+    payload.questions=qs;
+  }
+  if(REMOTE){
+    const q=editingQuizId
+      ?sb.from('quizzes').update(payload).eq('id',editingQuizId)
+      :sb.from('quizzes').insert(payload);
+    const {error}=await q;
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+  }else{
+    if(editingQuizId){const i=quizzes.findIndex(x=>x.id===editingQuizId);quizzes[i]={...quizzes[i],...payload};}
+    else{quizzes.unshift({id:Date.now(),...payload});}
+    saveState();
+  }
+  closeModal('quiz-modal');
+  renderQuizzesAdmin();renderQuizList();
+  showToast(editingQuizId?'✅ Kuizi u përditësua!':'🎯 Kuizi u krijua!','success');
+}
+
+async function deleteQuiz(id){
+  if(!confirm('Fshi këtë kuiz?'))return;
+  if(REMOTE){
+    const {error}=await sb.from('quizzes').delete().eq('id',id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    quizzes=quizzes.filter(q=>q.id!==id);
+  }else{quizzes=quizzes.filter(q=>q.id!==id);saveState();}
+  renderQuizzesAdmin();renderQuizList();
+  showToast('Kuizi u fshi.','');
 }
 
 // Point the prayer/namaz PDF links at uploaded files (matched by name),
@@ -1426,6 +1643,7 @@ function showAdminTab(name) {
   if (name === 'members')      renderMembersTab();
   if (name === 'media')        {renderMediaTab();renderActivityPhotosAdmin();}
   if (name === 'partners')     renderPartnersAdmin();
+  if (name === 'quizzes')      renderQuizzesAdmin();
   if (name === 'stats')        renderStats();
 }
 
