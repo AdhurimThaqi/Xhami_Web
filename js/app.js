@@ -174,6 +174,49 @@ function navigate(p){
   if(p==='member')renderMemberArea();
   if(p==='home')renderHomeNews();
   if(p==='statute')renderStatuteDoc();
+  if(p==='home')wirePrayerDocs();
+}
+
+// Point the prayer/namaz PDF links at uploaded files (matched by name),
+// hiding any that have no uploaded PDF. Replaces the old WordPress links.
+function wirePrayerDocs(){
+  const pdfs=mediaItems.filter(m=>m.kind==='pdf');
+  const find=(...keys)=>pdfs.find(p=>{const c=(p.cap||'').toLowerCase();return keys.some(k=>k&&c.includes(k.toLowerCase()));});
+  const wire=(el,pdf)=>{if(!el)return false;if(pdf){el.href=pdf.url;el.target='_blank';el.style.display='';return true;}el.style.display='none';return false;};
+
+  // monthly calendars (match the Albanian or German month name in the caption)
+  let monthMatches=0;
+  document.querySelectorAll('#prayer-cal-grid .prayer-dl-btn').forEach(btn=>{
+    const span=btn.querySelector('span');
+    const sq=span&&span.getAttribute('data-sq'),de=span&&span.getAttribute('data-de');
+    if(wire(btn,find(sq,de)))monthMatches++;
+  });
+  const grid=document.getElementById('prayer-cal-grid');
+  if(grid)grid.style.display=monthMatches?'':'none';
+  // hide the "download the monthly calendar" hint when there are none
+  const sub=document.getElementById('prayer-sub');
+  if(sub)sub.style.display=monthMatches?'':'none';
+
+  // special days/nights
+  const special=document.getElementById('prayer-special-wrap');
+  const specialBtn=document.getElementById('prayer-special-btn');
+  const sp=find('net','madh','festa','feste','ramazan');
+  if(specialBtn)wire(specialBtn,sp);
+  if(special)special.style.display=sp?'':'none';
+  // same document, linked from the Festat Islame page
+  const feastBtn=document.getElementById('feast-special-btn');
+  const feastWrap=document.getElementById('feast-special-wrap');
+  if(feastBtn)wire(feastBtn,sp);
+  if(feastWrap)feastWrap.style.display=sp?'':'none';
+
+  // how-to-pray guides (keep the SwissMosque live link ps6 always)
+  [['ps1',['sabah','fadschr']],['ps2',['drek','dhuhr']],['ps3',['ikind','asr']],
+   ['ps4',['aksham','maghrib']],['ps5',['jaci','ischa']]].forEach(([id,keys])=>{
+    const a=document.getElementById(id);if(!a)return;
+    const step=a.closest('.prayer-step'),pdf=find(...keys);
+    if(pdf){a.href=pdf.url;a.target='_blank';if(step)step.style.display='';}
+    else if(step)step.style.display='none';
+  });
 }
 
 // Fill the statute page viewer from the uploaded PDF (caption contains "statut"/"rregull")
@@ -756,7 +799,7 @@ async function uploadMediaFiles(ev){
     }catch(e){showToast('Gabim te '+f.name+': '+e.message,'error');}
   }
   if(ok){
-    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();updateHeroSlides();renderDocsList();
+    await remoteLoadAll();renderMediaTab();renderPublicGallery();renderAudioList();updateHeroSlides();renderDocsList();wirePrayerDocs();renderStatuteDoc();
     showToast('✅ '+ok+' skedar(ë) u ngarkuan!','success');
   }
 }
@@ -1628,6 +1671,7 @@ async function initApp(){
   renderDocsList();
   applyActivityPhotos();
   renderStatuteDoc();
+  wirePrayerDocs();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
