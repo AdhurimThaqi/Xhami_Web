@@ -73,6 +73,7 @@ function saveState(){
       settings,
       quizzes,
       surahs,
+      pages,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -90,6 +91,7 @@ function loadState(){
   if(s.settings)settings=s.settings;
   if(Array.isArray(s.quizzes))quizzes=s.quizzes;
   if(Array.isArray(s.surahs))surahs=s.surahs;
+  if(Array.isArray(s.pages))pages=s.pages;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -133,6 +135,10 @@ async function remoteLoadAll(){
     const {data:sr}=await sb.from('surahs').select('*').order('number',{ascending:true});
     if(sr)surahs=sr.map(s=>({id:s.id,number:s.number||0,name_sq:s.name_sq||'',name_de:s.name_de||'',url:s.url||''}));
   }catch(e){/* surahs table may not exist yet (migration 011) */}
+  try{
+    const {data:pg}=await sb.from('pages').select('*').order('nav_order',{ascending:true});
+    if(pg)pages=pg.map(p=>({id:p.id,title_sq:p.title_sq||'',title_de:p.title_de||'',subtitle_sq:p.subtitle_sq||'',subtitle_de:p.subtitle_de||'',blocks:p.blocks||[]}));
+  }catch(e){/* pages table may not exist yet (migration 012) */}
 }
 
 let settings={};
@@ -189,6 +195,157 @@ function navigate(p){
   if(p==='home')wirePrayerDocs();
   if(p==='quiz')renderQuizList();
   if(p==='quran')renderSurahList();
+}
+
+// ═══════════════════════════════════════
+//  CUSTOM PAGES (admin-built, auto-nav)
+// ═══════════════════════════════════════
+let pages=[];
+function pageTitle(p){return (currentLang==='de'&&p.title_de)?p.title_de:(p.title_sq||p.title_de||'Faqe');}
+function pageSub(p){return (currentLang==='de'&&p.subtitle_de)?p.subtitle_de:(p.subtitle_sq||p.subtitle_de||'');}
+
+// Inject custom-page links into the desktop nav and the mobile menu
+function renderCustomNav(){
+  document.querySelectorAll('.custom-nav-link').forEach(el=>el.remove());
+  const nav=document.getElementById('main-nav');
+  const mob=document.querySelector('#mobile-menu nav');
+  pages.forEach(p=>{
+    if(nav){
+      const a=document.createElement('a');
+      a.className='custom-nav-link';a.textContent=pageTitle(p);
+      a.onclick=e=>navClick2(p.id,e);
+      nav.appendChild(a);
+    }
+    if(mob){
+      const a=document.createElement('a');
+      a.className='custom-nav-link';a.textContent=pageTitle(p);
+      a.onclick=()=>{openCustomPage(p.id);toggleMobile();};
+      mob.appendChild(a);
+    }
+  });
+}
+function navClick2(id,e){if(e)addRipple(e.currentTarget,e);document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'));openCustomPage(id);}
+
+function openCustomPage(id,pushHash=true){
+  const p=pages.find(x=>x.id===id);if(!p)return;
+  document.getElementById('custom-crumb').textContent=pageTitle(p);
+  document.getElementById('custom-title').textContent=pageTitle(p);
+  const sub=document.getElementById('custom-subtitle');
+  sub.textContent=pageSub(p);sub.style.display=pageSub(p)?'':'none';
+  renderCustomBlocks(p);
+  if(pushHash){try{history.pushState(null,'','#faqe-'+id);}catch(e){}}
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById('page-custom').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.querySelectorAll('#main-nav > a').forEach(a=>a.classList.remove('active'));
+}
+
+function renderCustomBlocks(p){
+  const wrap=document.getElementById('custom-blocks');if(!wrap)return;
+  wrap.innerHTML=(p.blocks||[]).map(b=>{
+    if(b.type==='text')return `<div class="cb-text"><p>${(b.text||'').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')}</p></div>`;
+    if(b.type==='image')return `<figure class="cb-image"><img src="${b.url}" alt="${b.caption||''}" loading="lazy">${b.caption?`<figcaption>${b.caption}</figcaption>`:''}</figure>`;
+    if(b.type==='video')return `<div class="cb-video">${videoEmbedHtml(b.url)}</div>`;
+    return '';
+  }).join('');
+}
+
+// ── ADMIN: page management ──
+let editingPageId=null;
+function renderPagesAdmin(){
+  const list=document.getElementById('pages-admin-list');if(!list)return;
+  if(!pages.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë faqe. Klikoni "Faqe e re".</p>';return;}
+  list.innerHTML=pages.map(p=>`
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--white);border:1px solid var(--border);border-radius:12px">
+      <span style="font-size:20px">🗂️</span>
+      <div style="flex:1;min-width:0"><strong style="font-size:14px;display:block">${p.title_sq||p.title_de}</strong><small style="color:var(--ink-lt)">${(p.blocks||[]).length} blloqe · shfaqet në menu</small></div>
+      <button class="btn-edit" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="openCustomPage(${p.id})">👁️</button>
+      <button class="btn-edit" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="openPageEditor(${p.id})">✏️</button>
+      <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deletePage(${p.id})">🗑️</button>
+    </div>`).join('');
+}
+
+function pageBlockRowHtml(b){
+  b=b||{type:'text'};
+  const up=`<button type="button" class="btn btn-outline" style="white-space:nowrap;padding:8px 12px;font-size:12px" onclick="this.parentElement.querySelector('input[type=file]').click()">📤</button>`;
+  let inner='';
+  if(b.type==='text')inner=`<label style="font-size:12px;font-weight:700;color:var(--ink-lt)">📝 Tekst</label><textarea class="pb-input" rows="4" placeholder="Shkruani tekstin...">${(b.text||'').replace(/</g,'&lt;')}</textarea>`;
+  else if(b.type==='image')inner=`<label style="font-size:12px;font-weight:700;color:var(--ink-lt)">🖼️ Foto</label><div style="display:flex;gap:8px"><input type="text" class="pb-input" placeholder="URL e fotos ose ngarko →" value="${b.url||''}">${up}<input type="file" accept="image/*" style="display:none" onchange="uploadPageBlockFile(event,this)"></div><input type="text" class="pb-cap" placeholder="Përshkrimi (opsional)" value="${b.caption||''}" style="margin-top:6px">`;
+  else if(b.type==='video')inner=`<label style="font-size:12px;font-weight:700;color:var(--ink-lt)">🎬 Video</label><div style="display:flex;gap:8px"><input type="text" class="pb-input" placeholder="Link YouTube/Facebook/MP4 ose ngarko →" value="${b.url||''}">${up}<input type="file" accept="video/mp4,video/webm" style="display:none" onchange="uploadPageBlockFile(event,this)"></div>`;
+  return `<div class="pb-row" data-type="${b.type}">${inner}<button type="button" class="qq-del" onclick="this.closest('.pb-row').remove()">🗑️ Hiq bllokun</button></div>`;
+}
+function addPageBlock(type,data){document.getElementById('pg-blocks').insertAdjacentHTML('beforeend',pageBlockRowHtml(data||{type}));}
+
+async function uploadPageBlockFile(ev,input){
+  const f=(ev.target.files||[])[0];ev.target.value='';if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  if(f.size>50*1024*1024){showToast('Maksimumi 50MB!','error');return;}
+  showToast('⏳ Duke ngarkuar...','');
+  try{const url=await uploadToStorage(f);input.parentElement.querySelector('.pb-input').value=url;showToast('✅ U ngarkua!','success');}
+  catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
+function collectPageBlocks(){
+  return [...document.querySelectorAll('#pg-blocks .pb-row')].map(row=>{
+    const type=row.getAttribute('data-type');
+    if(type==='text'){const t=row.querySelector('.pb-input').value.trim();return t?{type,text:t}:null;}
+    const url=row.querySelector('.pb-input').value.trim();
+    if(!url)return null;
+    if(type==='image')return {type,url,caption:(row.querySelector('.pb-cap')||{}).value?.trim()||''};
+    return {type,url};
+  }).filter(Boolean);
+}
+
+function openPageEditor(id){
+  editingPageId=id;
+  document.getElementById('page-editor-title').textContent=id?'Edito Faqen':'Faqe e re';
+  const p=id?pages.find(x=>x.id===id):null;
+  document.getElementById('pg-title-sq').value=p?p.title_sq:'';
+  document.getElementById('pg-title-de').value=p?p.title_de:'';
+  document.getElementById('pg-sub-sq').value=p?p.subtitle_sq:'';
+  document.getElementById('pg-sub-de').value=p?p.subtitle_de:'';
+  const blocks=document.getElementById('pg-blocks');blocks.innerHTML='';
+  if(p&&p.blocks.length)p.blocks.forEach(b=>addPageBlock(b.type,b));
+  else addPageBlock('text');
+  openModal('page-modal-editor');
+}
+
+async function savePage(){
+  const title_sq=document.getElementById('pg-title-sq').value.trim();
+  const title_de=document.getElementById('pg-title-de').value.trim();
+  if(!title_sq&&!title_de){showToast('Shkruani të paktën një titull!','error');return;}
+  const payload={
+    title_sq,title_de:title_de||title_sq,
+    subtitle_sq:document.getElementById('pg-sub-sq').value.trim(),
+    subtitle_de:document.getElementById('pg-sub-de').value.trim(),
+    blocks:collectPageBlocks(),
+    nav_order:pages.length
+  };
+  if(REMOTE){
+    const q=editingPageId?sb.from('pages').update(payload).eq('id',editingPageId):sb.from('pages').insert(payload);
+    const {error}=await q;
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+  }else{
+    if(editingPageId){const i=pages.findIndex(x=>x.id===editingPageId);pages[i]={...pages[i],...payload};}
+    else pages.push({id:Date.now(),...payload});
+    saveState();
+  }
+  closeModal('page-modal-editor');
+  renderPagesAdmin();renderCustomNav();
+  showToast(editingPageId?'✅ Faqja u përditësua!':'🗂️ Faqja u krijua dhe u shtua në menu!','success');
+}
+
+async function deletePage(id){
+  if(!confirm('Fshi këtë faqe? Do të hiqet edhe nga menuja.'))return;
+  if(REMOTE){
+    const {error}=await sb.from('pages').delete().eq('id',id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    pages=pages.filter(p=>p.id!==id);
+  }else{pages=pages.filter(p=>p.id!==id);saveState();}
+  renderPagesAdmin();renderCustomNav();
+  if(document.getElementById('page-custom').classList.contains('active'))navigate('home');
+  showToast('Faqja u fshi.','');
 }
 
 // ═══════════════════════════════════════
@@ -719,6 +876,9 @@ function setLang(lang){
   }
   try{localStorage.setItem('hdf_lang',lang);}catch(e){}
   updateAuthUI();
+  renderCustomNav();
+  const cp=document.getElementById('page-custom');
+  if(cp&&cp.classList.contains('active')){const id=+(location.hash.match(/^#faqe-(\d+)$/)||[])[1];if(id)openCustomPage(id,false);}
   saveState();
   setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
@@ -868,6 +1028,8 @@ function openArticle(id,pushHash=true){
 window.addEventListener('hashchange',()=>{
   const m=location.hash.match(/^#lajmi-(\d+)$/);
   if(m)openArticle(+m[1],false);
+  const f=location.hash.match(/^#faqe-(\d+)$/);
+  if(f)openCustomPage(+f[1],false);
 });
 
 function openNewsModal(id){
@@ -1737,6 +1899,7 @@ function showAdminTab(name) {
   if (name === 'partners')     renderPartnersAdmin();
   if (name === 'quizzes')      renderQuizzesAdmin();
   if (name === 'surahs')       renderSurahsAdmin();
+  if (name === 'pages')        renderPagesAdmin();
   if (name === 'stats')        renderStats();
 }
 
@@ -1983,9 +2146,12 @@ async function initApp(){
   applyActivityPhotos();
   renderStatuteDoc();
   wirePrayerDocs();
+  renderCustomNav();
   if(document.getElementById('page-member').classList.contains('active'))renderMemberArea();
   const hash=location.hash.match(/^#lajmi-(\d+)$/);
   if(hash)openArticle(+hash[1],false);
+  const fhash=location.hash.match(/^#faqe-(\d+)$/);
+  if(fhash)openCustomPage(+fhash[1],false);
   trackVisit();
 }
 
