@@ -72,6 +72,7 @@ function saveState(){
       partners,
       settings,
       quizzes,
+      surahs,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -88,6 +89,7 @@ function loadState(){
   if(Array.isArray(s.partners))partners=s.partners;
   if(s.settings)settings=s.settings;
   if(Array.isArray(s.quizzes))quizzes=s.quizzes;
+  if(Array.isArray(s.surahs))surahs=s.surahs;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -127,6 +129,10 @@ async function remoteLoadAll(){
     const {data:qz}=await sb.from('quizzes').select('*').order('created_at',{ascending:false});
     if(qz)quizzes=qz.map(q=>({id:q.id,title:q.title,description:q.description||'',type:q.type||'native',kahoot_url:q.kahoot_url||'',questions:q.questions||[]}));
   }catch(e){/* quizzes table may not exist yet (migration 010) */}
+  try{
+    const {data:sr}=await sb.from('surahs').select('*').order('number',{ascending:true});
+    if(sr)surahs=sr.map(s=>({id:s.id,number:s.number||0,name_sq:s.name_sq||'',name_de:s.name_de||'',url:s.url||''}));
+  }catch(e){/* surahs table may not exist yet (migration 011) */}
 }
 
 let settings={};
@@ -182,6 +188,96 @@ function navigate(p){
   if(p==='statute')renderStatuteDoc();
   if(p==='home')wirePrayerDocs();
   if(p==='quiz')renderQuizList();
+  if(p==='quran')renderSurahList();
+}
+
+// ═══════════════════════════════════════
+//  QURAN SURAHS (audio, hosted anywhere)
+// ═══════════════════════════════════════
+let surahs=[];
+function surahLabel(s){return (s.number?s.number+'. ':'')+((currentLang==='de'&&s.name_de)?s.name_de:s.name_sq);}
+
+function renderSurahList(){
+  const list=document.getElementById('surah-list');if(!list)return;
+  const empty=document.getElementById('surah-empty');
+  const searchWrap=document.getElementById('surah-search-wrap');
+  if(searchWrap)searchWrap.style.display=surahs.length>6?'flex':'none';
+  const q=((document.getElementById('surah-search')||{}).value||'').toLowerCase();
+  const rows=surahs.filter(s=>!q||surahLabel(s).toLowerCase().includes(q));
+  if(empty)empty.style.display=surahs.length?'none':'block';
+  const playing=!pAudio().paused;
+  list.innerHTML=rows.map(s=>{
+    const i=surahs.indexOf(s);
+    const active=audioQueueType==='surah'&&audioIndex===i;
+    return `<div class="audio-row${active?' playing':''}" onclick="playSurah(${i})">
+      <div class="audio-row-btn">${active&&playing?'⏸':'▶'}</div>
+      <div class="audio-row-info"><strong>${surahLabel(s)}</strong><small>Kurani i Shenjtë</small></div>
+      ${active&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
+    </div>`;
+  }).join('');
+}
+
+function playSurah(i){
+  audioQueue=surahs.map(s=>({url:s.url,cap:surahLabel(s)}));
+  if(!audioQueue[i]||!audioQueue[i].url){showToast('Kjo sûre nuk ka audio.','error');return;}
+  const a=pAudio();
+  if(audioQueueType==='surah'&&audioIndex===i){a.paused?a.play():a.pause();return;}
+  audioQueueType='surah';audioIndex=i;
+  a.src=audioQueue[i].url;a.play();
+  document.getElementById('player-bar').classList.add('open');
+  setMediaSession(audioQueue[i]);
+  renderSurahList();
+}
+
+// ── ADMIN: surah management ──
+function renderSurahsAdmin(){
+  const list=document.getElementById('surahs-admin-list');if(!list)return;
+  if(!surahs.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë sûre.</p>';return;}
+  list.innerHTML=surahs.map(s=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--green-lt);color:var(--green);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">${s.number||'-'}</span>
+      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name_sq}${s.name_de?' / '+s.name_de:''}</strong><small style="color:var(--ink-lt)">${s.url?'🔗 '+s.url.slice(0,42):'pa audio'}</small></div>
+      <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deleteSurah(${s.id})">🗑️</button>
+    </div>`).join('');
+}
+
+async function uploadSurahAudio(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  if(f.size>50*1024*1024){showToast('Skedari deri në 50MB (për më shumë përdorni archive.org)!','error');return;}
+  showToast('⏳ Duke ngarkuar...','');
+  try{document.getElementById('surah-url').value=await uploadToStorage(f);showToast('✅ U ngarkua!','success');}
+  catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
+async function addSurah(){
+  const number=parseInt(document.getElementById('surah-num').value)||0;
+  const name_sq=document.getElementById('surah-name-sq').value.trim();
+  const name_de=document.getElementById('surah-name-de').value.trim();
+  const url=document.getElementById('surah-url').value.trim();
+  if(!name_sq){showToast('Shkruani emrin e sûres!','error');return;}
+  if(!url){showToast('Shtoni linkun e audios!','error');return;}
+  const row={number,name_sq,name_de,url};
+  if(REMOTE){
+    const {error}=await sb.from('surahs').insert(row);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+  }else{surahs.push({id:Date.now(),...row});surahs.sort((a,b)=>a.number-b.number);saveState();}
+  ['surah-num','surah-name-sq','surah-name-de','surah-url'].forEach(id=>document.getElementById(id).value='');
+  renderSurahsAdmin();renderSurahList();
+  showToast('📖 Sûrja u shtua!','success');
+}
+
+async function deleteSurah(id){
+  if(!confirm('Fshi këtë sûre?'))return;
+  if(REMOTE){
+    const {error}=await sb.from('surahs').delete().eq('id',id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    surahs=surahs.filter(s=>s.id!==id);
+  }else{surahs=surahs.filter(s=>s.id!==id);saveState();}
+  renderSurahsAdmin();renderSurahList();
+  showToast('Sûrja u fshi.','');
 }
 
 // ═══════════════════════════════════════
@@ -1206,7 +1302,7 @@ document.addEventListener('click',e=>{
 });
 
 // ── AUDIO PLAYER (Spotify-style, lockscreen-friendly) ──
-let audioQueue=[],audioIndex=-1;
+let audioQueue=[],audioIndex=-1,audioQueueType='lecture';
 const pAudio=()=>document.getElementById('player-audio');
 function fmtTime(s){if(!isFinite(s)||s<0)return'0:00';s=Math.round(s);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
 
@@ -1216,11 +1312,12 @@ function renderAudioList(){
   const empty=document.getElementById('audio-empty');
   if(empty)empty.style.display=tracks.length?'none':'block';
   const playing=!pAudio().paused;
+  const active=i=>audioQueueType==='lecture'&&audioIndex===i;
   list.innerHTML=tracks.map((t,i)=>`
-    <div class="audio-row${audioIndex===i?' playing':''}" onclick="playTrack(${i})">
-      <div class="audio-row-btn">${audioIndex===i&&playing?'⏸':'▶'}</div>
+    <div class="audio-row${active(i)?' playing':''}" onclick="playTrack(${i})">
+      <div class="audio-row-btn">${active(i)&&playing?'⏸':'▶'}</div>
       <div class="audio-row-info"><strong>${t.cap||'Audio'}</strong><small>Kulturzentrum Haus des Friedens</small></div>
-      ${audioIndex===i&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
+      ${active(i)&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
     </div>`).join('');
 }
 
@@ -1228,12 +1325,13 @@ function playTrack(i){
   audioQueue=mediaItems.filter(m=>m.kind==='audio');
   if(!audioQueue[i])return;
   const a=pAudio();
-  if(audioIndex===i){a.paused?a.play():a.pause();return;}
-  audioIndex=i;
+  if(audioQueueType==='lecture'&&audioIndex===i){a.paused?a.play():a.pause();return;}
+  audioQueueType='lecture';audioIndex=i;
   a.src=audioQueue[i].url;
   a.play();
   document.getElementById('player-bar').classList.add('open');
   setMediaSession(audioQueue[i]);
+  renderAudioList();
 }
 function playerToggle(){const a=pAudio();if(!a.src)return;a.paused?a.play():a.pause();}
 function playerNext(){if(audioQueue.length)playTrackByStep(1);}
@@ -1247,7 +1345,7 @@ function playerClose(){
   const a=pAudio();a.pause();a.removeAttribute('src');a.load();
   audioIndex=-1;
   document.getElementById('player-bar').classList.remove('open');
-  renderAudioList();
+  renderAudioList();renderSurahList();
 }
 function updatePlayerBar(){
   const a=pAudio(),t=audioQueue[audioIndex];
@@ -1267,7 +1365,7 @@ function setMediaSession(t){
     navigator.mediaSession.setActionHandler('nexttrack',playerNext);
   }catch(e){}
 }
-['play','pause'].forEach(ev=>pAudio().addEventListener(ev,()=>{updatePlayerBar();renderAudioList();}));
+['play','pause'].forEach(ev=>pAudio().addEventListener(ev,()=>{updatePlayerBar();renderAudioList();renderSurahList();}));
 pAudio().addEventListener('timeupdate',updatePlayerBar);
 pAudio().addEventListener('ended',playerNext);
 
@@ -1638,6 +1736,7 @@ function showAdminTab(name) {
   if (name === 'media')        {renderMediaTab();renderActivityPhotosAdmin();}
   if (name === 'partners')     renderPartnersAdmin();
   if (name === 'quizzes')      renderQuizzesAdmin();
+  if (name === 'surahs')       renderSurahsAdmin();
   if (name === 'stats')        renderStats();
 }
 
