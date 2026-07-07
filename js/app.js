@@ -1063,17 +1063,11 @@ function renderMediaTab(){
 // Public homepage gallery mirrors the media library once it has content
 function renderPublicGallery(){
   const g=document.querySelector('#page-home .gallery-grid');if(!g)return;
-  const items=mediaItems.filter(m=>m.kind!=='audio'&&m.kind!=='pdf');
+  // Homepage gallery shows photos only - no video, no Facebook, no PDF/audio
+  const items=mediaItems.filter(m=>m.kind==='image');
   if(!REMOTE||!items.length)return; // keep the static fallback gallery
   const zoomSvg='<div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>';
-  g.innerHTML=items.map(m=>{
-    if(m.kind==='video')return `<div class="g-item g-media"><video src="${m.url}" preload="metadata" controls playsinline></video></div>`;
-    if(m.kind==='facebook'){
-      if(!fbEmbeddable(m.url))return `<a class="g-item g-media g-fb-link" href="${m.url}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg><span>Shiko në Facebook ↗</span><small>${m.cap||''}</small></a>`;
-      return `<div class="g-item g-media"><iframe src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(m.url)}&show_text=false" allowfullscreen loading="lazy" title="Facebook video"></iframe></div>`;
-    }
-    return `<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`;
-  }).join('');
+  g.innerHTML=items.map(m=>`<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`).join('');
 }
 
 // ── PDF DOCUMENTS LIST (public) ──
