@@ -8,10 +8,22 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=32">
+<link rel="stylesheet" href="css/styles.css?v=33">
 </head>
 <body>
 <div id="toast-container"></div>
+
+<!-- COOKIE / PRIVACY CONSENT -->
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p data-sq="Kjo faqe përdor ruajtje lokale për funksionim (gjuha, kyçja) dhe statistika plotësisht anonime — pa cookie gjurmuese dhe pa adresa IP. Duke vazhduar, ju pranoni Politikën e Privatësisë."
+       data-de="Diese Website nutzt lokale Speicherung für Funktionen (Sprache, Anmeldung) und vollständig anonyme Statistiken — ohne Tracking-Cookies und ohne IP-Adressen. Durch die weitere Nutzung akzeptieren Sie die Datenschutzerklärung.">Kjo faqe përdor ruajtje lokale për funksionim (gjuha, kyçja) dhe statistika plotësisht anonime — pa cookie gjurmuese dhe pa adresa IP. Duke vazhduar, ju pranoni Politikën e Privatësisë.</p>
+    <div class="cookie-actions">
+      <a onclick="acceptCookies();navigate('datenschutz')" class="cookie-link" data-sq="Më shumë" data-de="Mehr erfahren">Më shumë</a>
+      <button class="btn btn-primary" style="padding:9px 22px;font-size:13px" onclick="acceptCookies()" data-sq="Pranoj" data-de="Akzeptieren">Pranoj</button>
+    </div>
+  </div>
+</div>
 
 <!-- ANIMATED CURSOR -->
 <div id="cursor-ring"></div>
@@ -1639,8 +1651,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=32"></script>
+<script src="js/config.js?v=33"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=32"></script>
+<script src="js/app.js?v=33"></script>
 </body>
 </html>

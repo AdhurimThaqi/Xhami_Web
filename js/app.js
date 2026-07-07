@@ -2078,6 +2078,18 @@ async function resetStats(){
   }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
+// ── COOKIE / PRIVACY CONSENT ──
+function acceptCookies(){
+  try{localStorage.setItem('hdf_cookie_ok','1');}catch(e){}
+  const b=document.getElementById('cookie-banner');if(b)b.classList.remove('show');
+}
+function initCookieBanner(){
+  let ok=false;try{ok=localStorage.getItem('hdf_cookie_ok')==='1';}catch(e){}
+  if(ok)return;
+  const b=document.getElementById('cookie-banner');
+  if(b)setTimeout(()=>b.classList.add('show'),1800); // after the splash fades
+}
+
 // ── ANIMATED CUSTOM CURSOR ──
 function initCursor(){
   // Only on devices with a precise pointer (desktops); skip touch
@@ -2170,6 +2182,7 @@ setTimeout(hideSplash,4000);
 initSlideshow();
 animateStats();
 initCursor();
+initCookieBanner();
 setTimeout(initScrollReveal, 400);
 
 // ── LIVE CLOCK ──
