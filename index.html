@@ -8,7 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=34">
+<link rel="stylesheet" href="css/styles.css?v=35">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -22,6 +22,27 @@
       <a onclick="acceptCookies();navigate('datenschutz')" class="cookie-link" data-sq="Më shumë" data-de="Mehr erfahren">Më shumë</a>
       <button class="btn btn-primary" style="padding:9px 22px;font-size:13px" onclick="acceptCookies()" data-sq="Pranoj" data-de="Akzeptieren">Pranoj</button>
     </div>
+  </div>
+</div>
+
+<!-- CHAT ASSISTANT -->
+<button id="chat-fab" onclick="toggleChat()" aria-label="Chat">
+  <svg class="chat-fab-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span class="chat-fab-close">×</span>
+</button>
+<div id="chat-panel">
+  <div class="chat-head">
+    <div class="chat-head-logo"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="6,20 26,28 26,58 6,50" fill="#161616"/><polygon points="26,28 58,18 58,46 26,58" fill="#161616"/><polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/><polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/></svg></div>
+    <div class="chat-head-info">
+      <strong data-sq="Asistenti i Xhamisë" data-de="Moschee-Assistent">Asistenti i Xhamisë</strong>
+      <small><span class="chat-dot"></span> <span data-sq="Online - përgjigje të menjëhershme" data-de="Online - sofortige Antworten">Online - përgjigje të menjëhershme</span></small>
+    </div>
+    <button class="chat-min" onclick="toggleChat()" aria-label="Mbyll">×</button>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-input">
+    <input type="text" id="chat-text" placeholder="Shkruani pyetjen tuaj..." onkeydown="if(event.key==='Enter')chatSend()">
+    <button onclick="chatSend()" aria-label="Dërgo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
   </div>
 </div>
 
@@ -1651,8 +1672,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=34"></script>
+<script src="js/config.js?v=35"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=34"></script>
+<script src="js/app.js?v=35"></script>
 </body>
 </html>

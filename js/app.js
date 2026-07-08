@@ -381,7 +381,7 @@ function playSurah(i){
   if(audioQueueType==='surah'&&audioIndex===i){a.paused?a.play():a.pause();return;}
   audioQueueType='surah';audioIndex=i;
   a.src=audioQueue[i].url;a.play();
-  document.getElementById('player-bar').classList.add('open');
+  document.getElementById('player-bar').classList.add('open');document.body.classList.add('player-open');
   setMediaSession(audioQueue[i]);
   renderSurahList();
 }
@@ -1503,7 +1503,7 @@ function playTrack(i){
   audioQueueType='lecture';audioIndex=i;
   a.src=audioQueue[i].url;
   a.play();
-  document.getElementById('player-bar').classList.add('open');
+  document.getElementById('player-bar').classList.add('open');document.body.classList.add('player-open');
   setMediaSession(audioQueue[i]);
   renderAudioList();
 }
@@ -1518,7 +1518,7 @@ function playerSeek(v){const a=pAudio();if(isFinite(a.duration))a.currentTime=a.
 function playerClose(){
   const a=pAudio();a.pause();a.removeAttribute('src');a.load();
   audioIndex=-1;
-  document.getElementById('player-bar').classList.remove('open');
+  document.getElementById('player-bar').classList.remove('open');document.body.classList.remove('player-open');
   renderAudioList();renderSurahList();
 }
 function updatePlayerBar(){
@@ -2088,6 +2088,159 @@ async function resetStats(){
     await renderStats();
     showToast('✅ Statistikat u rivendosën. Backup u ruajt në Arkiv.','success');
   }catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
+// ═══════════════════════════════════════
+//  CHAT ASSISTANT (rule-based FAQ, no cost)
+// ═══════════════════════════════════════
+const CHAT_EMAIL='xhamiaepaqes@hotmail.com';
+const CHAT_INTENTS=[
+  {id:'prayer',k:['prayer','pray time','namaz','fajr','sabah','dhuhr','drek','asr','ikindi','maghrib','aksham','isha','jaci','sunrise','lindja','gebet','koh','namazit','lutje'],
+   sq:'🕌 Kohët e sakta të namazit shfaqen LIVE nga SwissMosque në faqen tonë kryesore dhe përditësohen çdo ditë automatikisht.',
+   de:'🕌 Die genauen Gebetszeiten werden LIVE von SwissMosque auf unserer Startseite angezeigt und täglich automatisch aktualisiert.',
+   act:{page:'home',sq:'Shiko kohët e namazit',de:'Gebetszeiten ansehen'}},
+  {id:'friday',k:['friday','xhuma','xhuia','jumu','khutbah','hutbe','freitag'],
+   sq:'🕌 Namazi i Xhumasë mbahet çdo të premte pas thirrjes së drekës, me hutbe në gjuhën shqipe. Ju lutemi ejani pak më herët.',
+   de:'🕌 Das Freitagsgebet findet jeden Freitag nach dem Mittagsgebet statt, mit Predigt auf Albanisch. Bitte kommen Sie etwas früher.'},
+  {id:'ramadan',k:['ramadan','ramazan','iftar','suhoor','syfyr','taraweeh','teravi','agjer'],
+   sq:'🌙 Gjatë Ramazanit organizojmë iftare të përbashkëta dhe namaz teravi çdo mbrëmje. Kohët e iftarit ndjekin akshamin (shih kohët e namazit).',
+   de:'🌙 Während des Ramadans organisieren wir gemeinsame Iftar-Abende und jeden Abend Tarawih-Gebete. Die Iftar-Zeit richtet sich nach Maghrib (siehe Gebetszeiten).',
+   act:{page:'home',sq:'Kohët e namazit',de:'Gebetszeiten'}},
+  {id:'eid',k:['eid','bajram'],
+   sq:'🎉 Namazi i Bajramit mbahet në mëngjesin e festës. Datat dhe oraret e sakta i shpallim para çdo Bajrami — ndiqni lajmet tona.',
+   de:'🎉 Das Eid-Gebet findet am Festmorgen statt. Genaue Daten und Zeiten geben wir vor jedem Eid bekannt — folgen Sie unseren Nachrichten.',
+   act:{page:'news',sq:'Lajmet',de:'Nachrichten'}},
+  {id:'location',k:['address','adres','location','lokacion','where','ku jeni','ku ndodh','map','hart','parking','park','bus','tram','transport','standort',' wo','richtung'],
+   sq:'📍 Ndodhemi në <strong>Saatlenstrasse 23, 8051 Zürich</strong> (Schwamendingen). Hartën dhe udhëzimet i gjeni në faqen kryesore.',
+   de:'📍 Wir befinden uns an der <strong>Saatlenstrasse 23, 8051 Zürich</strong> (Schwamendingen). Karte und Wegbeschreibung finden Sie auf der Startseite.',
+   act:{page:'home',sq:'Shiko hartën',de:'Karte ansehen'}},
+  {id:'contact',k:['contact','kontakt','phone','telefon','email','e-mail','imam','hoxh','message','mesazh','nachricht'],
+   sq:'📞 Mund të na shkruani te <strong>'+CHAT_EMAIL+'</strong> ose përmes formularit të kontaktit. Imami dhe stafi ju përgjigjen sa më shpejt.',
+   de:'📞 Sie können uns unter <strong>'+CHAT_EMAIL+'</strong> oder über das Kontaktformular schreiben. Imam und Team antworten so schnell wie möglich.',
+   act:{page:'contact',sq:'Hap formularin',de:'Formular öffnen'}},
+  {id:'donate',k:['donat','donacion','dhuro','zakat','zeqat','sadaka','sadaqah','twint','pagesa','pay','spend','fitr','kurban'],
+   sq:'💚 Faleminderit! Mund të kontribuoni online (Sadaka, Zekat, Fitër, Kurban) përmes faqes "Pagesat".',
+   de:'💚 Vielen Dank! Sie können online spenden (Sadaqa, Zakat, Fitr, Kurban) über die Seite "Zahlungen".',
+   act:{page:'payments',sq:'Shko te Pagesat',de:'Zu den Zahlungen'}},
+  {id:'membership',k:['member','anetar','antar','mitglied','membership','regjistrim anetar'],
+   sq:'🤝 Për t\'u anëtarësuar, plotësoni formularin e regjistrimit në faqen "Pagesat / Anëtarësimi".',
+   de:'🤝 Um Mitglied zu werden, füllen Sie das Anmeldeformular auf der Seite "Zahlungen / Mitgliedschaft" aus.',
+   act:{page:'payments',sq:'Anëtarësimi',de:'Mitgliedschaft'}},
+  {id:'events',k:['event','ngjarj','aktivitet','lecture','ligjerat','veranstalt','program','takim'],dyn:'events'},
+  {id:'quran',k:['quran audio','sure','surah','recit','degjo kuran','koran hor','kurani'],
+   sq:'📖 Në faqen "Kurani" mund të dëgjoni sûret e Kuranit me audio — vazhdon të luajë edhe kur telefoni është i kyçur.',
+   de:'📖 Auf der Seite "Koran" können Sie die Suren des Korans als Audio anhören — läuft auch bei gesperrtem Telefon weiter.',
+   act:{page:'quran',sq:'Dëgjo Kuranin',de:'Koran anhören'}},
+  {id:'classes',k:['class','mesim','kurs','arabic','arabisht','mesim besim','femij','children','kinder','youth','rini','jugend','shkoll','weekend'],
+   sq:'📚 Ofrojmë mësim-besim dhe mësime kuranore për fëmijë e të rinj. Për orarin dhe regjistrimin, na kontaktoni.',
+   de:'📚 Wir bieten Religions- und Koranunterricht für Kinder und Jugendliche an. Für Zeitplan und Anmeldung kontaktieren Sie uns bitte.',
+   act:{page:'contact',sq:'Na kontaktoni',de:'Kontakt'}},
+  {id:'funeral',k:['funeral','xhenaz','janaz','varrim','vdekj','beerdig','todesfall','begrab'],
+   sq:'🕊️ Për shërbime të xhenazes dhe ndihmë me organizimin, ju lutemi kontaktoni menjëherë imamin përmes email-it ose telefonit.',
+   de:'🕊️ Für Beerdigungsdienste und Hilfe bei der Organisation kontaktieren Sie bitte umgehend den Imam per E-Mail oder Telefon.',
+   act:{page:'contact',sq:'Kontakto imamin',de:'Imam kontaktieren'}},
+  {id:'marriage',k:['marriage','martes','nikah','kuror','heirat','trau'],
+   sq:'💍 Për kurorëzim (Nikah), ju lutemi kontaktoni imamin për t\'u marrë vesh për dokumentet dhe terminin.',
+   de:'💍 Für die Eheschließung (Nikah) kontaktieren Sie bitte den Imam, um Unterlagen und Termin zu besprechen.',
+   act:{page:'contact',sq:'Kontakto imamin',de:'Imam kontaktieren'}},
+  {id:'convert',k:['convert','become muslim','shahad','deshmi','konvert','muslim werden','islam annehm','pranoj islam'],
+   sq:'🌟 Mirë se vini! Imami ynë me kënaqësi ju udhëzon në rrugën tuaj drejt Islamit. Ju lutemi na kontaktoni për një takim.',
+   de:'🌟 Herzlich willkommen! Unser Imam begleitet Sie gerne auf Ihrem Weg zum Islam. Bitte kontaktieren Sie uns für einen Termin.',
+   act:{page:'contact',sq:'Na kontaktoni',de:'Kontakt'}},
+  {id:'volunteer',k:['volunteer','vullnetar','freiwillig','help','ndihmoj','mithelf'],
+   sq:'🙌 Faleminderit për gatishmërinë! Ka gjithmonë nevojë për vullnetarë. Na shkruani dhe ju gjejmë një mënyrë për të ndihmuar.',
+   de:'🙌 Danke für Ihre Bereitschaft! Wir brauchen immer Freiwillige. Schreiben Sie uns und wir finden einen Weg für Ihre Mithilfe.',
+   act:{page:'contact',sq:'Na kontaktoni',de:'Kontakt'}},
+  {id:'visit',k:['visit','vizit','tour','non-muslim','tourist','photo','foto','film','besuch','shkoll vjen'],
+   sq:'🕌 Vizitorët e të gjitha besimeve janë të mirëpritur! Për vizita në grup ose tura shkollore, na kontaktoni paraprakisht.',
+   de:'🕌 Besucher aller Glaubensrichtungen sind willkommen! Für Gruppenbesuche oder Schulführungen kontaktieren Sie uns bitte im Voraus.',
+   act:{page:'contact',sq:'Na kontaktoni',de:'Kontakt'}},
+  {id:'facilities',k:['restroom','tualet','wc','wudu','abdes','wifi','wi-fi','water','uje','library','bibliotek','shower','dush'],
+   sq:'🚰 Në xhami ka hapësira për abdes, tualete dhe ujë. Për detaje të tjera na pyesni ose na kontaktoni.',
+   de:'🚰 In der Moschee gibt es Waschräume für die rituelle Waschung, Toiletten und Wasser. Für weitere Details fragen Sie uns gerne.'},
+  {id:'dress',k:['dress','veshj','shoes','kepuc','schuh','women attend','gra','femra','frauen','kids attend','femije vij','modest'],
+   sq:'👗 Ju lutemi vishuni me modesti. Këpucët hiqen para hyrjes në sallën e namazit. Gratë dhe fëmijët janë të mirëpritur — ka hapësirë të veçantë.',
+   de:'👗 Bitte kleiden Sie sich bescheiden. Schuhe werden vor dem Gebetsraum ausgezogen. Frauen und Kinder sind willkommen — es gibt einen eigenen Bereich.'},
+  {id:'hours',k:['open','hapur','hours','orari','offnung','offen','close','mbyll','when can i come'],
+   sq:'🕐 Xhamia është e hapur rreth kohëve të pesë namazeve çdo ditë. Për vizita jashtë këtyre orareve, na kontaktoni.',
+   de:'🕐 Die Moschee ist täglich um die fünf Gebetszeiten geöffnet. Für Besuche ausserhalb dieser Zeiten kontaktieren Sie uns bitte.'},
+  {id:'languages',k:['language','gjuh','sprache','which language'],
+   sq:'🗣️ Flitet shqip, gjermanisht dhe arabisht. Faqja jonë është në shqip dhe gjermanisht.',
+   de:'🗣️ Gesprochen wird Albanisch, Deutsch und Arabisch. Unsere Website ist auf Albanisch und Deutsch verfügbar.'},
+  {id:'lost',k:['lost','humb','found','gjeta','verloren','gefunden','harrova','shoe left'],
+   sq:'🔎 Për sende të humbura ose të gjetura, ju lutemi kontaktoni stafin e xhamisë.',
+   de:'🔎 Für verlorene oder gefundene Gegenstände wenden Sie sich bitte an das Moschee-Team.',
+   act:{page:'contact',sq:'Na kontaktoni',de:'Kontakt'}},
+  {id:'social',k:['social','instagram','facebook','tiktok','follow','ndiqni','livestream','live'],
+   sq:'📱 Na ndiqni në Instagram, Facebook dhe TikTok (@xhamia_schwamendingen). Linqet i gjeni në fund të faqes.',
+   de:'📱 Folgen Sie uns auf Instagram, Facebook und TikTok (@xhamia_schwamendingen). Die Links finden Sie im Footer.'},
+  {id:'islam',k:['what is islam','five pillars','shtyllat','how to pray','si te fal','how do i pray','wie bete','was ist islam','pillars'],
+   sq:'☪️ Islami mbështetet në pesë shtylla: Shehadeti, Namazi, Zekati, Agjërimi dhe Haxhi. Për të mësuar më shumë, ndiqni ligjëratat ose kontaktoni imamin.',
+   de:'☪️ Der Islam ruht auf fünf Säulen: Schahada, Gebet, Zakat, Fasten und Hadsch. Um mehr zu erfahren, folgen Sie den Vorträgen oder kontaktieren Sie den Imam.',
+   act:{page:'lectures',sq:'Ligjëratat',de:'Vorträge'}},
+];
+
+function chatNorm(s){return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');}
+function chatMatch(text){
+  const t=chatNorm(text);let best=null,bestScore=0;
+  CHAT_INTENTS.forEach(intent=>{
+    let score=0;intent.k.forEach(k=>{if(t.includes(chatNorm(k)))score+=k.length>4?2:1;});
+    if(score>bestScore){bestScore=score;best=intent;}
+  });
+  return bestScore>0?best:null;
+}
+
+let chatStarted=false;
+function toggleChat(){
+  const p=document.getElementById('chat-panel'),f=document.getElementById('chat-fab');
+  const open=p.classList.toggle('open');f.classList.toggle('active',open);
+  if(open&&!chatStarted){chatStarted=true;chatGreeting();}
+  if(open)setTimeout(()=>document.getElementById('chat-text').focus(),200);
+}
+function chatAddMsg(html,who){
+  const body=document.getElementById('chat-body');
+  const d=document.createElement('div');d.className='chat-msg '+who;d.innerHTML=html;
+  body.appendChild(d);body.scrollTop=body.scrollHeight;return d;
+}
+function chatGreeting(){
+  const de=currentLang==='de';
+  chatAddMsg(de?'Selam! 👋 Ich bin der Assistent der Moschee. Wie kann ich helfen?':'Selam! 👋 Unë jam asistenti i xhamisë. Si mund t\'ju ndihmoj?','bot');
+  const chips=[['prayer',de?'Gebetszeiten':'Kohët e namazit'],['location',de?'Standort':'Lokacioni'],['contact',de?'Kontakt':'Kontakti'],['donate',de?'Spenden':'Pagesat'],['events',de?'Veranstaltungen':'Ngjarjet'],['quran',de?'Koran':'Kurani']];
+  const wrap=document.createElement('div');wrap.className='chat-chips';
+  chips.forEach(([id,label])=>{const b=document.createElement('button');b.className='chat-chip';b.textContent=label;b.onclick=()=>chatQuick(id,label);wrap.appendChild(b);});
+  document.getElementById('chat-body').appendChild(wrap);
+}
+function chatQuick(id,label){chatAddMsg(label,'user');const intent=CHAT_INTENTS.find(x=>x.id===id);setTimeout(()=>chatAnswer(intent),350);}
+function chatSend(){
+  const inp=document.getElementById('chat-text');const q=inp.value.trim();if(!q)return;
+  chatAddMsg(q.replace(/</g,'&lt;'),'user');inp.value='';
+  const intent=chatMatch(q);
+  setTimeout(()=>chatAnswer(intent),350);
+}
+function chatAnswer(intent){
+  const de=currentLang==='de';
+  if(!intent){
+    chatAddMsg(de?'Dazu bin ich nicht sicher. 🤔 Bitte kontaktieren Sie uns direkt und wir helfen Ihnen gerne.':'Për këtë nuk jam i sigurt. 🤔 Ju lutemi na kontaktoni drejtpërdrejt dhe ju ndihmojmë me kënaqësi.','bot');
+    chatActionBtn({page:'contact',sq:'Na kontaktoni',de:'Kontakt'});
+    return;
+  }
+  if(intent.dyn==='events'){
+    const posts=DB.posts.slice(0,3);
+    if(posts.length){
+      chatAddMsg((de?'📅 Aktuelle Beiträge:':'📅 Postimet e fundit:')+'<br>'+posts.map(p=>'• '+p.title).join('<br>'),'bot');
+      chatActionBtn({page:'news',sq:'Të gjitha lajmet',de:'Alle Nachrichten'});
+    }else{chatAddMsg(de?'Momentan sind keine Beiträge vorhanden.':'Për momentin nuk ka postime.','bot');}
+    return;
+  }
+  chatAddMsg(de?intent.de:intent.sq,'bot');
+  if(intent.act)chatActionBtn(intent.act);
+}
+function chatActionBtn(act){
+  const body=document.getElementById('chat-body');
+  const b=document.createElement('button');b.className='chat-action';
+  b.textContent=(currentLang==='de'?act.de:act.sq)+' →';
+  b.onclick=()=>{toggleChat();if(act.page)navigate(act.page);else if(act.url)window.open(act.url,'_blank');};
+  body.appendChild(b);body.scrollTop=body.scrollHeight;
 }
 
 // ── COOKIE / PRIVACY CONSENT ──
