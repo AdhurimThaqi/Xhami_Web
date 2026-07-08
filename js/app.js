@@ -74,6 +74,7 @@ function saveState(){
       quizzes,
       surahs,
       pages,
+      staff,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -92,6 +93,7 @@ function loadState(){
   if(Array.isArray(s.quizzes))quizzes=s.quizzes;
   if(Array.isArray(s.surahs))surahs=s.surahs;
   if(Array.isArray(s.pages))pages=s.pages;
+  if(Array.isArray(s.staff))staff=s.staff;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -139,6 +141,10 @@ async function remoteLoadAll(){
     const {data:pg}=await sb.from('pages').select('*').order('nav_order',{ascending:true});
     if(pg)pages=pg.map(p=>({id:p.id,title_sq:p.title_sq||'',title_de:p.title_de||'',subtitle_sq:p.subtitle_sq||'',subtitle_de:p.subtitle_de||'',blocks:p.blocks||[]}));
   }catch(e){/* pages table may not exist yet (migration 012) */}
+  try{
+    const {data:sf}=await sb.from('staff').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:true});
+    if(sf)staff=sf.map(s=>({id:s.id,name:s.name||'',position_sq:s.position_sq||'',position_de:s.position_de||'',photo:s.photo||''}));
+  }catch(e){/* staff table may not exist yet (migration 013) */}
 }
 
 let settings={};
@@ -195,6 +201,7 @@ function navigate(p){
   if(p==='home')wirePrayerDocs();
   if(p==='quiz')renderQuizList();
   if(p==='quran')renderSurahList();
+  if(p==='staff')renderStaff();
 }
 
 // ═══════════════════════════════════════
@@ -891,6 +898,8 @@ function setLang(lang){
   renderCustomNav();
   const cp=document.getElementById('page-custom');
   if(cp&&cp.classList.contains('active')){const id=+(location.hash.match(/^#faqe-(\d+)$/)||[])[1];if(id)openCustomPage(id,false);}
+  const sp=document.getElementById('page-staff');
+  if(sp&&sp.classList.contains('active'))setTimeout(renderStaff,400);
   saveState();
   setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
@@ -1127,6 +1136,85 @@ async function uploadPartnerLogo(ev){
   try{
     document.getElementById('partner-logo').value=await uploadToStorage(f);
     showToast('✅ Logo u ngarkua!','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
+// ── STAFF (Kryesia e Xhamisë) ──
+let staff=[];
+
+function staffCard(p){
+  const pos=currentLang==='de'?(p.position_de||p.position_sq):(p.position_sq||p.position_de);
+  const initial=(p.name||'?').trim().charAt(0).toUpperCase();
+  const visual=p.photo
+    ?`<img src="${p.photo}" alt="${p.name}" loading="lazy" onerror="this.parentNode.innerHTML='<span>${initial}</span>'">`
+    :`<span>${initial}</span>`;
+  return `<div class="staff-card">
+    <div class="staff-photo">${visual}</div>
+    <div class="staff-name">${p.name||''}</div>
+    <div class="staff-position">${pos||''}</div>
+  </div>`;
+}
+
+function renderStaff(){
+  const g=document.getElementById('staff-grid');if(!g)return;
+  const empty=document.getElementById('staff-empty');
+  if(!staff.length){g.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  g.innerHTML=staff.map(staffCard).join('');
+}
+
+function renderStaffAdmin(){
+  const list=document.getElementById('staff-admin-list');if(!list)return;
+  if(!staff.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë anëtar i kryesisë.</p>';return;}
+  list.innerHTML=staff.map((p,i)=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--green-lt);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">
+        ${p.photo?`<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover">`:`<strong style="color:var(--green)">${(p.name||'?').charAt(0)}</strong>`}
+      </div>
+      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</strong><small style="color:var(--ink-lt)">${p.position_sq||'-'}${p.position_de?' / '+p.position_de:''}</small></div>
+      <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deleteStaff(${i})">🗑️</button>
+    </div>`).join('');
+}
+
+async function addStaff(){
+  const name=document.getElementById('staff-name').value.trim();
+  const position_sq=document.getElementById('staff-position-sq').value.trim();
+  const position_de=document.getElementById('staff-position-de').value.trim();
+  const photo=document.getElementById('staff-photo').value.trim();
+  if(!name){showToast('Shkruani emrin e anëtarit!','error');return;}
+  if(!position_sq&&!position_de){showToast('Shkruani pozitën!','error');return;}
+  const sort_order=staff.length;
+  if(REMOTE){
+    const {error}=await sb.from('staff').insert({name,position_sq,position_de,photo,sort_order});
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+    await remoteLoadAll();
+  }else{
+    staff.push({name,position_sq,position_de,photo});saveState();
+  }
+  ['staff-name','staff-position-sq','staff-position-de','staff-photo'].forEach(id=>document.getElementById(id).value='');
+  renderStaffAdmin();renderStaff();
+  showToast('👥 Anëtari u shtua!','success');
+}
+
+async function deleteStaff(i){
+  if(!confirm('Fshi këtë anëtar?'))return;
+  if(REMOTE){
+    const {error}=await sb.from('staff').delete().eq('id',staff[i].id);
+    if(error){showToast('Gabim: '+error.message,'error');return;}
+  }
+  staff.splice(i,1);saveState();
+  renderStaffAdmin();renderStaff();
+  showToast('Anëtari u fshi.','');
+}
+
+async function uploadStaffPhoto(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  showToast('⏳ Duke ngarkuar foton...','');
+  try{
+    document.getElementById('staff-photo').value=await uploadToStorage(f);
+    showToast('✅ Fotografia u ngarkua!','success');
   }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
@@ -1912,6 +2000,7 @@ function showAdminTab(name) {
   if (name === 'quizzes')      renderQuizzesAdmin();
   if (name === 'surahs')       renderSurahsAdmin();
   if (name === 'pages')        renderPagesAdmin();
+  if (name === 'staff')        renderStaffAdmin();
   if (name === 'stats')        renderStats();
 }
 
@@ -2317,6 +2406,7 @@ async function initApp(){
   renderCondolencesPublic();
   renderPublicGallery();
   renderPartners();
+  renderStaff();
   renderAudioList();
   updateHeroSlides();
   renderDocsList();
