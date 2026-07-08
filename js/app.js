@@ -738,7 +738,19 @@ function toggleDD(id,e){
 document.addEventListener('click',e=>{
   if(!e.target.closest('.nav-dropdown'))document.querySelectorAll('.nav-dropdown.open').forEach(d=>d.classList.remove('open'));
 });
-window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>40));
+// Navbar: shadow when scrolled; hides scrolling down, reappears scrolling up
+let lastScrollY=0;
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('navbar');
+  const y=window.scrollY;
+  nav.classList.toggle('scrolled',y>40);
+  const mobileOpen=document.getElementById('mobile-menu').classList.contains('open');
+  if(!mobileOpen){
+    if(y>lastScrollY&&y>320)nav.classList.add('nav-hidden');
+    else nav.classList.remove('nav-hidden');
+  }
+  lastScrollY=y<=0?0:y;
+},{passive:true});
 function toggleMobile(){
   document.getElementById('mobile-menu').classList.toggle('open');
   document.getElementById('hamburger').classList.toggle('open');
