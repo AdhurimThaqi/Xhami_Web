@@ -415,6 +415,18 @@ async function uploadSurahAudio(ev){
   catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
+// Turn raw PostgREST "table not found" errors into a clear instruction.
+// Happens when a migration has not been run yet in Supabase.
+function friendlyDbError(error,migration){
+  const m=(error&&error.message)||'';
+  if(/schema cache|could not find the table|does not exist|relation .* does not exist/i.test(m)){
+    return currentLang==='de'
+      ? 'Datenbanktabelle fehlt. Bitte in Supabase den SQL-Migration "'+migration+'" ausführen.'
+      : 'Tabela e bazës së të dhënave mungon. Ju lutemi ekzekutoni migrimin "'+migration+'" në Supabase (SQL Editor).';
+  }
+  return 'Gabim: '+m;
+}
+
 async function addSurah(){
   const number=parseInt(document.getElementById('surah-num').value)||0;
   const name_sq=document.getElementById('surah-name-sq').value.trim();
@@ -425,7 +437,7 @@ async function addSurah(){
   const row={number,name_sq,name_de,url};
   if(REMOTE){
     const {error}=await sb.from('surahs').insert(row);
-    if(error){showToast('Gabim: '+error.message,'error');return;}
+    if(error){showToast(friendlyDbError(error,'migration-011-surahs.sql'),'error');return;}
     await remoteLoadAll();
   }else{surahs.push({id:Date.now(),...row});surahs.sort((a,b)=>a.number-b.number);saveState();}
   ['surah-num','surah-name-sq','surah-name-de','surah-url'].forEach(id=>document.getElementById(id).value='');
@@ -437,7 +449,7 @@ async function deleteSurah(id){
   if(!confirm('Fshi këtë sûre?'))return;
   if(REMOTE){
     const {error}=await sb.from('surahs').delete().eq('id',id);
-    if(error){showToast('Gabim: '+error.message,'error');return;}
+    if(error){showToast(friendlyDbError(error,'migration-011-surahs.sql'),'error');return;}
     surahs=surahs.filter(s=>s.id!==id);
   }else{surahs=surahs.filter(s=>s.id!==id);saveState();}
   renderSurahsAdmin();renderSurahList();
@@ -1186,7 +1198,7 @@ async function addStaff(){
   const sort_order=staff.length;
   if(REMOTE){
     const {error}=await sb.from('staff').insert({name,position_sq,position_de,photo,sort_order});
-    if(error){showToast('Gabim: '+error.message,'error');return;}
+    if(error){showToast(friendlyDbError(error,'migration-013-staff.sql'),'error');return;}
     await remoteLoadAll();
   }else{
     staff.push({name,position_sq,position_de,photo});saveState();
