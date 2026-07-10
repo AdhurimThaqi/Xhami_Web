@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kulturzentrum Haus des Friedens - Qendra Kulturore Shtëpia e Paqës. Xhamia islame shqiptare në Zürich Schwamendingen.">
+<title>Haus des Friedens - Shtëpia e Paqës</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=36">
+</head>
+<body>
+<div id="toast-container"></div>
+
+<!-- COOKIE / PRIVACY CONSENT -->
+<div id="cookie-banner">
+  <div class="cookie-inner">
+    <p data-sq="Kjo faqe përdor ruajtje lokale për funksionim (gjuha, kyçja) dhe statistika plotësisht anonime — pa cookie gjurmuese dhe pa adresa IP. Duke vazhduar, ju pranoni Politikën e Privatësisë."
+       data-de="Diese Website nutzt lokale Speicherung für Funktionen (Sprache, Anmeldung) und vollständig anonyme Statistiken — ohne Tracking-Cookies und ohne IP-Adressen. Durch die weitere Nutzung akzeptieren Sie die Datenschutzerklärung.">Kjo faqe përdor ruajtje lokale për funksionim (gjuha, kyçja) dhe statistika plotësisht anonime — pa cookie gjurmuese dhe pa adresa IP. Duke vazhduar, ju pranoni Politikën e Privatësisë.</p>
+    <div class="cookie-actions">
+      <a onclick="acceptCookies();navigate('datenschutz')" class="cookie-link" data-sq="Më shumë" data-de="Mehr erfahren">Më shumë</a>
+      <button class="btn btn-primary" style="padding:9px 22px;font-size:13px" onclick="acceptCookies()" data-sq="Pranoj" data-de="Akzeptieren">Pranoj</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT ASSISTANT -->
+<button id="chat-fab" onclick="toggleChat()" aria-label="Chat">
+  <svg class="chat-fab-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  <span class="chat-fab-close">×</span>
+</button>
+<div id="chat-panel">
+  <div class="chat-head">
+    <div class="chat-head-logo"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><polygon points="6,20 26,28 26,58 6,50" fill="#161616"/><polygon points="26,28 58,18 58,46 26,58" fill="#161616"/><polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/><polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/></svg></div>
+    <div class="chat-head-info">
+      <strong data-sq="Asistenti i Xhamisë" data-de="Moschee-Assistent">Asistenti i Xhamisë</strong>
+      <small><span class="chat-dot"></span> <span data-sq="Online - përgjigje të menjëhershme" data-de="Online - sofortige Antworten">Online - përgjigje të menjëhershme</span></small>
+    </div>
+    <button class="chat-min" onclick="toggleChat()" aria-label="Mbyll">×</button>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-input">
+    <input type="text" id="chat-text" placeholder="Shkruani pyetjen tuaj..." onkeydown="if(event.key==='Enter')chatSend()">
+    <button onclick="chatSend()" aria-label="Dërgo"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg></button>
+  </div>
+</div>
+
+<!-- ANIMATED CURSOR -->
+<div id="cursor-ring"></div>
+<div id="cursor-mark">
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="spin">
+    <polygon points="6,20 26,28 26,58 6,50" fill="#161616"/>
+    <polygon points="26,28 58,18 58,46 26,58" fill="#161616"/>
+    <polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/>
+    <polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/>
+  </svg>
+</div>
+
+<!-- FIRST-LOAD SPLASH -->
+<div id="page-splash">
+  <div class="ll-box">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="ll-logo"><polygon points="6,20 26,28 26,58 6,50" fill="#161616"/><polygon points="26,28 58,18 58,46 26,58" fill="#161616"/><polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/><polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/></svg>
+    <div class="splash-name">KULTURZENTRUM<br><strong>HAUS DES FRIEDENS</strong></div>
+    <div class="ll-bar"><span></span></div>
+  </div>
+</div>
+
+<!-- LOGIN LOADING OVERLAY -->
+<div id="login-loading">
+  <div class="ll-box">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" class="ll-logo"><polygon points="6,20 26,28 26,58 6,50" fill="#161616"/><polygon points="26,28 58,18 58,46 26,58" fill="#161616"/><polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/><polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/></svg>
+    <div class="ll-bar"><span></span></div>
+    <p data-sq="Duke u kyçur..." data-de="Anmeldung läuft...">Duke u kyçur...</p>
+  </div>
+</div>
+
+<!-- IMAGE LIGHTBOX -->
+<div id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <button class="lb-arrow lb-prev" onclick="lbNav(-1)">‹</button>
+  <img id="lb-img" alt="Foto">
+  <button class="lb-arrow lb-next" onclick="lbNav(1)">›</button>
+  <div class="lb-counter" id="lb-counter"></div>
+</div>
+
+<!-- AUDIO PLAYER BAR -->
+<div id="player-bar">
+  <button class="pb-btn" onclick="playerPrev()" title="Prapa">⏮</button>
+  <button class="pb-btn pb-main" id="pb-toggle" onclick="playerToggle()" title="Luaj/Pauzë">▶</button>
+  <button class="pb-btn" onclick="playerNext()" title="Tjetra">⏭</button>
+  <div class="pb-info">
+    <strong id="pb-title">-</strong>
+    <div class="pb-seek"><span id="pb-cur">0:00</span><input type="range" id="pb-range" min="0" max="100" value="0" step="0.1" oninput="playerSeek(this.value)"><span id="pb-dur">0:00</span></div>
+  </div>
+  <button class="pb-btn pb-close" onclick="playerClose()" title="Mbyll">×</button>
+</div>
+<audio id="player-audio" preload="metadata"></audio>
+
+<!-- AUTH MODAL (admin login only) -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('auth-modal')">×</button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <div style="width:38px;height:38px;background:#f5f2ea;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:5px"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><polygon points="6,20 26,28 26,58 6,50" fill="#161616"/><polygon points="26,28 58,18 58,46 26,58" fill="#161616"/><polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/><polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/></svg></div>
+      <h2 id="login-h2" style="margin:0" data-sq="Kyçu si Admin" data-de="Als Admin anmelden">Kyçu si Admin</h2>
+    </div>
+    <p class="sub" id="login-sub" data-sq="Vetëm për administratorët e xhamisë" data-de="Nur für Moschee-Administratoren">Vetëm për administratorët e xhamisë</p>
+    <div id="login-form">
+      <div class="form-group"><label>Email</label><input type="email" id="login-email" placeholder="email@example.com"></div>
+      <div class="form-group"><label id="lbl-pass1" data-sq="Fjalëkalimi" data-de="Passwort">Fjalëkalimi</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px" onclick="doLogin()" id="login-submit-btn" data-sq="Hyr" data-de="Anmelden">Hyr</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS MODAL -->
+<div class="modal-overlay" id="news-modal">
+  <div class="modal" style="max-width:740px">
+    <button class="modal-close" onclick="closeModal('news-modal')">×</button>
+    <div id="news-modal-content"></div>
+  </div>
+</div>
+
+<!-- POST EDITOR -->
+<div class="modal-overlay" id="post-modal">
+  <div class="modal" style="max-width:640px">
+    <button class="modal-close" onclick="closeModal('post-modal')">×</button>
+    <h2 id="post-modal-title">Artikull i ri</h2>
+    <p class="sub">Shkruani dhe publikoni artikullin</p>
+    <div class="form-group"><label>Titulli</label><input type="text" id="post-title"></div>
+    <div class="form-group"><label>Kategoria</label>
+      <select id="post-cat"><option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option></select>
+    </div>
+    <div class="form-group"><label>Përmbajtja</label><textarea id="post-body" rows="6"></textarea></div>
+    <div class="form-group"><label>Fotoja e artikullit</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="post-img" placeholder="https://... ose ngarko →" style="flex:1">
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('post-img-file').click()">📤 Ngarko</button>
+        <input type="file" id="post-img-file" accept="image/*" style="display:none" onchange="uploadPostImage(event)">
+      </div>
+    </div>
+    <div class="form-group"><label>Video e artikullit (opsionale)</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="post-video" placeholder="Link Facebook/YouTube ose ngarko →" style="flex:1">
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('post-video-file').click()">📤 Ngarko</button>
+        <input type="file" id="post-video-file" accept="video/mp4,video/webm,video/quicktime" style="display:none" onchange="uploadPostVideo(event)">
+      </div>
+      <small style="color:var(--ink-lt);font-size:12px">Shfaqet si video-player në artikull. Pranon MP4, YouTube ose Facebook.</small>
+    </div>
+    <button class="btn btn-primary" onclick="savePost()">Publiko</button>
+  </div>
+</div>
+
+<!-- ACTIVITY DETAIL MODAL (zoom-in with blurred background) -->
+<div class="modal-overlay" id="activity-modal">
+  <div class="modal activity-modal-box">
+    <button class="modal-close" onclick="closeModal('activity-modal')">×</button>
+    <div class="activity-modal-icon" id="am-icon">🕌</div>
+    <h2 id="am-title"></h2>
+    <p id="am-body"></p>
+  </div>
+</div>
+
+<!-- QUIZ EDITOR MODAL -->
+<div class="modal-overlay" id="quiz-modal">
+  <div class="modal" style="max-width:680px">
+    <button class="modal-close" onclick="closeModal('quiz-modal')">×</button>
+    <h2 id="quiz-editor-title" style="font-size:22px;color:var(--green);margin-bottom:18px">Kuiz i ri</h2>
+    <div class="form-group"><label>Titulli</label><input type="text" id="quiz-title" placeholder="p.sh. Njohuri për Ramazanin"></div>
+    <div class="form-group"><label>Përshkrimi (opsional)</label><input type="text" id="quiz-desc" placeholder="Një përshkrim i shkurtër"></div>
+    <div class="form-group"><label>Lloji</label>
+      <div class="tab-btns">
+        <button type="button" class="tab-btn active" id="qtype-native" onclick="setQuizType('native')">🌐 Kuiz në web</button>
+        <button type="button" class="tab-btn" id="qtype-kahoot" onclick="setQuizType('kahoot')">📎 Link Kahoot</button>
+      </div>
+    </div>
+    <!-- Kahoot link -->
+    <div id="quiz-kahoot-fields" style="display:none">
+      <div class="form-group"><label>Linku i Kahoot</label><input type="text" id="quiz-kahoot-url" placeholder="https://kahoot.it/... ose challenge link"></div>
+    </div>
+    <!-- Native questions -->
+    <div id="quiz-native-fields">
+      <label style="display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px">Pyetjet</label>
+      <div id="quiz-questions"></div>
+      <button type="button" class="btn btn-outline" style="width:100%;justify-content:center;margin-top:6px" onclick="addQuizQuestion()">+ Shto pyetje</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:20px" onclick="saveQuiz()">💾 Ruaj Kuizin</button>
+  </div>
+</div>
+
+<!-- PHOTO PICKER MODAL -->
+<div class="modal-overlay" id="photo-picker-modal">
+  <div class="modal" style="max-width:640px">
+    <button class="modal-close" onclick="closeModal('photo-picker-modal')">×</button>
+    <h2 style="font-size:20px;color:var(--green);margin-bottom:4px">Zgjidhni një foto</h2>
+    <p class="sub">Klikoni foton që doni ta përdorni</p>
+    <div id="photo-picker-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;max-height:50vh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<header id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <div class="nav-logo" onclick="navigate('home')">
+        <div class="nav-logo-icon">
+          <!-- Official mark: Kaaba (corner view) with green band -->
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="6,20 26,28 26,58 6,50" fill="#161616"/>
+            <polygon points="26,28 58,18 58,46 26,58" fill="#161616"/>
+            <polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/>
+            <polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/>
+          </svg>
+        </div>
+        <div class="nav-logo-text">
+          <div class="top">Kulturzentrum - <strong>Haus des Friedens</strong></div>
+          <div class="btm">Qendra Kulturore - <strong>Shtëpia e Paqës</strong></div>
+        </div>
+      </div>
+
+      <nav id="main-nav">
+        <a onclick="navClick('home',event)" id="nav-home" class="active" data-sq="Ballina" data-de="Startseite">Ballina</a>
+
+        <div class="nav-dropdown" id="dd-about">
+          <a onclick="toggleDD('dd-about',event)">
+            <span data-sq="Rreth Nesh" data-de="Über uns">Rreth Nesh</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </a>
+          <div class="nav-dropdown-menu">
+            <a onclick="navClick('history',event)" data-sq="Historiku" data-de="Geschichte">Historiku</a>
+            <a onclick="navClick('statute',event)" data-sq="Rregullorja & Statuti" data-de="Satzung & Statut">Rregullorja & Statuti</a>
+            <a onclick="navClick('imam',event)" data-sq="Imami" data-de="Imam">Imami</a>
+            <a onclick="navClick('staff',event)" data-sq="Kryesia e Xhamisë" data-de="Vorstand der Moschee">Kryesia e Xhamisë</a>
+            <div class="sep"></div>
+            <a onclick="navClick('activities',event)" data-sq="Aktivitetet" data-de="Aktivitäten">Aktivitetet</a>
+            <a onclick="navClick('condolences',event)" data-sq="Ngushëllimet" data-de="Kondolenzen">Ngushëllimet</a>
+          </div>
+        </div>
+
+        <div class="nav-dropdown" id="dd-islamic">
+          <a onclick="toggleDD('dd-islamic',event)">
+            <span data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</span>
+            <svg class="chevron" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </a>
+          <div class="nav-dropdown-menu">
+            <a onclick="navClick('islamic',event)" data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</a>
+            <a onclick="navClick('quran',event)" data-sq="Kurani i Madhërishëm" data-de="Der Heilige Quran">Kurani i Madhërishëm</a>
+            <a onclick="navClick('quiz',event)" data-sq="Kuizi Islamik" data-de="Islam-Quiz">Kuizi Islamik</a>
+          </div>
+        </div>
+
+        <a onclick="navClick('lectures',event)" id="nav-lectures" data-sq="Ligjëratat" data-de="Vorträge">Ligjëratat</a>
+        <a onclick="navClick('news',event)" id="nav-news" data-sq="Media/Blog" data-de="Medien/Blog">Media/Blog</a>
+        <a onclick="navClick('payments',event)" id="nav-payments" data-sq="Pagesat" data-de="Zahlungen">Pagesat</a>
+        <a onclick="navClick('contact',event)" id="nav-contact" data-sq="Kontakti" data-de="Kontakt">Kontakti</a>
+        <a onclick="navClick('membership',event)" id="nav-membership" data-sq="Anëtarësimi" data-de="Mitgliedschaft">Anëtarësimi</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="lang-switch">
+          <button class="lang-btn active" id="btn-sq" onclick="setLang('sq')" title="Shqip">
+            <img class="flag-img" src="https://flagcdn.com/w40/al.png" alt="AL" onerror="this.remove()"><span>SQ</span>
+          </button>
+          <button class="lang-btn" id="btn-de" onclick="setLang('de')" title="Deutsch">
+            <img class="flag-img" src="https://flagcdn.com/w40/de.png" alt="DE" onerror="this.remove()"><span>DE</span>
+          </button>
+        </div>
+        <div id="auth-nav-area">
+          <button class="btn btn-outline" onclick="openModal('auth-modal')" id="nav-login-btn" data-sq="Kyqu si Admin" data-de="Als Admin anmelden" style="padding:8px 18px;font-size:13px">Kyqu si Admin</button>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMobile()" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div id="mobile-menu">
+  <nav>
+    <a onclick="navigate('home');toggleMobile()" data-sq="Ballina" data-de="Startseite">Ballina</a>
+    <a onclick="navigate('about');toggleMobile()" data-sq="Rreth Nesh" data-de="Über uns">Rreth Nesh</a>
+    <div class="mob-sub">
+      <a onclick="navigate('history');toggleMobile()" data-sq="Historiku" data-de="Geschichte">Historiku</a>
+      <a onclick="navigate('statute');toggleMobile()" data-sq="Rregullorja" data-de="Satzung">Rregullorja</a>
+      <a onclick="navigate('imam');toggleMobile()" data-sq="Imami" data-de="Imam">Imami</a>
+      <a onclick="navigate('staff');toggleMobile()" data-sq="Kryesia e Xhamisë" data-de="Vorstand">Kryesia e Xhamisë</a>
+      <a onclick="navigate('activities');toggleMobile()" data-sq="Aktivitetet" data-de="Aktivitäten">Aktivitetet</a>
+    </div>
+    <a onclick="navigate('islamic');toggleMobile()" data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</a>
+    <a onclick="navigate('quran');toggleMobile()" data-sq="Kurani" data-de="Quran">Kurani</a>
+    <a onclick="navigate('quiz');toggleMobile()" data-sq="Kuizi Islamik" data-de="Islam-Quiz">Kuizi Islamik</a>
+    <a onclick="navigate('lectures');toggleMobile()" data-sq="Ligjëratat" data-de="Vorträge">Ligjëratat</a>
+    <a onclick="navigate('news');toggleMobile()" data-sq="Media/Blog" data-de="Medien/Blog">Media/Blog</a>
+    <a onclick="navigate('membership');toggleMobile()" data-sq="Anëtarësimi" data-de="Mitgliedschaft">Anëtarësimi</a>
+    <a onclick="navigate('payments');toggleMobile()" data-sq="Pagesat Online" data-de="Online-Zahlungen">Pagesat Online</a>
+    <a onclick="navigate('contact');toggleMobile()" data-sq="Kontakti" data-de="Kontakt">Kontakti</a>
+  </nav>
+  <div class="mob-lang">
+    <button class="lang-btn active" id="mob-btn-sq" onclick="setLang('sq')"><img class="flag-img" src="https://flagcdn.com/w40/al.png" alt="AL" onerror="this.remove()"> Shqip</button>
+    <button class="lang-btn" id="mob-btn-de" onclick="setLang('de')"><img class="flag-img" src="https://flagcdn.com/w40/de.png" alt="DE" onerror="this.remove()"> Deutsch</button>
+  </div>
+  <div style="margin-top:16px">
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="openModal('auth-modal');toggleMobile()" id="mob-login-btn" data-sq="Kyqu si Admin" data-de="Als Admin anmelden">Kyqu si Admin</button>
+  </div>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <section id="hero">
+    <!-- Background slideshow -->
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide active" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg')"></div>
+    </div>
+    <!-- Gradient overlay -->
+    <div class="hero-overlay"></div>
+    <!-- Arrows -->
+    <button class="slide-arrow prev" onclick="slidePrev()" aria-label="Previous">&#8592;</button>
+    <button class="slide-arrow next" onclick="slideNext()" aria-label="Next">&#8594;</button>
+    <!-- Dot indicators -->
+    <div class="slide-dots" id="slideDots"></div>
+
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge-wrap"><span id="hero-badge">🕌 Zürich Schwamendingen • Est. 2004</span></div>
+        <h1 id="hero-h1">Kulturzentrum<br><em>Haus des Friedens</em><br>Shtëpia e Paqës</h1>
+        <div class="hero-quote">
+          <p id="hero-quote-text">O ju njerëz, vërtet Ne ju krijuam prej një mashkulli dhe një femre, ju bëmë popuj e fise që të njiheni ndërmjet vete, e s'ka dyshim se te All-llahu më i ndershmi ndër ju është ai që më tepër është ruajtur.</p>
+          <cite id="hero-quote-cite">- Kurani i Shenjtë, El-Huxhurat 49:13</cite>
+        </div>
+        <div class="hero-actions">
+          <button class="hero-btn-gold" onclick="navigate('news')" id="hero-btn1">📰 Lajmet e Fundit</button>
+          <button class="hero-btn-outline" onclick="navigate('membership')" id="hero-btn2">🤝 Anëtarësohu</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats"><div class="container">
+      <div class="hero-stats-inner">
+        <div class="stat-item"><div class="stat-num">2004</div><div class="stat-lbl" id="stat1-lbl">Themeluar</div></div>
+        <div class="stat-item"><div class="stat-num">20+</div><div class="stat-lbl" id="stat2-lbl">Vjet Shërbim</div></div>
+        <div class="stat-item"><div class="stat-num">90%+</div><div class="stat-lbl" id="stat3-lbl">Shqiptar</div></div>
+        <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl" id="stat4-lbl">Organizata Partnere</div></div>
+      </div>
+    </div></div>
+  </section>
+
+  <div id="prayer-strip">
+    <div class="container prayer-inner">
+      <div class="prayer-clock">
+        <span class="prayer-clock-time" id="live-time">00:00:00</span>
+        <span class="prayer-clock-date"><span id="live-date-label">Sot</span> · <span id="live-date">-</span></span>
+      </div>
+      <a class="prayer-live-link" onclick="document.getElementById('prayer-live').scrollIntoView({behavior:'smooth'})">
+        <span class="live-dot"></span>
+        <span data-sq="Kohët e Namazit LIVE" data-de="Gebetszeiten LIVE">Kohët e Namazit LIVE</span>
+      </a>
+      <div class="prayer-addr">📍 Saatlenstrasse 23, 8051 Zürich</div>
+    </div>
+  </div>
+
+  <section class="section" style="background:var(--white)">
+    <div class="container"><div class="about-grid">
+      <div class="about-image">
+        <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Xhamia jonë" class="about-image-main" onerror="this.style.minHeight='300px'">
+        <div class="about-image-card"><div class="num">2013</div><div class="lbl" id="about-card-lbl">Adresa e re<br>Saatlenstr. 23</div></div>
+      </div>
+      <div class="about-content">
+        <div class="badge"><span id="about-badge">🕌 Rreth Nesh</span></div>
+        <h2 id="about-h2" style="margin-top:14px">Qendra Kulturore<br>Islame Shqiptare</h2>
+        <p id="about-p1">Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Është vend ku çdo besimtar ka të drejtë t'i kryejë ritet e tij fetare.</p>
+        <p id="about-p2">Shumica e besimtarëve, mbi 90%, janë shqiptarë nga trojet tona etnike - Shqipëria, Kosova, Maqedonia, Lugina e Preshevës.</p>
+        <div class="about-tags"><span class="about-tag">VIOZ</span><span class="about-tag">DAIGS</span><span class="about-tag">FIDS</span><span class="about-tag">Zürcher Forum der Religionen</span></div>
+        <button class="btn btn-primary" style="margin-top:28px" onclick="navigate('history')" id="about-btn">Lexo Historikun →</button>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" style="background:var(--cream)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge"><span id="news-badge">📰 Lajmet</span></div>
+        <h2 id="news-h2" style="margin-top:12px">Lajmet e Fundit</h2>
+        <div class="divider"></div>
+        <p id="news-sub">Ndiqni aktivitetet dhe lajmet e xhamisë sonë</p>
+      </div>
+      <div class="news-grid" id="home-news-grid"></div>
+      <div style="text-align:center;margin-top:36px">
+        <button class="btn btn-outline" onclick="navigate('news')" id="news-all-btn">Shiko të gjitha lajmet →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--green)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge" style="background:rgba(255,255,255,.15);color:var(--gold)">✨ <span id="act-badge">Aktivitetet</span></div>
+        <h2 id="act-h2" style="margin-top:12px;color:white">Çfarë Ofrojmë</h2>
+        <div class="divider"></div>
+        <p id="act-sub" style="color:rgba(255,255,255,.7)">Xhamia jonë është qendër e jetës fetare, kulturore dhe sociale</p>
+      </div>
+      <div class="activities-grid">
+        <div class="activity-card" onclick="openActivity(0)"><div class="activity-icon">🕌</div><h3 id="act1-h">Namazet e Përditshme</h3><p id="act1-p">Pesë namazet e përditshme të organizuara me imam të kualifikuar.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(1)"><div class="activity-icon">📚</div><h3 id="act2-h">Arsimi Fetar</h3><p id="act2-p">Mësime fetare për fëmijë dhe të rinj, kontribut në edukimin e tyre.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(2)"><div class="activity-icon">🤝</div><h3 id="act3-h">Dialog Ndërfetar</h3><p id="act3-p">Bashkëpunim me Kishën Reformierte dhe Zürcher Forum der Religionen.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(3)"><div class="activity-icon">🌙</div><h3 id="act4-h">Festat Islame</h3><p id="act4-p">Organizim i Ramazanit, Bajrameve dhe festave tjera islame.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(4)"><div class="activity-icon">💙</div><h3 id="act5-h">Ndihmë Humane</h3><p id="act5-p">Ndihma për familjet në nevojë dhe projekte humanitare.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+        <div class="activity-card" onclick="openActivity(5)"><div class="activity-icon">🎓</div><h3 id="act6-h">Ligjëratat e Hoxhës</h3><p id="act6-p">Ligjërata javore të imamit për komunitetin tonë.</p><span class="act-hint" data-sq="Kliko për më shumë +" data-de="Klicken für mehr +">Kliko për më shumë +</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="section" style="background:var(--white);padding:64px 0">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:36px">
+        <div class="badge">🤝 <span data-sq="Bashkëpunimet" data-de="Partnerschaften">Bashkëpunimet</span></div>
+        <h2 style="margin-top:12px;font-size:clamp(24px,3vw,32px)" data-sq="Organizatat Partnere" data-de="Partnerorganisationen">Organizatat Partnere</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="partners-grid" id="partners-grid"></div>
+    </div>
+  </section>
+
+  <!-- PRAYER + IFRAME -->
+  <section class="section" style="background:var(--cream)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🗓️ <span id="prayer-badge">Namazi</span></div>
+        <h2 id="prayer-h2" style="margin-top:12px">Kohët e Namazit 2026</h2>
+        <div class="divider"></div>
+        <p id="prayer-sub">Shkarkoni kalendarin e kohëve të namazit për çdo muaj</p>
+      </div>
+
+      <!-- SwissMosque LIVE IFRAME -->
+      <div style="margin-bottom:52px" id="prayer-live">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div class="live-dot"></div>
+          <span style="font-size:13px;font-weight:600;color:var(--green)" id="live-label">Live - Orari i namazit</span>
+          <a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" style="font-size:12px;color:var(--ink-lt);margin-left:auto">↗ <span id="open-new-tab">Hap në tab të re</span></a>
+        </div>
+        <div style="border-radius:16px;overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow)">
+          <iframe src="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" width="100%" height="440" frameborder="0" scrolling="no" allow="autoplay" title="SwissMosque - Haus des Friedens Gebetszeiten" style="display:block;background:var(--green-lt)"></iframe>
+        </div>
+        <p style="font-size:12px;color:var(--ink-lt);text-align:center;margin-top:8px" id="iframe-credit">Orari shfaqet drejtpërdrejt nga SwissMosque TV</p>
+      </div>
+
+      <div class="prayer-download-grid" id="prayer-cal-grid">
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Janar_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Janar" data-de="Januar">Janar</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Shkurt_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Shkurt" data-de="Februar">Shkurt</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Mars_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Mars" data-de="März">Mars</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Prill_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Prill" data-de="April">Prill</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Maj_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Maj" data-de="Mai">Maj</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Qershor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Qershor" data-de="Juni">Qershor</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Korrik_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Korrik" data-de="Juli">Korrik</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Gusht_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Gusht" data-de="August">Gusht</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Shtator_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Shtator" data-de="September">Shtator</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Tetor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Tetor" data-de="Oktober">Tetor</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Nentor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Nëntor" data-de="November">Nëntor</span></a>
+        <a class="prayer-dl-btn" data-wp="1" href="#" data-cal="https://hausdesfriedens.ch/wp-content/uploads/2026/01/Dhjetor_2026.pdf" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 16l-5-5 1.4-1.4 2.6 2.6V4h2v8.2l2.6-2.6L17 11l-5 5zm-6 4h12v-2H6v2z"/></svg><span data-sq="Dhjetor" data-de="Dezember">Dhjetor</span></a>
+      </div>
+      <div style="margin-top:20px;text-align:center" id="prayer-special-wrap">
+        <a href="#" target="_blank" class="btn btn-outline" id="prayer-special-btn">📥 Ditë dhe netë të mëdha fetare 2026</a>
+      </div>
+      <div class="prayer-steps-grid">
+        <div class="prayer-step"><div class="step-icon">🌅</div><div><a href="#" target="_blank" id="ps1">Namazi i Sabahut</a><small id="ps1-s">Mëngjes</small></div></div>
+        <div class="prayer-step"><div class="step-icon">☀️</div><div><a href="#" target="_blank" id="ps2">Namazi i Drekës</a><small id="ps2-s">Mesdite</small></div></div>
+        <div class="prayer-step"><div class="step-icon">🌤️</div><div><a href="#" target="_blank" id="ps3">Namazi i Ikindisë</a><small id="ps3-s">Pasdite</small></div></div>
+        <div class="prayer-step"><div class="step-icon">🌇</div><div><a href="#" target="_blank" id="ps4">Namazi i Akshamit</a><small id="ps4-s">Mbrëmje</small></div></div>
+        <div class="prayer-step"><div class="step-icon">🌙</div><div><a href="#" target="_blank" id="ps5">Namazi i Jacisë</a><small id="ps5-s">Natë</small></div></div>
+        <div class="prayer-step"><div class="step-icon">📺</div><div><a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" id="ps6">Kohët e Namazit Live</a><small>SwissMosque TV</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--gold-lt);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container"><div class="donations-inner">
+      <div class="donations-content">
+        <div class="badge"><span id="don-badge">💚 Ndihmat Tuaja</span></div>
+        <h2 id="don-h2" style="margin-top:14px">Mbështesni Xhaminë Tonë</h2>
+        <p id="don-p">Mbështetja juaj financiare ndihmon xhaminë të vazhdojë shërbimin ndaj komunitetit. Ju jemi mirënjohës për çdo ndihmë! All-llahu xh.sh. Ju shpërbleftë!</p>
+        <div class="bank-card">
+          <div class="bank-row"><span class="lbl" id="bank-name-lbl">Emri</span><span class="val">Kulturzentrum Haus des Friedens</span></div>
+          <div class="bank-row"><span class="lbl" id="bank-addr-lbl">Adresa</span><span class="val">8051 Zürich</span></div>
+          <div class="bank-row"><span class="lbl">IBAN</span><span class="val">CH10 0070 0114 9050 2891</span></div>
+          <div class="bank-row"><span class="lbl" id="bank-konto-lbl">Konto</span><span class="val">1149-5028.919</span></div>
+        </div>
+        <a class="btn btn-gold" style="margin-top:18px" onclick="navigate('payments')" data-sq="💳 Paguaj Online →" data-de="💳 Online zahlen →">💳 Paguaj Online →</a>
+      </div>
+      <div class="donations-visual">
+        <div class="donation-circle">
+          <p id="don-circle-p">Bamirësi - Sadaka</p>
+          <strong id="don-circle-strong" style="font-family:'Playfair Display',serif;color:var(--gold);font-size:28px">🤲 Jepni</strong>
+          <small id="don-circle-small">Me zemër të hapur</small>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" style="background:var(--white)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">🖼️ <span id="gallery-badge">Galeria</span></div>
+        <h2 id="gallery-h2" style="margin-top:12px">Galeria e Fotografive</h2>
+        <div class="divider"></div>
+      </div>
+      <!-- Extended gallery: 12 items -->
+      <div class="gallery-grid">
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4741-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.style.display='none';this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <!-- Additional images from the site -->
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4737-1-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4720-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4710-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4700-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+        <div class="g-item"><img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4685-scaled.jpg" alt="Xhamia" loading="lazy" onerror="this.parentElement.style.background='var(--green-lt)'"><div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--white);padding:64px 0">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:32px">
+        <div class="badge">📍 <span data-sq="Lokacioni" data-de="Standort">Lokacioni</span></div>
+        <h2 style="margin-top:12px;font-size:clamp(24px,3vw,32px)" data-sq="Ku na gjeni" data-de="So finden Sie uns">Ku na gjeni</h2>
+        <div class="divider"></div>
+        <p>Saatlenstrasse 23, 8051 Zürich - Schwamendingen</p>
+      </div>
+      <div style="border-radius:16px;overflow:hidden;border:1.5px solid var(--border);box-shadow:var(--shadow)">
+        <iframe src="https://maps.google.com/maps?q=Saatlenstrasse+23,+8051+Z%C3%BCrich&z=16&output=embed" width="100%" height="400" style="border:0;display:block" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" title="Harta - Haus des Friedens"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--cream)">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">📍 <span id="contact-badge">Kontakti</span></div>
+        <h2 id="contact-h2" style="margin-top:12px">Na Kontaktoni</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info">
+          <h3 id="contact-info-h3">Informacione të Kontaktit</h3>
+          <div class="contact-item"><div class="contact-icon">📍</div><div><h4 id="ci-addr-lbl">Adresa</h4><p>Saatlenstr. 23<br>8051 Zürich</p></div></div>
+          <div class="contact-item"><div class="contact-icon">🕌</div><div><h4 id="ci-prayer-lbl">Koha e Namazeve</h4><p id="ci-prayer-p">Pesë herë në ditë · Sipas orarit të publikuar</p></div></div>
+          <div class="contact-social">
+            <a class="social-btn" href="https://www.instagram.com/kulturzentrum_hausdesfriedens/" target="_blank"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.1 1.7-.1 4.9-.1m0 3.6a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4m0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.4-10.4a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0"/></svg> Instagram</a>
+            <a class="social-btn" href="https://www.facebook.com/people/Xhamia-Schwamendingen-Z%C3%BCrich/100016301764627/" target="_blank"><svg class="s-ico" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Facebook</a>
+            <a class="social-btn" href="https://www.tiktok.com/@xhamia_schwamendingen" target="_blank"><svg class="s-ico" viewBox="0 0 24 24"><path d="M16.6 5.8c-.9-1-1.4-2.3-1.4-3.8h-3v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V8.8c-.3 0-.5-.1-.8-.1a5.7 5.7 0 1 0 5.7 5.7V9.2c1.1.8 2.5 1.3 4 1.3v-3c-1 0-2-.3-2.7-.7z"/></svg> TikTok</a>
+          </div>
+        </div>
+        <div class="contact-form-card">
+          <h3 id="contact-form-h3" style="font-size:20px;color:var(--green);margin-bottom:20px">Dërgoni Mesazh</h3>
+          <div class="form-group"><label id="cf-name-lbl">Emri juaj</label><input type="text" id="cf-name"></div>
+          <div class="form-group"><label>Email</label><input type="email" id="cf-email"></div>
+          <div class="form-group"><label data-sq="Numri i telefonit" data-de="Telefonnummer">Numri i telefonit</label><input type="tel" id="cf-phone" placeholder="+41 ..."></div>
+          <div class="form-group"><label id="cf-msg-lbl">Mesazhi</label><textarea id="cf-msg" rows="4"></textarea></div>
+          <button class="btn btn-primary" onclick="sendContact()" id="contact-send-btn">Dërgo Mesazhin →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-home -->
+
+<!-- SINGLE ARTICLE PAGE -->
+<div class="page" id="page-article">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span onclick="navigate('news')" style="cursor:pointer;color:rgba(255,255,255,.7)">Media/Blog</span><span style="opacity:.5">›</span><span data-sq="Artikull" data-de="Artikel">Artikull</span></div>
+    <div class="news-card-meta" style="margin-bottom:10px"><span class="news-card-cat" id="article-cat" style="color:var(--gold)"></span><span class="news-card-date" id="article-date" style="color:rgba(255,255,255,.7)"></span></div>
+    <h1 id="article-title"></h1>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="article-body-wrap">
+      <img id="article-img" class="article-img" alt="" style="display:none">
+      <div class="prose" id="article-body" style="font-size:16px"></div>
+      <button class="btn btn-outline" style="margin-top:36px" onclick="navigate('news')" data-sq="← Kthehu te lajmet" data-de="← Zurück zu den Nachrichten">← Kthehu te lajmet</button>
+    </div>
+  </div></div>
+</div>
+
+<!-- PAYMENTS PAGE -->
+<div class="page" id="page-payments">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">&rsaquo;</span><span data-sq="Pagesat Online" data-de="Online-Zahlungen">Pagesat Online</span></div>
+    <h1 data-sq="Pagesat Online" data-de="Online-Zahlungen">Pagesat Online</h1>
+    <p data-sq="Kontribuoni ne xhami ne menyre te sigurt - direkt nga telefoni" data-de="Unterstuetzen Sie die Moschee sicher - direkt vom Handy">Kontribuoni në xhami në mënyrë të sigurt - direkt nga telefoni</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="payments-grid">
+      <div class="payment-card">
+        <div class="payment-icon" style="background:var(--green-lt)">🤲</div>
+        <h3 data-sq="Sadaka për Xhami" data-de="Sadaqa für die Moschee">Sadaka për Xhami</h3>
+        <p data-sq="Kontributi juaj vullnetar për xhaminë" data-de="Ihr freiwilliger Beitrag für die Moschee">Kontributi juaj vullnetar për xhaminë</p>
+        <a class="btn btn-gold" href="https://donate.raisenow.io/nbggb" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
+      </div>
+      <div class="payment-card">
+        <div class="payment-icon" style="background:#fdf6e3">🐑</div>
+        <h3 data-sq="Pagesa për Kurban" data-de="Kurban-Zahlung">Pagesa për Kurban</h3>
+        <p data-sq="Pagesa e Kurbanit për Kurban Bajram" data-de="Kurban-Zahlung für das Opferfest">Pagesa e Kurbanit për Kurban Bajram</p>
+        <a class="btn btn-gold" href="https://pay.raisenow.io/hdsyc" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
+      </div>
+      <div class="payment-card">
+        <div class="payment-icon" style="background:#e8e4ff">🌙</div>
+        <h3 data-sq="Fitri (Zekatul-Fitr)" data-de="Fitr (Zakat al-Fitr)">Fitri (Zekatul-Fitr)</h3>
+        <p data-sq="Pagesa e Fitrave gjatë muajit të Ramazanit" data-de="Fitr-Zahlung während des Ramadans">Pagesa e Fitrave gjatë muajit të Ramazanit</p>
+        <a class="btn btn-gold" href="https://donate.raisenow.io/xcqws" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
+      </div>
+      <div class="payment-card">
+        <div class="payment-icon" style="background:#e8f5ee">💰</div>
+        <h3 data-sq="Pagesa për Zekat" data-de="Zakat-Zahlung">Pagesa për Zekat</h3>
+        <p data-sq="Zekati - shtylla e tretë e Islamit" data-de="Zakat - die dritte Säule des Islams">Zekati - shtylla e tretë e Islamit</p>
+        <a class="btn btn-gold" href="https://donate.raisenow.io/qhkqy" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
+      </div>
+    </div>
+    <div class="membership-cta">
+      <div>
+        <h3 data-sq="🕌 Anëtarësimi për Xhami" data-de="🕌 Mitgliedschaft in der Moschee">🕌 Anëtarësimi për Xhami</h3>
+        <p data-sq="Regjistrohuni si anëtar i xhamisë përmes formularit online" data-de="Registrieren Sie sich online als Mitglied der Moschee">Regjistrohuni si anëtar i xhamisë përmes formularit online</p>
+      </div>
+      <a class="btn btn-primary" href="https://forms.cloud.microsoft/r/B4e2c93baq?origin=lprLink" target="_blank" rel="noopener" data-sq="Formulari i Regjistrimit →" data-de="Zum Anmeldeformular →">Formulari i Regjistrimit →</a>
+    </div>
+    <p style="margin-top:28px;font-size:12.5px;color:var(--ink-lt);display:flex;align-items:center;gap:8px">🔒 <span data-sq="Pagesat përpunohen në mënyrë të sigurt përmes RaiseNow (Zvicër)." data-de="Zahlungen werden sicher über RaiseNow (Schweiz) abgewickelt.">Pagesat përpunohen në mënyrë të sigurt përmes RaiseNow (Zvicër).</span></p>
+  </div></div>
+</div>
+
+<!-- NEWS PAGE -->
+<div class="page" id="page-news">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)" id="bc-home">Ballina</span><span style="opacity:.5">›</span><span id="bc-news">Media/Blog</span></div>
+    <h1 id="news-page-h1">Media &amp; Blog</h1><p id="news-page-sub">Lajmet dhe artikujt e fundit nga xhamia jonë</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="search-bar">
+      <input type="text" id="news-search" placeholder="Kërko artikuj..." oninput="filterNews()">
+      <button class="btn btn-primary" onclick="filterNews()" id="search-btn">Kërko</button>
+    </div>
+    <div class="filter-pills">
+      <span class="filter-pill active" onclick="setFilter('ALL',this)" data-sq="Të gjitha" data-de="Alle">Të gjitha</span>
+      <span class="filter-pill" onclick="setFilter('Lajme',this)" data-sq="Lajme" data-de="Nachrichten">Lajme</span>
+      <span class="filter-pill" onclick="setFilter('Aktivitete',this)" data-sq="Aktivitete" data-de="Aktivitäten">Aktivitete</span>
+      <span class="filter-pill" onclick="setFilter('Festat Islame',this)" data-sq="Festat Islame" data-de="Islamische Feste">Festat Islame</span>
+      <span class="filter-pill" onclick="setFilter('Bashkëpunimi',this)" data-sq="Bashkëpunimi" data-de="Zusammenarbeit">Bashkëpunimi</span>
+    </div>
+    <div class="news-grid" id="news-grid"></div>
+  </div></div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="page-history">
+  <div class="page-hero"><div class="container"><h1>Historiku</h1><p>Historia e xhamisë sonë nga viti 2004</p></div></div>
+  <div class="page-content"><div class="container"><div class="prose">
+    <h2>Themelimi i Xhamisë</h2>
+    <p>Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Fillimisht u gjet lokali adekuat në Schwamendingenstr. 112. Falë angazhimit të besimtarëve, imamit dhe bashkatdhetarëve, anëtarët e kësaj xhamie vazhdimisht shtoheshin.</p>
+    <p>Që nga viti 2013 xhamia ndryshoi adresën dhe u transferua në lokalin tjetër në <strong>Saatlenstr. 23, 8051, Zürich</strong>.</p>
+    <h2>Anëtarësimi në Organizata</h2>
+    <ul>
+      <li><strong>VIOZ</strong> - Vereinigung der Islamischen Organisationen in Zürich</li>
+      <li><strong>DAIGS</strong> - Dachverband der Albanisch-Islamischen Gemeinschaften in der Schweiz</li>
+      <li><strong>FIDS</strong> - Födereration Islamischer Dachorganisationen Schweiz</li>
+      <li><strong>Zürcher Forum der Religionen</strong></li>
+    </ul>
+    <h2>Bashkëpunimi</h2>
+    <p>Bashkëpunim me shkollat, Drejtoritë e Arsimit, Kishën Reformierte të Schwamendingenit, DAIGS-UIBSHZ, VIOZ dhe FIDS. Synimi ynë: të jemi <strong>transparentë, tolerantë, të mirëkuptueshëm dhe pozitivë</strong> në shoqërinë ku jetojmë.</p>
+  </div></div></div>
+</div>
+
+<!-- STATUTE -->
+<div class="page" id="page-statute">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Rreth Nesh</span><span style="opacity:.5">›</span>Rregullorja</div>
+    <h1>Rregullorja dhe Statuti</h1>
+    <p>Dokumentet zyrtare të Qendrës Kulturore Shtëpia e Paqës</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:48px">
+      <!-- Left: full text -->
+      <div class="prose">
+        <h2>Statuti i Shoqatës</h2>
+        <h3>Neni 1 - Emri dhe Selia</h3>
+        <p>Shoqata mban emrin <strong>"Jugendkulturzentrum Haus des Friedens - Qendra Kulturore Shtëpia e Paqës"</strong>. Selia e saj ndodhet në Zürich, Zvicër.</p>
+        <h3>Neni 2 - Qëllimi</h3>
+        <p>Qëllimi i shoqatës është kultivimi i vlerave fetare islame, kulturore dhe sociale, duke ofruar hapësirë për besimtarët që të kryejnë detyrimet e tyre fetare dhe të zhvillojnë jetën e komunitetit në mënyrë të dinjitetshme dhe transparente.</p>
+        <h3>Neni 3 - Anëtarësia</h3>
+        <p>Anëtar i shoqatës mund të bëhet çdo person i rritur që pranon statutin dhe qëllimet e shoqatës. Anëtarësia fillon me pagimin e kontributit vjetor dhe aprovohet nga bordi drejtues.</p>
+        <h3>Neni 4 - Organet e Shoqatës</h3>
+        <ul>
+          <li><strong>Kuvendi i Përgjithshëm</strong> - organi më i lartë vendimmarrës, mblidhet të paktën një herë në vit.</li>
+          <li><strong>Bordi Drejtues</strong> - drejton punën e përditshme, zgjedhet çdo 2 vjet.</li>
+          <li><strong>Komisioni i Auditimit</strong> - kontrollon financat dhe veprimtarinë e shoqatës.</li>
+        </ul>
+        <h3>Neni 5 - Financat</h3>
+        <p>Financat e shoqatës sigurohen nga kontributet e anëtarëve, donacionet, dhe veprimtaritë e organizuara. Viti fiskal fillon më 1 janar dhe mbyllet më 31 dhjetor.</p>
+        <h3>Neni 6 - Ndryshimi i Statutit</h3>
+        <p>Statuti mund të ndryshohet vetëm me vendim të Kuvendit të Përgjithshëm me dy të tretat (2/3) e votave të pranishme.</p>
+        <h3>Neni 7 - Shpërbërja</h3>
+        <p>Në rast shpërbërjeje, pasuria e shoqatës i kalon një organizate tjetër jofitimprurëse me qëllime të ngjashme, sipas vendimit të Kuvendit të Përgjithshëm.</p>
+        <div style="margin-top:32px;padding:20px;background:var(--green-lt);border-radius:12px;border-left:4px solid var(--green)">
+          <p style="font-weight:600;color:var(--green);margin:0">📋 Statuti hyn në fuqi që nga viti 2004 dhe është rishikuar herë pas here nga Kuvendi i Përgjithshëm.</p>
+        </div>
+      </div>
+      <!-- Right: PDF viewer + download -->
+      <div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:20px;color:var(--green);margin-bottom:16px">📄 <span data-sq="Dokumenti Zyrtar" data-de="Offizielles Dokument">Dokumenti Zyrtar</span></h3>
+        <!-- PDF Embed (filled from the uploaded statute PDF) -->
+        <div class="pdf-viewer">
+          <div class="pdf-viewer-bar">
+            📄 <span id="statute-doc-title" data-sq="Statuti i Xhamisë - PDF" data-de="Satzung der Moschee - PDF">Statuti i Xhamisë - PDF</span>
+            <a id="statute-fs" href="#" target="_blank" rel="noopener" style="margin-left:auto;color:rgba(255,255,255,.85);font-size:12px" data-sq="⤢ Ekran i plotë" data-de="⤢ Vollbild">⤢ Ekran i plotë</a>
+          </div>
+          <iframe id="statute-frame" title="Statuti i Xhamisë" style="display:block;border:none;width:100%;height:560px;background:#f5f5f5"></iframe>
+          <div id="statute-missing" style="display:none;padding:40px 24px;text-align:center;background:var(--cream)">
+            <div style="font-size:48px;margin-bottom:12px">📄</div>
+            <p style="font-weight:600;color:var(--ink);margin-bottom:8px" data-sq="Dokumenti ende nuk është ngarkuar" data-de="Dokument noch nicht hochgeladen">Dokumenti ende nuk është ngarkuar</p>
+            <p style="font-size:13px;color:var(--ink-lt)" data-sq="Admini mund ta ngarkojë PDF-në te paneli Media (emërtojeni me fjalën 'Statuti')." data-de="Der Administrator kann das PDF im Media-Panel hochladen (mit dem Wort 'Statut' benennen).">Admini mund ta ngarkojë PDF-në te paneli Media (emërtojeni me fjalën 'Statuti').</p>
+          </div>
+        </div>
+        <!-- Download button -->
+        <div style="display:grid;gap:10px;margin-top:16px">
+          <a id="statute-download" href="#" target="_blank" rel="noopener" class="btn btn-primary" style="justify-content:center" data-sq="📥 Shkarko Statutin (PDF)" data-de="📥 Satzung herunterladen (PDF)">📥 Shkarko Statutin (PDF)</a>
+        </div>
+        <!-- Info cards -->
+        <div style="display:grid;gap:10px;margin-top:24px">
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+            <div style="font-size:22px">🗓️</div>
+            <div><h4 style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Themeluar</h4><p style="font-size:13px;color:var(--ink-mid)">2004 - Zürich Schwamendingen</p></div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+            <div style="font-size:22px">📍</div>
+            <div><h4 style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Selia</h4><p style="font-size:13px;color:var(--ink-mid)">Saatlenstr. 23, 8051 Zürich</p></div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;gap:12px;align-items:flex-start">
+            <div style="font-size:22px">🏛️</div>
+            <div><h4 style="font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px">Forma juridike</h4><p style="font-size:13px;color:var(--ink-mid)">Shoqatë jofitimprurëse (Verein) - Zvicër</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- IMAM -->
+<div class="page" id="page-imam">
+  <div class="page-hero"><div class="container"><h1>Imam Fahredin Bunjaku</h1></div></div>
+  <div class="page-content"><div class="container"><div class="about-grid">
+    <div class="about-image"><div style="height:360px;background:var(--green-lt);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:80px">🧔</div></div>
+    <div class="about-content">
+      <div class="badge">👤 Imami ynë</div>
+      <h2 style="margin-top:14px">Imam Fahredin Bunjaku</h2>
+      <p>Imami i xhamisë sonë udhëheq namazet e përditshme dhe ofron udhëzim fetar për komunitetin. Çdo javë mban ligjërata mësimore dhe spirituale për xhematin.</p>
+      <p>Imami është i disponueshëm për këshillim fetar, ngushëllime dhe çdo shërbim tjetër fetar.</p>
+      <button class="btn btn-primary" style="margin-top:16px" onclick="navigate('lectures')">Shiko ligjëratat →</button>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- STAFF / KRYESIA E XHAMISË -->
+<div class="page" id="page-staff">
+  <div class="page-hero"><div class="container">
+    <h1 data-sq="Kryesia e Xhamisë" data-de="Vorstand der Moschee">Kryesia e Xhamisë</h1>
+    <p data-sq="Njihuni me personat që udhëheqin dhe shërbejnë komunitetin tonë." data-de="Lernen Sie die Menschen kennen, die unsere Gemeinschaft leiten und ihr dienen.">Njihuni me personat që udhëheqin dhe shërbejnë komunitetin tonë.</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="staff-grid" id="staff-grid"></div>
+    <div id="staff-empty" style="text-align:center;padding:60px;display:none">
+      <div style="font-size:48px;margin-bottom:12px">👥</div>
+      <p style="color:var(--ink-lt)" data-sq="Ende nuk janë shtuar anëtarë të kryesisë." data-de="Es wurden noch keine Vorstandsmitglieder hinzugefügt.">Ende nuk janë shtuar anëtarë të kryesisë.</p>
+    </div>
+  </div></div>
+</div>
+
+<!-- ACTIVITIES -->
+<div class="page" id="page-activities">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Rreth Nesh</span><span style="opacity:.5">›</span>Aktivitetet</div>
+    <h1>Aktivitetet e Xhamisë</h1>
+    <p>Shfletoni çfarë ofron qendra jonë kulturore dhe fetare</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <div class="activities-accordion" id="activities-accordion">
+
+      <!-- 1: Namazet -->
+      <div class="acc-item" onclick="toggleAcc(0)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,var(--green),#2d7a4f)">🕌</div>
+          <div class="acc-title">
+            <h3>Namazet e Përditshme</h3>
+            <p>Pesë namazet - Sabahu, Dreka, Ikindia, Akshami, Jacia</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Rreth namazeve</h4>
+                <p>Namazi është shtylla e dytë e Islamit dhe akti kryesor i adhurimit. Xhamia "Shtëpia e Paqës" ofron pesë namazet e përditshme të udhëhequra nga Imam Fahredin Bunjaku, imam i kualifikuar me arsim fetar.</p>
+                <p>Çdo besimtar është i mirëpritur të marrë pjesë, pavarësisht prejardhjes ose nivelit të njohurive fetare.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Namazi i Xhumasë</h4>
+                <p>Çdo të premte mbahet namazi i detyrueshëm i Xhumasë me hutbe (predikë) në gjuhën shqipe, duke filluar pas thirrjes së drekës.</p>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Orari i namazit</h4>
+                <p>Kohët e sakta të namazit për xhaminë tonë merren drejtpërdrejt nga SwissMosque dhe përditësohen automatikisht çdo ditë.</p>
+                <a href="https://tv.swissmosque.ch/?place=Mosque&mosqueId=1003" target="_blank" class="btn btn-outline" style="margin-top:14px"><span class="live-dot"></span> Kohët e Namazit LIVE</a>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-0">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Namazi" onerror="this.style.display='none'">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4728-scaled.jpg" alt="Namazi" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Arsimi Fetar -->
+      <div class="acc-item" onclick="toggleAcc(1)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#c8a84b,#b8943b)">📚</div>
+          <div class="acc-title">
+            <h3>Arsimi Fetar</h3>
+            <p>Mësime për fëmijë, të rinj dhe të rritur</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Programi mësimor</h4>
+                <p>Xhamia ofron mësime fetare të strukturuara për të gjitha grupmoshat. Qëllimi është edukimi i gjeneratës së re shqiptare në Zvicër me vlera islame autentike dhe me njohje të gjuhës shqipe.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Çfarë mësojmë</h4>
+                <ul style="padding-left:20px;color:var(--ink-mid);font-size:14px;line-height:2">
+                  <li>Kur'ani i Shenjtë dhe recitimi (Tilawah)</li>
+                  <li>Bazat e fesë islame (Akideja)</li>
+                  <li>Rregullat e namazit dhe adhurimit</li>
+                  <li>Historia islame dhe e profetëve</li>
+                  <li>Gjuha dhe kultura shqiptare</li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Grupet e studimit</h4>
+                <div style="display:grid;gap:10px">
+                  <div class="acc-info-card"><span style="font-size:20px">👶</span><div><strong>Fëmijë (6-12 vjeç)</strong><br><small>Të shtunën 09:00-11:00</small></div></div>
+                  <div class="acc-info-card"><span style="font-size:20px">🧑</span><div><strong>Të rinj (13-18 vjeç)</strong><br><small>Jugendtreff - Të premten mbrëmë</small></div></div>
+                  <div class="acc-info-card"><span style="font-size:20px">👨</span><div><strong>Të rritur</strong><br><small>Pas namazit të Drekës - Të premten</small></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-1">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4669-1-scaled.jpg" alt="Arsimi" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: Dialog Ndërfetar -->
+      <div class="acc-item" onclick="toggleAcc(2)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#2c5282,#3182ce)">🤝</div>
+          <div class="acc-title">
+            <h3>Dialog Ndërfetar</h3>
+            <p>Bashkëpunim me komunitete të tjera fetare në Zürich</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <p>Xhamia jonë beson fuqishëm në dialogun ndërfetar si rrugë për paqen dhe bashkëjetesën. Bashkëpunojmë aktivisht me:</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin:20px 0">
+              <div class="acc-info-card"><span style="font-size:24px">⛪</span><div><strong>Kisha Reformierte</strong><br><small>Schwamendingen - takime të rregullta</small></div></div>
+              <div class="acc-info-card"><span style="font-size:24px">🕍</span><div><strong>Zürcher Forum der Religionen</strong><br><small>Dialog dhe projekte të përbashkëta</small></div></div>
+              <div class="acc-info-card"><span style="font-size:24px">🌐</span><div><strong>VIOZ & DAIGS</strong><br><small>Organizata islame zvicerane</small></div></div>
+              <div class="acc-info-card"><span style="font-size:24px">🏛️</span><div><strong>Institucione shtetërore</strong><br><small>Bashkëpunim me shkollat lokale</small></div></div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-2">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4670-1-scaled.jpg" alt="Dialog" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: Festat Islame -->
+      <div class="acc-item" onclick="toggleAcc(3)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#744210,#c05621)">🌙</div>
+          <div class="acc-title">
+            <h3>Festat Islame</h3>
+            <p>Ramazani, Bajramet dhe ditët e shenjta</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Ramazani</h4>
+                <p>Gjatë muajit të bekuar të Ramazanit, xhamia organizon çdo mbrëmje iftar të përbashkët (darkë kolektive). Jemi krenarë që gjatë viteve të fundit kemi ftuar edhe komunitete jomyslimane në ifshar, si shenjë e respektit dhe bashkëjetesës.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Bajrami i Fitrit & Kurbanit</h4>
+                <p>Namazi i Bajramit mbahet në orën 08:00 ditën e festës. Pas namazit organizohen ngjarje festive familjare me gjithë komunitetin.</p>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Eventet e vitit</h4>
+                <div style="display:grid;gap:8px">
+                  <div class="acc-info-card"><span>🌙</span><div><strong>Ramazani</strong><br><small>Iftar çdo mbrëmje - bashkërisht</small></div></div>
+                  <div class="acc-info-card"><span>🎉</span><div><strong>Bajrami i Fitrit</strong><br><small>Pas Ramazanit - Namaz & festim</small></div></div>
+                  <div class="acc-info-card"><span>🐑</span><div><strong>Bajrami i Kurbanit</strong><br><small>Dhul-Hixheh 10 - Sakrifice & lutje</small></div></div>
+                  <div class="acc-info-card"><span>✨</span><div><strong>Nata e Kadrit</strong><br><small>Laylat al-Qadr - natë e veçantë</small></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-3">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4674-1-scaled.jpg" alt="Festat" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: Ndihmë Humane -->
+      <div class="acc-item" onclick="toggleAcc(4)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#e53e3e,#c53030)">💙</div>
+          <div class="acc-title">
+            <h3>Ndihmë Humane & Solidaritet</h3>
+            <p>Mbështetje për familjet në nevojë brenda dhe jashtë Zvicrës</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <p>Islami thekson me forcë detyrimin e çdo myslimani për të ndihmuar të tjerët. Si komunitet, kemi realizuar disa projekte humane konkrete:</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;margin:20px 0">
+              <div class="acc-info-card" style="flex-direction:column;align-items:flex-start;gap:8px"><strong>🏠 Ndërtim shtëpie</strong><p style="font-size:13px;color:var(--ink-mid)">Bashkatdhetarët ndërtuan shtëpi për familjen e dëshmorit Fadil Sylejmani (2019)</p></div>
+              <div class="acc-info-card" style="flex-direction:column;align-items:flex-start;gap:8px"><strong>🍽️ Ushqim për nevojtar</strong><p style="font-size:13px;color:var(--ink-mid)">Shpërndarje e ushqimit dhe ndihmave materiale gjatë vitit</p></div>
+              <div class="acc-info-card" style="flex-direction:column;align-items:flex-start;gap:8px"><strong>🤲 Fondi i Zakat</strong><p style="font-size:13px;color:var(--ink-mid)">Grumbullim dhe shpërndarje e Zekatit dhe Sadakas çdo vit</p></div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-4">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4745-1-scaled.jpg" alt="Humanitare" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: Jugendtreff -->
+      <div class="acc-item" onclick="toggleAcc(5)">
+        <div class="acc-header">
+          <div class="acc-icon" style="background:linear-gradient(135deg,#553c9a,#6b46c1)">👥</div>
+          <div class="acc-title">
+            <h3>Jugendtreff - Takimi me Rininë</h3>
+            <p>Hapësirë frymëzuese për të rinjtë shqiptarë në Zürich</p>
+          </div>
+          <div class="acc-chevron">▾</div>
+        </div>
+        <div class="acc-body">
+          <div class="acc-body-inner">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+              <div>
+                <h4 style="color:var(--green);margin-bottom:10px">Rreth Jugendtreff</h4>
+                <p>Jugendtreff është hapësira tonë e dedikuar për të rinjtë midis 13 dhe 25 vjeç. Këtu, të rinjtë takohen, diskutojnë tema të rëndësishme, mësojnë bazat e fesë dhe zhvillojnë identitetin e tyre si myslimanë shqiptarë në Zvicër.</p>
+                <h4 style="color:var(--green);margin:16px 0 10px">Çfarë bëjmë</h4>
+                <ul style="padding-left:20px;color:var(--ink-mid);font-size:14px;line-height:2">
+                  <li>Ligjërata dhe diskutime fetare</li>
+                  <li>Sportet dhe aktivitetet rekreative</li>
+                  <li>Projekte sociale dhe vullnetarizëm</li>
+                  <li>Takime me personalitete dhe ekspertë</li>
+                </ul>
+              </div>
+              <div>
+                <h4 style="color:var(--green);margin-bottom:12px">Informacione praktike</h4>
+                <div class="acc-info-card" style="margin-bottom:10px"><span>📅</span><div><strong>Kur?</strong><br><small>Çdo të premte pas namazit të Akshamit</small></div></div>
+                <div class="acc-info-card" style="margin-bottom:10px"><span>📍</span><div><strong>Ku?</strong><br><small>Saatlenstr. 23, 8051 Zürich</small></div></div>
+                <div class="acc-info-card"><span>👤</span><div><strong>Për kë?</strong><br><small>Të rinj 13-25 vjeç</small></div></div>
+              </div>
+            </div>
+            <div class="acc-img-gallery" id="acc-gallery-5">
+              <img src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4741-1-scaled.jpg" alt="Jugendtreff" onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /accordion -->
+  </div></div>
+</div>
+
+<!-- CONDOLENCES -->
+<div class="page" id="page-condolences">
+  <div class="page-hero" style="background:linear-gradient(135deg,#1a1a2e,#2d3561)"><div class="container">
+    <h1>🕊️ Ngushëllimet</h1>
+    <p>Njoftimet për humbjet e komunitetit tonë - Inna lillahi wa inna ilayhi raji'un</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <!-- Quran verse -->
+    <div class="quran-card" style="margin-bottom:40px">
+      <div class="arabic">إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ</div>
+      <div class="trans">Vërtet, ne i përkasim Allahut dhe vërtet, tek Ai do të kthehemi.</div>
+      <div class="ref">El-Bekare 2:156</div>
+    </div>
+    <!-- Condolence announcements list -->
+    <div id="condolences-public-list">
+      <!-- Populated by JS -->
+    </div>
+    <!-- Empty state -->
+    <div id="condolences-empty" style="text-align:center;padding:60px 20px;display:none">
+      <div style="font-size:48px;margin-bottom:16px">🕊️</div>
+      <p style="color:var(--ink-lt);font-size:15px">Nuk ka njoftime aktive për ngushëllime.</p>
+    </div>
+    <!-- Info box -->
+    <div style="margin-top:48px;background:var(--green-lt);border-radius:14px;padding:28px;border:1px solid var(--green);display:flex;gap:20px;align-items:flex-start">
+      <div style="font-size:32px;flex-shrink:0">☎️</div>
+      <div>
+        <h3 style="font-size:17px;color:var(--green);margin-bottom:8px">Nevojitet ndihmë?</h3>
+        <p style="color:var(--ink-mid);font-size:14px;line-height:1.7">Imam Fahredin Bunjaku është i disponueshëm për ceremonitë e varrimit, lutjet për të ndjerit dhe mbështetjen shpirtërore të familjeve në zi. Na kontaktoni sa më shpejt që të jetë e mundur.</p>
+        <button onclick="navigate('contact')" class="btn btn-primary" style="margin-top:14px">Na kontaktoni →</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ISLAMIC FEASTS -->
+<div class="page" id="page-islamic">
+  <div class="page-hero"><div class="container"><h1>Festat Islame</h1></div></div>
+  <div class="page-content"><div class="container">
+    <div class="quran-card"><div class="arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div><div class="trans">Me emrin e Allahut, të Gjithëmëshirshmit, Mëshirëplotit</div></div>
+    <div class="news-grid">
+      <div class="news-card"><div class="news-card-img" style="background:linear-gradient(135deg,#1a4a2e,#2d7a4f)"><div class="news-card-img-placeholder">🌙</div></div><div class="news-card-body"><h3>Ramazani</h3><p>Muaji i shenjtë i agjërimit. Iftar i përbashkët çdo ditë dhe ngjarje speciale gjatë natës Laylat al-Qadr.</p></div></div>
+      <div class="news-card"><div class="news-card-img" style="background:linear-gradient(135deg,#c8a84b,#e8c060)"><div class="news-card-img-placeholder">🎉</div></div><div class="news-card-body"><h3>Bajrami i Fitrit</h3><p>Festa e madhe pas Ramazanit. Namazi i Bajramit dhe festimet familjare me gjithë komunitetin.</p></div></div>
+      <div class="news-card"><div class="news-card-img" style="background:linear-gradient(135deg,#2c5282,#3182ce)"><div class="news-card-img-placeholder">🐑</div></div><div class="news-card-body"><h3>Bajrami i Kurbanit</h3><p>Festa e Kurbanit - kujtim i sakrificës së Ibrahimit a.s.</p></div></div>
+    </div>
+    <div style="margin-top:32px" id="feast-special-wrap"><a href="#" class="btn btn-primary" id="feast-special-btn" data-sq="📥 Shkarkoni Datat e Festave" data-de="📥 Festtermine herunterladen">📥 Shkarkoni Datat e Festave</a></div>
+  </div></div>
+</div>
+
+<!-- QURAN -->
+<div class="page" id="page-quran">
+  <div class="page-hero"><div class="container"><h1>Kurani i Madhërishëm</h1></div></div>
+  <div class="page-content"><div class="container">
+    <div class="quran-card">
+      <div class="arabic">يَا أَيُّهَا النَّاسُ إِنَّا خَلَقْنَاكُم مِّن ذَكَرٍ وَأُنثَىٰ</div>
+      <div class="trans">O ju njerëz, vërtet Ne ju krijuam prej një mashkulli dhe një femre, ju bëmë popuj e fise që të njiheni ndërmjet vete.</div>
+      <div class="ref">El-Huxhurat 49:13</div>
+    </div>
+    <div class="prose">
+      <h2>Burimet Kuranore</h2>
+      <p>Xhamia jonë ofron mësime kuranore dhe ligjërata fetare bazuar në Kuranin e Shenjtë dhe Sunetin e Profetit Muhamed s.a.v.s.</p>
+      <button class="btn btn-outline" onclick="navigate('lectures')" style="margin-top:16px">Ligjëratat e Hoxhës →</button>
+    </div>
+
+    <!-- Surah audio players -->
+    <div style="margin-top:44px">
+      <h2 style="font-family:'Playfair Display',serif;font-size:24px;color:var(--green);margin-bottom:6px">🎧 <span data-sq="Sûret e Kuranit - Audio" data-de="Die Suren des Korans - Audio">Sûret e Kuranit - Audio</span></h2>
+      <p style="font-size:13.5px;color:var(--ink-lt);margin-bottom:18px" data-sq="Dëgjo çdo sûre - vazhdon edhe me telefonin e kyçur" data-de="Jede Sure anhören - läuft auch bei gesperrtem Telefon weiter">Dëgjo çdo sûre - vazhdon edhe me telefonin e kyçur</p>
+      <div class="search-bar" id="surah-search-wrap" style="display:none">
+        <input type="text" id="surah-search" placeholder="Kërko sûren..." oninput="renderSurahList()">
+      </div>
+      <div id="surah-list" style="display:grid;gap:10px"></div>
+      <p id="surah-empty" style="color:var(--ink-lt);font-size:14px;padding:24px;background:var(--white);border:1px dashed var(--border);border-radius:12px;text-align:center">Ende asnjë sûre. Admini mund t'i shtojë nga paneli (Kurani).</p>
+    </div>
+  </div></div>
+</div>
+
+<!-- LECTURES -->
+<div class="page" id="page-lectures">
+  <div class="page-hero"><div class="container"><h1>Ligjëratat e Hoxhës</h1></div></div>
+  <div class="page-content"><div class="container">
+    <div class="prose"><p>Ligjëratat javore të imamit Fahredin Bunjaku ofrojnë udhëzim fetar dhe frymëzim spiritual për komunitetin tonë.</p></div>
+    <div style="display:grid;gap:14px;margin-top:28px">
+      <div class="news-card" style="display:flex;flex-direction:row;align-items:center;gap:20px;padding:20px"><div style="width:56px;height:56px;background:var(--green-lt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">🎙️</div><div><h3 style="font-size:16px;margin-bottom:4px">Ligjërata të Xhumasë</h3><p style="font-size:13px;color:var(--ink-mid)">Hutbetë e Xhumasë dhe mësimet javore</p></div></div>
+      <div class="news-card" style="display:flex;flex-direction:row;align-items:center;gap:20px;padding:20px"><div style="width:56px;height:56px;background:var(--gold-lt);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0">📖</div><div><h3 style="font-size:16px;margin-bottom:4px">Mësimet Kuranore</h3><p style="font-size:13px;color:var(--ink-mid)">Tefsiri dhe shpjegimi i ajeteve kuranore</p></div></div>
+    </div>
+    <div style="margin-top:40px">
+      <h3 style="font-size:20px;color:var(--green);margin-bottom:6px">🎧 <span data-sq="Dëgjo: Ligjërata, Kuran & Hadithe" data-de="Anhören: Vorträge, Koran & Hadithe">Dëgjo: Ligjërata, Kuran & Hadithe</span></h3>
+      <p style="font-size:13.5px;color:var(--ink-lt);margin-bottom:18px" data-sq="Luaj direkt në web - vazhdon edhe me telefonin e kyçur" data-de="Direkt im Web abspielen - läuft auch bei gesperrtem Telefon weiter">Luaj direkt në web - vazhdon edhe me telefonin e kyçur</p>
+      <div id="audio-list" style="display:grid;gap:10px"></div>
+      <p id="audio-empty" style="color:var(--ink-lt);font-size:14px;padding:20px;background:var(--white);border:1px dashed var(--border);border-radius:12px;text-align:center">Ende asnjë audio - ngarkoni MP3 nga paneli i adminit (Media).</p>
+    </div>
+  </div></div>
+</div>
+
+<!-- MEMBERSHIP -->
+<!-- QUIZ PAGE -->
+<div class="page" id="page-quiz">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span data-sq="Kuizi Islamik" data-de="Islam-Quiz">Kuizi Islamik</span></div>
+    <h1 data-sq="Kuizi Islamik" data-de="Islam-Quiz">Kuizi Islamik</h1>
+    <p data-sq="Testoni njohuritë tuaja fetare - argëtim për të gjithë!" data-de="Testen Sie Ihr religiöses Wissen - Spass für alle!">Testoni njohuritë tuaja fetare - argëtim për të gjithë!</p>
+  </div></div>
+  <div class="page-content"><div class="container">
+    <!-- List of quizzes -->
+    <div id="quiz-list" class="quiz-list"></div>
+    <p id="quiz-empty" style="display:none;color:var(--ink-lt);text-align:center;padding:40px;font-size:15px">Ende nuk ka kuize. Admini mund t'i shtojë nga paneli.</p>
+
+    <!-- Native quiz player (hidden until a quiz is started) -->
+    <div id="quiz-player" class="quiz-player" style="display:none">
+      <div class="quiz-play-head">
+        <button class="btn btn-outline" style="padding:7px 14px;font-size:13px" onclick="quitQuiz()">← <span data-sq="Kthehu" data-de="Zurück">Kthehu</span></button>
+        <div class="quiz-progress"><span id="quiz-qnum">1</span> / <span id="quiz-qtotal">1</span></div>
+      </div>
+      <div class="quiz-qcard">
+        <h2 id="quiz-question">—</h2>
+        <div class="quiz-answers" id="quiz-answers"></div>
+        <div id="quiz-feedback" class="quiz-feedback"></div>
+        <button class="btn btn-primary" id="quiz-next" style="display:none;margin-top:20px" onclick="nextQuizQuestion()">Vazhdo →</button>
+      </div>
+    </div>
+
+    <!-- Result screen -->
+    <div id="quiz-result" class="quiz-result" style="display:none">
+      <div class="quiz-result-emoji" id="quiz-result-emoji">🎉</div>
+      <h2 id="quiz-result-title">—</h2>
+      <div class="quiz-result-score"><span id="quiz-score">0</span> / <span id="quiz-score-total">0</span></div>
+      <p id="quiz-result-msg" style="color:var(--ink-mid);margin-bottom:24px"></p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary" id="quiz-retry" data-sq="🔄 Provo përsëri" data-de="🔄 Nochmal versuchen">🔄 Provo përsëri</button>
+        <button class="btn btn-outline" onclick="quitQuiz()" data-sq="Kuizet e tjera" data-de="Andere Quizze">Kuizet e tjera</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div class="page" id="page-membership">
+  <div class="page-hero"><div class="container"><h1 id="memb-h1">Anëtarësimi</h1><p id="memb-sub">Bashkohuni me komunitetin tonë</p></div></div>
+  <div class="page-content"><div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
+      <div class="prose">
+        <h2 id="memb-h2">Anëtarësimi në Xhami</h2>
+        <p id="memb-p1">Duke u anëtarësuar, kontribuoni drejtpërdrejt në ruajtjen dhe zhvillimin e komunitetit tonë fetar dhe kulturor në Zürich.</p>
+        <h3 id="memb-h3">Përfitimet e Anëtarësimit</h3>
+        <ul>
+          <li id="memb-li1">Akses në të gjitha aktivitetet e xhamisë</li>
+          <li id="memb-li2">E drejta e votës në kuvende</li>
+          <li id="memb-li3">Mbështetje fetare dhe spirituale</li>
+          <li id="memb-li4">Pjesëmarrje në ngjarje speciale</li>
+          <li id="memb-li5">Informacione dhe njoftime të drejtpërdrejta</li>
+        </ul>
+        <h3 style="margin-top:24px">Kontributet</h3>
+        <div class="bank-card" style="margin-top:12px">
+          <div class="bank-row"><span class="lbl">IBAN</span><span class="val">CH10 0070 0114 9050 2891</span></div>
+          <div class="bank-row"><span class="lbl">Konto</span><span class="val">1149-5028.919</span></div>
+          <div class="bank-row"><span class="lbl">Emri</span><span class="val">Kulturzentrum Haus des Friedens</span></div>
+        </div>
+      </div>
+      <!-- Microsoft Form placeholder -->
+      <div>
+        <div style="background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)">
+          <div style="background:var(--green);padding:18px 24px">
+            <h3 style="color:white;font-size:18px;margin-bottom:4px">📋 Formulari i Anëtarësimit</h3>
+            <p style="color:rgba(255,255,255,.7);font-size:13px">Plotëso formularin online</p>
+          </div>
+          <div id="membership-form-area" style="padding:32px;text-align:center">
+            <div style="font-size:48px;margin-bottom:16px">📝</div>
+            <p style="font-weight:700;color:var(--ink);margin-bottom:8px;font-size:16px">Formulari do të shtohet së shpejti</p>
+            <p style="color:var(--ink-lt);font-size:14px;margin-bottom:24px">Linku i Microsoft Form do të integrohet këtu. Deri atëherë, na kontaktoni drejtpërdrejt.</p>
+            <button onclick="navigate('contact')" class="btn btn-primary" style="justify-content:center;width:100%">Na kontaktoni →</button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--ink-lt);text-align:center;margin-top:12px">🔒 Të dhënat tuaja janë të sigurta dhe nuk ndahen me palë të treta</p>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- CONTACT PAGE -->
+<div class="page" id="page-contact">
+  <div class="page-hero"><div class="container"><h1>Kontakti</h1></div></div>
+  <div class="page-content"><div class="container"><div class="contact-grid">
+    <div class="contact-info">
+      <h3>Informacione të Kontaktit</h3>
+      <div class="contact-item"><div class="contact-icon">📍</div><div><h4>Adresa</h4><p>Saatlenstr. 23<br>8051 Zürich</p></div></div>
+      <div class="contact-item"><div class="contact-icon">🕌</div><div><h4>Koha e Namazeve</h4><p>Pesë herë në ditë</p></div></div>
+      <div class="contact-social">
+        <a class="social-btn" href="https://www.instagram.com/kulturzentrum_hausdesfriedens/" target="_blank"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.1 1.7-.1 4.9-.1m0 3.6a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4m0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.4-10.4a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0"/></svg> Instagram</a>
+        <a class="social-btn" href="https://www.facebook.com/people/Xhamia-Schwamendingen-Z%C3%BCrich/100016301764627/" target="_blank"><svg class="s-ico" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg> Facebook</a>
+            <a class="social-btn" href="https://www.tiktok.com/@xhamia_schwamendingen" target="_blank"><svg class="s-ico" viewBox="0 0 24 24"><path d="M16.6 5.8c-.9-1-1.4-2.3-1.4-3.8h-3v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V8.8c-.3 0-.5-.1-.8-.1a5.7 5.7 0 1 0 5.7 5.7V9.2c1.1.8 2.5 1.3 4 1.3v-3c-1 0-2-.3-2.7-.7z"/></svg> TikTok</a>
+      </div>
+    </div>
+    <div class="contact-form-card">
+      <h3 style="font-size:20px;color:var(--green);margin-bottom:20px" data-sq="Dërgoni Mesazh" data-de="Nachricht senden">Dërgoni Mesazh</h3>
+      <div class="form-group"><label data-sq="Emri" data-de="Name">Emri</label><input type="text" id="cf2-name"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="cf2-email"></div>
+      <div class="form-group"><label data-sq="Numri i telefonit" data-de="Telefonnummer">Numri i telefonit</label><input type="tel" id="cf2-phone" placeholder="+41 ..."></div>
+      <div class="form-group"><label data-sq="Tema" data-de="Betreff">Tema</label><input type="text" id="cf2-sub"></div>
+      <div class="form-group"><label data-sq="Mesazhi" data-de="Ihre Nachricht">Mesazhi</label><textarea rows="5" id="cf2-msg"></textarea></div>
+      <button class="btn btn-primary" id="contact-send-btn2" onclick="sendContact2()" data-sq="Dërgo →" data-de="Absenden →">Dërgo →</button>
+    </div>
+  </div></div></div>
+</div>
+
+<!-- IMPRESSUM -->
+<div class="page" id="page-impressum">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Impressum</span></div>
+    <h1>Impressum</h1>
+  </div></div>
+  <div class="page-content"><div class="container"><div class="prose">
+    <h2 data-sq="Përgjegjës për përmbajtjen" data-de="Verantwortlich für den Inhalt">Përgjegjës për përmbajtjen</h2>
+    <p>
+      <strong>Kulturzentrum Haus des Friedens</strong><br>
+      Qendra Kulturore - Shtëpia e Paqës<br>
+      Saatlenstrasse 23<br>
+      8051 Zürich - Schwamendingen<br>
+      <span data-sq="Zvicër" data-de="Schweiz">Zvicër</span>
+    </p>
+    <h3 data-sq="Kontakti" data-de="Kontakt">Kontakti</h3>
+    <p>
+      E-Mail: <a href="mailto:xhamiaepaqes@hotmail.com" style="color:var(--green);font-weight:600">xhamiaepaqes@hotmail.com</a><br>
+      Web: hausdesfriedens.ch<br>
+      Instagram: @kulturzentrum_hausdesfriedens
+    </p>
+    <h3 data-sq="Forma juridike" data-de="Rechtsform">Forma juridike</h3>
+    <p data-sq="Shoqatë fetare jofitimprurëse sipas Art. 60 e vijues të Kodit Civil Zviceran (ZGB). Anëtare e VIOZ, DAIGS dhe FIDS." data-de="Gemeinnütziger religiöser Verein gemäss Art. 60 ff. des Schweizerischen Zivilgesetzbuches (ZGB). Mitglied von VIOZ, DAIGS und FIDS.">Shoqatë fetare jofitimprurëse sipas Art. 60 e vijues të Kodit Civil Zviceran (ZGB). Anëtare e VIOZ, DAIGS dhe FIDS.</p>
+    <h3 data-sq="Përjashtim përgjegjësie" data-de="Haftungsausschluss">Përjashtim përgjegjësie</h3>
+    <p data-sq="Përmbajtja e kësaj webfaqeje është përgatitur me kujdes. Megjithatë, nuk marrim përgjegjësi për saktësinë, plotësinë ose aktualitetin e informacioneve. Për përmbajtjen e faqeve të jashtme të lidhura përgjigjen vetëm operatorët e tyre." data-de="Die Inhalte dieser Website wurden mit Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr. Für die Inhalte verlinkter externer Seiten sind ausschliesslich deren Betreiber verantwortlich.">Përmbajtja e kësaj webfaqeje është përgatitur me kujdes. Megjithatë, nuk marrim përgjegjësi për saktësinë, plotësinë ose aktualitetin e informacioneve. Për përmbajtjen e faqeve të jashtme të lidhura përgjigjen vetëm operatorët e tyre.</p>
+    <h3 data-sq="E drejta e autorit" data-de="Urheberrecht">E drejta e autorit</h3>
+    <p data-sq="© 2004-2026 Kulturzentrum Haus des Friedens. Të gjitha përmbajtjet (tekstet, fotot, logot) janë pronë e xhamisë dhe mbrohen nga e drejta e autorit. Riprodhimi kërkon leje me shkrim." data-de="© 2004-2026 Kulturzentrum Haus des Friedens. Alle Inhalte (Texte, Bilder, Logos) sind Eigentum der Moschee und urheberrechtlich geschützt. Eine Vervielfältigung bedarf der schriftlichen Genehmigung.">© 2004-2026 Kulturzentrum Haus des Friedens. Të gjitha përmbajtjet (tekstet, fotot, logot) janë pronë e xhamisë dhe mbrohen nga e drejta e autorit. Riprodhimi kërkon leje me shkrim.</p>
+  </div></div></div>
+</div>
+
+<!-- DATENSCHUTZ / PRIVACY -->
+<div class="page" id="page-datenschutz">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span>Datenschutz</span></div>
+    <h1 data-sq="Politika e Privatësisë" data-de="Datenschutzerklärung">Politika e Privatësisë</h1>
+  </div></div>
+  <div class="page-content"><div class="container"><div class="prose">
+    <p data-sq="Ne e marrim seriozisht mbrojtjen e të dhënave tuaja personale dhe veprojmë në përputhje me Ligjin Zviceran për Mbrojtjen e të Dhënave (revDSG)." data-de="Wir nehmen den Schutz Ihrer persönlichen Daten ernst und handeln im Einklang mit dem Schweizer Datenschutzgesetz (revDSG).">Ne e marrim seriozisht mbrojtjen e të dhënave tuaja personale dhe veprojmë në përputhje me Ligjin Zviceran për Mbrojtjen e të Dhënave (revDSG).</p>
+
+    <h2 data-sq="1. Përgjegjësi" data-de="1. Verantwortliche Stelle">1. Përgjegjësi</h2>
+    <p>Kulturzentrum Haus des Friedens, Saatlenstrasse 23, 8051 Zürich · xhamiaepaqes@hotmail.com</p>
+
+    <h2 data-sq="2. Formulari i kontaktit" data-de="2. Kontaktformular">2. Formulari i kontaktit</h2>
+    <p data-sq="Kur na dërgoni një mesazh, ne mbledhim emrin, email-in, numrin e telefonit dhe përmbajtjen e mesazhit tuaj. Këto të dhëna përdoren vetëm për t'iu përgjigjur kërkesës suaj dhe përcillen përmes shërbimit FormSubmit te email-i ynë. Nuk i ndajmë me palë të treta për qëllime marketingu." data-de="Wenn Sie uns eine Nachricht senden, erheben wir Ihren Namen, Ihre E-Mail, Ihre Telefonnummer und den Inhalt Ihrer Nachricht. Diese Daten werden ausschliesslich zur Beantwortung Ihrer Anfrage verwendet und über den Dienst FormSubmit an unsere E-Mail übermittelt. Wir geben sie nicht zu Marketingzwecken an Dritte weiter.">Kur na dërgoni një mesazh, ne mbledhim emrin, email-in, numrin e telefonit dhe përmbajtjen e mesazhit tuaj. Këto të dhëna përdoren vetëm për t'iu përgjigjur kërkesës suaj dhe përcillen përmes shërbimit FormSubmit te email-i ynë. Nuk i ndajmë me palë të treta për qëllime marketingu.</p>
+
+    <h2 data-sq="3. Statistikat e vizitave" data-de="3. Besuchsstatistik">3. Statistikat e vizitave</h2>
+    <p data-sq="Për të kuptuar sa shpesh vizitohet faqja, ruajmë të dhëna plotësisht anonime: një kod të rastësishëm në shfletuesin tuaj, faqen e vizituar dhe kohën. NUK ruajmë adresa IP, emra apo cookie gjurmuese. Këto të dhëna nuk mund t'ju identifikojnë personalisht." data-de="Um zu verstehen, wie oft die Seite besucht wird, speichern wir vollständig anonyme Daten: einen zufälligen Code in Ihrem Browser, die besuchte Seite und die Uhrzeit. Wir speichern KEINE IP-Adressen, Namen oder Tracking-Cookies. Diese Daten können Sie nicht persönlich identifizieren.">Për të kuptuar sa shpesh vizitohet faqja, ruajmë të dhëna plotësisht anonime: një kod të rastësishëm në shfletuesin tuaj, faqen e vizituar dhe kohën. NUK ruajmë adresa IP, emra apo cookie gjurmuese. Këto të dhëna nuk mund t'ju identifikojnë personalisht.</p>
+
+    <h2 data-sq="4. Llogaria e anëtarit" data-de="4. Mitgliedskonto">4. Llogaria e anëtarit</h2>
+    <p data-sq="Nëse regjistroheni, ruajmë emrin dhe email-in tuaj (fjalëkalimi ruhet i enkriptuar) përmes Supabase, për të mundësuar hyrjen tuaj. Mund të kërkoni fshirjen e llogarisë në çdo kohë." data-de="Wenn Sie sich registrieren, speichern wir Ihren Namen und Ihre E-Mail (das Passwort wird verschlüsselt gespeichert) über Supabase, um Ihre Anmeldung zu ermöglichen. Sie können die Löschung Ihres Kontos jederzeit verlangen.">Nëse regjistroheni, ruajmë emrin dhe email-in tuaj (fjalëkalimi ruhet i enkriptuar) përmes Supabase, për të mundësuar hyrjen tuaj. Mund të kërkoni fshirjen e llogarisë në çdo kohë.</p>
+
+    <h2 data-sq="5. Të drejtat tuaja" data-de="5. Ihre Rechte">5. Të drejtat tuaja</h2>
+    <p data-sq="Ju keni të drejtë të kërkoni qasje, korrigjim ose fshirje të të dhënave tuaja. Për çdo kërkesë na shkruani te xhamiaepaqes@hotmail.com." data-de="Sie haben das Recht, Auskunft, Berichtigung oder Löschung Ihrer Daten zu verlangen. Für jede Anfrage schreiben Sie uns an xhamiaepaqes@hotmail.com.">Ju keni të drejtë të kërkoni qasje, korrigjim ose fshirje të të dhënave tuaja. Për çdo kërkesë na shkruani te xhamiaepaqes@hotmail.com.</p>
+
+    <p style="margin-top:24px;font-size:13px;color:var(--ink-lt)" data-sq="Përditësuar së fundmi: Korrik 2026" data-de="Zuletzt aktualisiert: Juli 2026">Përditësuar së fundmi: Korrik 2026</p>
+  </div></div></div>
+</div>
+
+<!-- CUSTOM (ADMIN-BUILT) PAGE -->
+<div class="page" id="page-custom">
+  <div class="page-hero"><div class="container">
+    <div class="breadcrumb"><span onclick="navigate('home')" style="cursor:pointer;color:rgba(255,255,255,.7)">Ballina</span><span style="opacity:.5">›</span><span id="custom-crumb">—</span></div>
+    <h1 id="custom-title">—</h1>
+    <p id="custom-subtitle"></p>
+  </div></div>
+  <div class="page-content"><div class="container"><div class="custom-blocks" id="custom-blocks"></div></div></div>
+</div>
+
+<!-- PAGE EDITOR MODAL -->
+<div class="modal-overlay" id="page-modal-editor">
+  <div class="modal" style="max-width:720px">
+    <button class="modal-close" onclick="closeModal('page-modal-editor')">×</button>
+    <h2 id="page-editor-title" style="font-size:22px;color:var(--green);margin-bottom:18px">Faqe e re</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group"><label>Titulli (SQ)</label><input type="text" id="pg-title-sq" placeholder="p.sh. Historiku"></div>
+      <div class="form-group"><label>Titel (DE)</label><input type="text" id="pg-title-de" placeholder="z.B. Geschichte"></div>
+      <div class="form-group"><label>Nëntitulli (SQ)</label><input type="text" id="pg-sub-sq" placeholder="Përshkrim i shkurtër"></div>
+      <div class="form-group"><label>Untertitel (DE)</label><input type="text" id="pg-sub-de" placeholder="Kurze Beschreibung"></div>
+    </div>
+    <label style="display:block;font-size:13px;font-weight:600;color:var(--ink);margin:8px 0">Përmbajtja</label>
+    <div id="pg-blocks"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button type="button" class="btn btn-outline" style="padding:8px 14px;font-size:13px" onclick="addPageBlock('text')">+ Tekst</button>
+      <button type="button" class="btn btn-outline" style="padding:8px 14px;font-size:13px" onclick="addPageBlock('image')">+ Foto</button>
+      <button type="button" class="btn btn-outline" style="padding:8px 14px;font-size:13px" onclick="addPageBlock('video')">+ Video</button>
+    </div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:20px" onclick="savePage()">💾 Ruaj Faqen</button>
+  </div>
+</div>
+
+<!-- MEMBER AREA -->
+<div class="page" id="page-member">
+  <div style="background:var(--white);min-height:80vh">
+    <!-- Locked out -->
+    <div id="member-logged-out" class="hidden">
+      <div style="text-align:center;padding:100px 20px">
+        <div style="font-size:72px;margin-bottom:24px">🔒</div>
+        <h2 style="color:var(--green);margin-bottom:12px;font-size:28px" id="locked-h2">Zona e Anëtarëve</h2>
+        <p style="color:var(--ink-mid);margin-bottom:32px;font-size:16px" id="locked-p">Kyçuni ose regjistrohuni për të aksesuar panelin e administrimit.</p>
+        <button class="btn btn-primary" style="padding:14px 32px;font-size:15px" onclick="openModal('auth-modal')" id="locked-btn">🔑 Hyrja / Regjistrim</button>
+        <p style="margin-top:16px;font-size:13px;color:var(--ink-lt)">Admin demo: admin@hausdesfriedens.ch / admin123</p>
+      </div>
+    </div>
+
+    <!-- Logged in -->
+    <div id="member-logged-in" class="hidden">
+
+      <!-- Admin top bar -->
+      <div style="background:var(--green);padding:0">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:60px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="profile-avatar" id="profile-avatar" style="width:36px;height:36px;font-size:16px;margin:0">?</div>
+            <div>
+              <div id="member-welcome" style="color:white;font-weight:700;font-size:15px">Mirë se vini!</div>
+              <div id="prof-role-badge" style="font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.8px">Member</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" style="background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);padding:7px 16px;font-size:13px" onclick="showAdminTab('dashboard')">📊 Dashboard</button>
+            <button class="btn" style="background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);padding:7px 16px;font-size:13px" onclick="doLogout()" id="logout-btn">↩ Dalje</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab navigation pills -->
+      <div style="background:var(--cream);border-bottom:1px solid var(--border)">
+        <div class="container" style="display:flex;gap:0;overflow-x:auto">
+          <button class="admin-tab-pill active" id="apill-dashboard" onclick="showAdminTab('dashboard')">📊 Dashboard</button>
+          <button class="admin-tab-pill" id="apill-news" onclick="showAdminTab('news')">📰 Lajmet</button>
+          <button class="admin-tab-pill admin-only" id="apill-condolences" onclick="showAdminTab('condolences')" style="display:none">🕊️ Ngushëllimet</button>
+          <button class="admin-tab-pill" id="apill-media" onclick="showAdminTab('media')">🖼️ Media</button>
+          <button class="admin-tab-pill admin-only" id="apill-partners" onclick="showAdminTab('partners')" style="display:none">🤝 Partnerët</button>
+          <button class="admin-tab-pill admin-only" id="apill-stats" onclick="showAdminTab('stats')" style="display:none">📈 Statistika</button>
+          <button class="admin-tab-pill admin-only" id="apill-quizzes" onclick="showAdminTab('quizzes')" style="display:none">🎯 Kuizet</button>
+          <button class="admin-tab-pill admin-only" id="apill-surahs" onclick="showAdminTab('surahs')" style="display:none">📖 Kurani</button>
+          <button class="admin-tab-pill admin-only" id="apill-pages" onclick="showAdminTab('pages')" style="display:none">🗂️ Faqet</button>
+          <button class="admin-tab-pill admin-only" id="apill-staff" onclick="showAdminTab('staff')" style="display:none">👥 Kryesia</button>
+          <button class="admin-tab-pill" id="apill-profile" onclick="showAdminTab('profile')">⚙️ Profili</button>
+        </div>
+      </div>
+
+      <div class="container" style="padding-top:32px;padding-bottom:48px">
+
+        <!-- ── DASHBOARD TAB ── -->
+        <div class="admin-panel active" id="apanel-dashboard">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:24px">📊 Dashboard</h2>
+          <!-- Stats cards -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:32px">
+            <div class="dash-card"><div class="dash-card-icon" style="background:#e8f5ee">📰</div><div class="dash-card-num" id="dc-posts">0</div><div class="dash-card-lbl">Artikuj total</div></div>
+            <div class="dash-card"><div class="dash-card-icon" style="background:#fdf6e3">👥</div><div class="dash-card-num" id="dc-members">0</div><div class="dash-card-lbl">Anëtarë</div></div>
+            <div class="dash-card"><div class="dash-card-icon" style="background:#e8e4ff">🌐</div><div class="dash-card-num">6</div><div class="dash-card-lbl">Faqe aktive</div></div>
+            <div class="dash-card"><div class="dash-card-icon" style="background:#fee2e2">📅</div><div class="dash-card-num" id="dc-today">-</div><div class="dash-card-lbl">Sot</div></div>
+          </div>
+          <!-- Quick actions -->
+          <h3 style="font-size:17px;color:var(--ink);margin-bottom:16px;font-family:'DM Sans',sans-serif;font-weight:600">⚡ Veprime të shpejta</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px">
+            <button class="quick-action-btn" onclick="showAdminTab('news');setTimeout(()=>openPostModal(null),100)">
+              <span style="font-size:28px">✍️</span>
+              <strong>Shkruaj artikull</strong>
+              <small>Publiko lajm të ri</small>
+            </button>
+            <button class="quick-action-btn admin-only-el" onclick="showAdminTab('condolences')">
+              <span style="font-size:28px">🕊️</span>
+              <strong>Njoftim ngushëllimi</strong>
+              <small>Njofto komunitetin</small>
+            </button>
+            <button class="quick-action-btn" onclick="showAdminTab('media')">
+              <span style="font-size:28px">🖼️</span>
+              <strong>Shto foto</strong>
+              <small>Ngarko nga kompjuteri</small>
+            </button>
+            <button class="quick-action-btn admin-only-el" onclick="showAdminTab('stats')">
+              <span style="font-size:28px">📈</span>
+              <strong>Statistika</strong>
+              <small>Vizitat & kontaktet</small>
+            </button>
+          </div>
+          <!-- Recent posts -->
+          <h3 style="font-size:17px;color:var(--ink);margin-bottom:16px;font-family:'DM Sans',sans-serif;font-weight:600">🕐 Artikujt e fundit</h3>
+          <div id="dash-recent-posts" style="display:grid;gap:10px"></div>
+        </div>
+
+        <!-- ── NEWS TAB ── -->
+        <div class="admin-panel" id="apanel-news">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+            <h2 style="font-size:24px;color:var(--green)">📰 Menaxho Lajmet</h2>
+            <button class="btn btn-primary" style="gap:8px" onclick="openPostModal(null)">✍️ Shkruaj Artikull të Ri</button>
+          </div>
+          <!-- Search/filter bar -->
+          <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+            <input type="text" id="admin-news-search" placeholder="🔍 Kërko artikuj..." style="flex:1;min-width:180px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit" oninput="renderAdminNews()">
+            <select id="admin-news-cat-filter" onchange="renderAdminNews()" style="border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit;color:var(--ink)">
+              <option value="">Të gjitha kategoritë</option>
+              <option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option>
+            </select>
+          </div>
+          <!-- Cards view -->
+          <div id="admin-news-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px"></div>
+        </div>
+
+        <!-- ── MEDIA TAB ── -->
+        <div class="admin-panel" id="apanel-media">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🖼️ Media & Galeria</h2>
+          <p style="color:var(--ink-mid);margin-bottom:18px;font-size:14px">Menaxhoni fotot dhe mediat e xhamisë · Klikoni <strong style="color:var(--gold)">★</strong> mbi një foto për ta zgjedhur për ballinën (max 6)</p>
+          <div class="media-filter-tabs" id="media-filter-tabs">
+            <button class="media-filter-tab active" data-kind="all" onclick="setMediaFilter('all',this)">📁 Të gjitha <span class="mf-count" id="mf-all">0</span></button>
+            <button class="media-filter-tab" data-kind="image" onclick="setMediaFilter('image',this)">🖼️ Foto <span class="mf-count" id="mf-image">0</span></button>
+            <button class="media-filter-tab" data-kind="video" onclick="setMediaFilter('video',this)">🎬 Video <span class="mf-count" id="mf-video">0</span></button>
+            <button class="media-filter-tab" data-kind="facebook" onclick="setMediaFilter('facebook',this)">📘 Facebook <span class="mf-count" id="mf-facebook">0</span></button>
+            <button class="media-filter-tab" data-kind="audio" onclick="setMediaFilter('audio',this)">🎧 Audio <span class="mf-count" id="mf-audio">0</span></button>
+            <button class="media-filter-tab" data-kind="pdf" onclick="setMediaFilter('pdf',this)">📄 PDF <span class="mf-count" id="mf-pdf">0</span></button>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px" id="media-grid">
+            <!-- Populated by JS -->
+          </div>
+          <p id="media-empty" style="display:none;color:var(--ink-lt);text-align:center;padding:30px;font-size:14px">Asnjë skedar në këtë kategori.</p>
+          <div class="media-upload-zone" onclick="document.getElementById('media-file-input').click()">
+            <input type="file" id="media-file-input" accept="image/*,video/mp4,video/webm,video/quicktime,audio/mpeg,audio/mp4,audio/aac,audio/ogg,audio/wav,.mp3,.m4a,application/pdf,.pdf" multiple style="display:none" onchange="uploadMediaFiles(event)">
+            <div style="font-size:38px;margin-bottom:8px">📤</div>
+            <p style="font-weight:700;color:var(--ink);margin-bottom:4px">Ngarko foto ose video</p>
+            <p style="font-size:13px;color:var(--ink-lt)">Kliko këtu dhe zgjidh skedarët nga telefoni ose kompjuteri.<br>Fotot zvogëlohen automatikisht · Video, MP3 & PDF deri në 50MB</p>
+          </div>
+          <div style="margin-top:16px;padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:4px;font-size:14px">🔗 Ose shto nga një link</p>
+            <p style="font-size:12.5px;color:var(--ink-lt);margin-bottom:14px">URL e një fotoje, videoje - ose linku i një videoje nga Facebook</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <input type="text" id="media-url-input" placeholder="https://facebook.com/... ose https://.../foto.jpg" style="flex:1;min-width:220px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
+              <input type="text" id="media-caption-input" placeholder="Përshkrimi..." style="width:140px;border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;font-size:14px;font-family:inherit">
+              <button class="btn btn-primary" onclick="addMediaItem()" style="white-space:nowrap">+ Shto</button>
+            </div>
+          </div>
+
+          <div style="margin-top:28px;padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:4px;font-size:14px">🖼️ Fotot e seksionit "Çfarë Ofrojmë"</p>
+            <p style="font-size:12.5px;color:var(--ink-lt);margin-bottom:14px">Zgjidhni një foto nga galeria për secilin aktivitet - shfaqet si sfond i kartës në ballinë</p>
+            <div id="activity-photos-list" style="display:grid;gap:8px"></div>
+          </div>
+        </div>
+
+        <!-- ── PAGES (FAQET) TAB ── -->
+        <div class="admin-panel" id="apanel-pages">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
+            <h2 style="font-size:24px;color:var(--green)">🗂️ Faqet e Personalizuara</h2>
+            <button class="btn btn-primary" style="padding:9px 18px;font-size:13px" onclick="openPageEditor(null)">+ Faqe e re</button>
+          </div>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Krijoni faqe të reja që shfaqen automatikisht në menunë e navigimit. Shtoni tekst, foto dhe video.</p>
+          <div id="pages-admin-list" style="display:grid;gap:10px"></div>
+        </div>
+
+        <!-- ── SURAHS (KURANI) TAB ── -->
+        <div class="admin-panel" id="apanel-surahs">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">📖 Kurani - Sûret Audio</h2>
+          <p style="color:var(--ink-mid);margin-bottom:20px;font-size:14px">Shtoni sûret me linkun e audios. <strong>Këshillë:</strong> mbani MP3-të në një host falas si <a href="https://archive.org" target="_blank" style="color:var(--green);font-weight:600">archive.org</a> (pa limit) dhe ngjitni linkun këtu - kështu nuk mbushni hapësirën e Supabase.</p>
+          <div id="surahs-admin-list" style="display:grid;gap:8px;margin-bottom:24px"></div>
+          <div style="padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:14px;font-size:14px">➕ Shto sûre</p>
+            <div style="display:grid;grid-template-columns:90px 1fr 1fr;gap:10px;margin-bottom:10px">
+              <div class="form-group" style="margin:0"><label>Nr.</label><input type="number" id="surah-num" min="1" max="114" placeholder="1"></div>
+              <div class="form-group" style="margin:0"><label>Emri (SQ)</label><input type="text" id="surah-name-sq" placeholder="El-Fatiha"></div>
+              <div class="form-group" style="margin:0"><label>Name (DE, opsional)</label><input type="text" id="surah-name-de" placeholder="Al-Fatiha"></div>
+            </div>
+            <div class="form-group" style="margin:0 0 10px"><label>Linku i audios (MP3)</label>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="surah-url" placeholder="https://archive.org/... ose ngarko →" style="flex:1">
+                <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('surah-file').click()">📤 Ngarko</button>
+                <input type="file" id="surah-file" accept="audio/mpeg,audio/mp4,.mp3,.m4a" style="display:none" onchange="uploadSurahAudio(event)">
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="addSurah()" style="justify-self:start">+ Shto Sûren</button>
+          </div>
+        </div>
+
+        <!-- ── QUIZZES TAB ── -->
+        <div class="admin-panel" id="apanel-quizzes">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
+            <h2 style="font-size:24px;color:var(--green)">🎯 Kuizet</h2>
+            <button class="btn btn-primary" style="padding:9px 18px;font-size:13px" onclick="openQuizEditor(null)">+ Kuiz i ri</button>
+          </div>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Krijoni kuize që luhen direkt në web, ose shtoni një link Kahoot.</p>
+          <div id="quizzes-admin-list" style="display:grid;gap:10px"></div>
+        </div>
+
+        <!-- ── STATISTIKA TAB ── -->
+        <div class="admin-panel" id="apanel-stats">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
+            <h2 style="font-size:24px;color:var(--green)">📈 Statistika e Vizitave</h2>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-outline" style="padding:8px 16px;font-size:13px" onclick="renderStats()">🔄 Rifresko</button>
+              <button class="btn-del" style="padding:8px 16px;font-size:13px;font-weight:700;border-radius:10px;border:none" onclick="resetStats()">🗑️ Rivendos</button>
+            </div>
+          </div>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Sa shpesh vizitohet webfaqja dhe sa persona ju kanë kontaktuar. Të dhënat janë anonime (pa IP apo emra).</p>
+
+          <div class="stats-cards" id="stats-cards">
+            <div class="stat-box"><div class="stat-box-ico" style="background:#e8f5ee">👁️</div><div class="stat-box-num" id="st-total">-</div><div class="stat-box-lbl">Vizita gjithsej</div></div>
+            <div class="stat-box"><div class="stat-box-ico" style="background:#fdf6e3">🧑‍🤝‍🧑</div><div class="stat-box-num" id="st-unique">-</div><div class="stat-box-lbl">Vizitorë unikë</div></div>
+            <div class="stat-box"><div class="stat-box-ico" style="background:#e8e4ff">📅</div><div class="stat-box-num" id="st-today">-</div><div class="stat-box-lbl">Vizita sot</div></div>
+            <div class="stat-box"><div class="stat-box-ico" style="background:#e0f0ff">🗓️</div><div class="stat-box-num" id="st-7">-</div><div class="stat-box-lbl">7 ditët e fundit</div></div>
+            <div class="stat-box"><div class="stat-box-ico" style="background:#fee2e2">✉️</div><div class="stat-box-num" id="st-contacts">-</div><div class="stat-box-lbl">Kontakte gjithsej</div></div>
+            <div class="stat-box"><div class="stat-box-ico" style="background:#e8f5ee">📨</div><div class="stat-box-num" id="st-contacts-30">-</div><div class="stat-box-lbl">Kontakte (30 ditë)</div></div>
+          </div>
+
+          <h3 style="font-size:16px;color:var(--ink);margin:32px 0 14px;font-family:'DM Sans',sans-serif;font-weight:600">📊 Vizitat - 14 ditët e fundit</h3>
+          <div class="stats-chart" id="stats-chart"></div>
+
+          <h3 style="font-size:16px;color:var(--ink);margin:32px 0 14px;font-family:'DM Sans',sans-serif;font-weight:600">🔝 Faqet më të vizituara</h3>
+          <div id="stats-top-pages" style="display:grid;gap:8px"></div>
+
+          <p id="stats-empty" style="display:none;color:var(--ink-lt);text-align:center;padding:30px;font-size:14px">Ende nuk ka të dhëna. Statistikat mblidhen ndërsa vizitorët hapin webfaqen.</p>
+
+          <div id="stats-archive-wrap" style="display:none;margin-top:36px">
+            <h3 style="font-size:16px;color:var(--ink);margin-bottom:6px;font-family:'DM Sans',sans-serif;font-weight:600">🗄️ Arkivi (backup për vite)</h3>
+            <p style="font-size:12.5px;color:var(--ink-lt);margin-bottom:14px">Kopjet rezervë ruhen automatikisht sa herë rivendosni statistikat.</p>
+            <div id="stats-archive" style="display:grid;gap:8px"></div>
+          </div>
+        </div>
+
+        <!-- ── PARTNERS TAB ── -->
+        <div class="admin-panel" id="apanel-partners">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🤝 Organizatat Partnere</h2>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Shfaqen në ballinë te "Bashkëpunimet"</p>
+          <div id="partners-admin-list" style="display:grid;gap:10px;margin-bottom:24px"></div>
+          <div style="padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:14px;font-size:14px">➕ Shto partner të ri</p>
+            <div style="display:grid;gap:10px">
+              <div class="form-group" style="margin:0"><label>Emri</label><input type="text" id="partner-name" placeholder="p.sh. Parandalo.ch"></div>
+              <div class="form-group" style="margin:0"><label>Webfaqja (opsionale)</label><input type="text" id="partner-url" placeholder="https://..."></div>
+              <div class="form-group" style="margin:0"><label>Logo (opsionale)</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" id="partner-logo" placeholder="https://... ose ngarko →" style="flex:1">
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('partner-logo-file').click()">📤 Ngarko</button>
+                  <input type="file" id="partner-logo-file" accept="image/*" style="display:none" onchange="uploadPartnerLogo(event)">
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="addPartner()" style="justify-self:start">+ Shto Partnerin</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── STAFF TAB (Kryesia e Xhamisë) ── -->
+        <div class="admin-panel" id="apanel-staff">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">👥 Kryesia e Xhamisë</h2>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Anëtarët shfaqen publikisht te faqja "Kryesia e Xhamisë"</p>
+          <div id="staff-admin-list" style="display:grid;gap:10px;margin-bottom:24px"></div>
+          <div style="padding:20px 24px;border:1.5px solid var(--border);border-radius:12px">
+            <p style="font-weight:600;color:var(--ink);margin-bottom:14px;font-size:14px">➕ Shto anëtar të ri</p>
+            <div style="display:grid;gap:10px">
+              <div class="form-group" style="margin:0"><label>Emri i plotë</label><input type="text" id="staff-name" placeholder="p.sh. Fahredin Bunjaku"></div>
+              <div class="form-group" style="margin:0"><label>Pozita (Shqip)</label><input type="text" id="staff-position-sq" placeholder="p.sh. Kryetar"></div>
+              <div class="form-group" style="margin:0"><label>Pozita (Gjermanisht)</label><input type="text" id="staff-position-de" placeholder="z.B. Präsident"></div>
+              <div class="form-group" style="margin:0"><label>Fotografia</label>
+                <div style="display:flex;gap:8px">
+                  <input type="text" id="staff-photo" placeholder="https://... ose ngarko →" style="flex:1">
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('staff-photo-file').click()">📤 Ngarko</button>
+                  <input type="file" id="staff-photo-file" accept="image/*" style="display:none" onchange="uploadStaffPhoto(event)">
+                </div>
+              </div>
+              <button class="btn btn-primary" onclick="addStaff()" style="justify-self:start">+ Shto Anëtarin</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── CONDOLENCES TAB ── -->
+        <div class="admin-panel" id="apanel-condolences">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
+            <div>
+              <h2 style="font-size:24px;color:var(--green)">🕊️ Njoftimet e Ngushëllimit</h2>
+              <p style="color:var(--ink-mid);font-size:14px;margin-top:4px">Të ndara nga lajmet e rregullta - shfaqen në faqen e Ngushëllimeve</p>
+            </div>
+            <button class="btn btn-primary" onclick="openCondolenceModal(null)" style="background:#2d3561">🕊️ Shto Njoftim të Ri</button>
+          </div>
+          <!-- Alert -->
+          <div style="background:#fff8e1;border:1px solid #f59e0b;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;gap:10px;align-items:center;font-size:14px">
+            <span style="font-size:20px">⚠️</span>
+            <div><strong>Njoftime të ndjeshme</strong> - Këto njoftime shfaqen publikisht. Shkruani me respekt dhe saktësi.</div>
+          </div>
+          <!-- Cards -->
+          <div id="condolence-admin-list" style="display:grid;gap:14px"></div>
+          <!-- Empty state -->
+          <div id="condolence-admin-empty" style="text-align:center;padding:60px;display:none">
+            <div style="font-size:48px;margin-bottom:12px">🕊️</div>
+            <p style="color:var(--ink-lt)">Nuk ka njoftime aktive. Shtoni njoftimin e parë duke klikuar butonin lart.</p>
+          </div>
+        </div>
+
+        <!-- ── PROFILE TAB ── -->
+        <div class="admin-panel" id="apanel-profile">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:24px">⚙️ Profili & Cilësimet</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+            <div class="profile-card">
+              <h3 style="font-size:17px;margin-bottom:20px;color:var(--ink)">👤 Informacionet personale</h3>
+              <div class="profile-avatar" id="profile-avatar-big" style="width:72px;height:72px;font-size:26px;margin-bottom:20px">?</div>
+              <div class="form-group"><label>Emri i plotë</label><input type="text" id="prof-name"></div>
+              <div class="form-group"><label>Email</label><input type="email" id="prof-email" readonly style="background:var(--cream);color:var(--ink-lt)"></div>
+              <div class="form-group"><label>Roli</label><input type="text" id="prof-role" readonly style="background:var(--cream);color:var(--ink-lt)"></div>
+              <button class="btn btn-primary" onclick="updateProfile()" id="prof-save-btn">💾 Ruaj ndryshimet</button>
+            </div>
+            <div class="profile-card">
+              <h3 style="font-size:17px;margin-bottom:20px;color:var(--ink)">🔐 Ndrysho fjalëkalimin</h3>
+              <div class="form-group"><label id="lbl-newpass">Fjalëkalimi i ri</label><input type="password" id="new-pass" placeholder="Min. 8 karaktere"></div>
+              <div class="form-group"><label id="lbl-newpass2">Konfirmo fjalëkalimin</label><input type="password" id="new-pass2" placeholder="••••••••"></div>
+              <button class="btn btn-primary" onclick="changePassword()" id="change-pass-btn">🔐 Ndrysho fjalëkalimin</button>
+              <div style="margin-top:28px;padding-top:24px;border-top:1px solid var(--border)">
+                <h4 style="font-size:14px;margin-bottom:10px;color:#c0392b" id="danger-zone">⚠️ Zona e rrezikut</h4>
+                <button class="btn" style="border:1.5px solid #c0392b;color:#c0392b;font-size:13px" onclick="deleteAccount()" id="delete-account-btn">🗑️ Fshi llogarinë</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONDOLENCE MODAL -->
+<div class="modal-overlay" id="condolence-modal">
+  <div class="modal" style="max-width:560px">
+    <button class="modal-close" onclick="closeModal('condolence-modal')">×</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+      <div style="width:44px;height:44px;background:#2d3561;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px">🕊️</div>
+      <div>
+        <h2 style="font-size:20px;color:#2d3561;margin-bottom:2px" id="cond-modal-title">Njoftim i ri ngushëllimi</h2>
+        <p style="font-size:13px;color:var(--ink-lt)">Do të shfaqet publikishtë në faqen e Ngushëllimeve</p>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Emri i të ndjerit (Emri Mbiemri)</label>
+      <input type="text" id="cond-name" placeholder="p.sh. Fadil Sylejmani" style="font-size:16px;font-weight:600">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="form-group">
+        <label>Datëlindja (opsionale)</label>
+        <input type="text" id="cond-born" placeholder="p.sh. 1945">
+      </div>
+      <div class="form-group">
+        <label>Data e ndarjes</label>
+        <input type="date" id="cond-date">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Vendlindja / Qyteti</label>
+      <input type="text" id="cond-city" placeholder="p.sh. Prizren, Kosovë">
+    </div>
+    <div class="form-group">
+      <label>Mesazhi i ngushëllimit</label>
+      <textarea id="cond-msg" rows="4" placeholder="Shkruani mesazhin e ngushëllimit për familjen dhe komunitetin..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Koha e namazit të xhenazes (opsionale)</label>
+      <input type="text" id="cond-funeral" placeholder="p.sh. E shtunë 15 Qershor, ora 14:00 - Xhamia Schwamendingen">
+    </div>
+    <div class="form-group"><label>Fotoja e të ndjerit (opsionale)</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="cond-photo" placeholder="https://... ose ngarko →" style="flex:1">
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('cond-photo-file').click()">📤 Ngarko</button>
+        <input type="file" id="cond-photo-file" accept="image/*" style="display:none" onchange="uploadCondPhoto(event)">
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-primary" onclick="saveCondolence()" style="flex:1;justify-content:center;background:#2d3561">🕊️ Publiko Njoftimin</button>
+      <button class="btn btn-outline" onclick="closeModal('condolence-modal')" style="padding:11px 20px">Anulo</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <div style="width:38px;height:38px;background:#f5f2ea;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:5px"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><polygon points="6,20 26,28 26,58 6,50" fill="#161616"/><polygon points="26,28 58,18 58,46 26,58" fill="#161616"/><polygon points="6,26 26,34 26,40 6,32" fill="#4a8a2f"/><polygon points="26,34 58,24 58,30 26,40" fill="#4a8a2f"/></svg></div>
+          <div style="color:white;font-size:13px;letter-spacing:.5px;line-height:1.5;text-transform:uppercase">Kulturzentrum<br><strong>Haus des Friedens</strong></div>
+        </div>
+        <p id="footer-desc">Kulturzentrum Haus des Friedens - Qendra Kulturore Islame Shqiptare në Zürich Schwamendingen. Themeluar 2004.</p>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <a href="https://www.instagram.com/kulturzentrum_hausdesfriedens/" target="_blank" class="footer-social"><svg class="s-ico" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2-.1-1.3-.1-1.7-.1-4.9s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4 1.3-.1 1.7-.1 4.9-.1m0 3.6a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4m0 10.2a4 4 0 1 1 0-8 4 4 0 0 1 0 8m6.4-10.4a1.4 1.4 0 1 1-2.8 0 1.4 1.4 0 0 1 2.8 0"/></svg></a>
+          <a href="https://www.facebook.com/people/Xhamia-Schwamendingen-Z%C3%BCrich/100016301764627/" target="_blank" class="footer-social"><svg class="s-ico" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12"/></svg></a>
+          <a href="https://www.tiktok.com/@xhamia_schwamendingen" target="_blank" class="footer-social"><svg class="s-ico" viewBox="0 0 24 24"><path d="M16.6 5.8c-.9-1-1.4-2.3-1.4-3.8h-3v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V8.8c-.3 0-.5-.1-.8-.1a5.7 5.7 0 1 0 5.7 5.7V9.2c1.1.8 2.5 1.3 4 1.3v-3c-1 0-2-.3-2.7-.7z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col1-h">Rreth Nesh</h4>
+        <a onclick="navigate('history')" id="footer-history">Historiku</a>
+        <a onclick="navigate('statute')" id="footer-statute">Rregullorja</a>
+        <a onclick="navigate('imam')" id="footer-imam">Imami</a>
+        <a onclick="navigate('activities')" id="footer-activities">Aktivitetet</a>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col2-h">Shërbime</h4>
+        <a onclick="navigate('payments')" data-sq="Pagesat Online" data-de="Online-Zahlungen">Pagesat Online</a>
+        <a onclick="navigate('islamic')" id="footer-islamic">Festat Islame</a>
+        <a onclick="navigate('quran')" id="footer-quran">Kurani</a>
+        <a onclick="navigate('lectures')" id="footer-lectures">Ligjëratat</a>
+        <a onclick="navigate('membership')" id="footer-membership">Anëtarësimi</a>
+      </div>
+      <div class="footer-col">
+        <h4 id="footer-col3-h">Kontakti</h4>
+        <a>Saatlenstr. 23</a>
+        <a>8051 Zürich</a>
+        <a onclick="navigate('contact')" id="footer-contact-link">Dërgoni mesazh</a>
+        <div style="margin-top:12px;font-size:12px;color:var(--gold);font-weight:600">IBAN: CH10 0070 0114 9050 2891</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2004-2026 <span>Kulturzentrum Haus des Friedens</span> · Zürich Schwamendingen · <span data-sq="Të gjitha të drejtat e rezervuara" data-de="Alle Rechte vorbehalten">Të gjitha të drejtat e rezervuara</span></div>
+      <div style="display:flex;gap:16px">
+        <a onclick="navigate('impressum')" style="color:rgba(255,255,255,.6);font-size:13px;cursor:pointer">Impressum</a>
+        <a onclick="navigate('datenschutz')" style="color:rgba(255,255,255,.6);font-size:13px;cursor:pointer">Datenschutz</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="js/config.js?v=36"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/app.js?v=36"></script>
+</body>
+</html>
