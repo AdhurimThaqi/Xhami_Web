@@ -2187,14 +2187,14 @@ const CHAT_INTENTS=[
   {id:'prayer',k:['prayer','pray time','namaz','fajr','sabah','dhuhr','drek','asr','ikindi','maghrib','aksham','isha','jaci','sunrise','lindja','gebet','koh','namazit','lutje'],
    sq:'🕌 Kohët e sakta të namazit shfaqen LIVE nga SwissMosque në faqen tonë kryesore dhe përditësohen çdo ditë automatikisht.',
    de:'🕌 Die genauen Gebetszeiten werden LIVE von SwissMosque auf unserer Startseite angezeigt und täglich automatisch aktualisiert.',
-   act:{page:'home',sq:'Shiko kohët e namazit',de:'Gebetszeiten ansehen'}},
+   act:{page:'home',anchor:'prayer-section',sq:'Shiko kohët e namazit',de:'Gebetszeiten ansehen'}},
   {id:'friday',k:['friday','xhuma','xhuia','jumu','khutbah','hutbe','freitag'],
    sq:'🕌 Namazi i Xhumasë mbahet çdo të premte pas thirrjes së drekës, me hutbe në gjuhën shqipe. Ju lutemi ejani pak më herët.',
    de:'🕌 Das Freitagsgebet findet jeden Freitag nach dem Mittagsgebet statt, mit Predigt auf Albanisch. Bitte kommen Sie etwas früher.'},
   {id:'ramadan',k:['ramadan','ramazan','iftar','suhoor','syfyr','taraweeh','teravi','agjer'],
    sq:'🌙 Gjatë Ramazanit organizojmë iftare të përbashkëta dhe namaz teravi çdo mbrëmje. Kohët e iftarit ndjekin akshamin (shih kohët e namazit).',
    de:'🌙 Während des Ramadans organisieren wir gemeinsame Iftar-Abende und jeden Abend Tarawih-Gebete. Die Iftar-Zeit richtet sich nach Maghrib (siehe Gebetszeiten).',
-   act:{page:'home',sq:'Kohët e namazit',de:'Gebetszeiten'}},
+   act:{page:'home',anchor:'prayer-section',sq:'Kohët e namazit',de:'Gebetszeiten'}},
   {id:'eid',k:['eid','bajram'],
    sq:'🎉 Namazi i Bajramit mbahet në mëngjesin e festës. Datat dhe oraret e sakta i shpallim para çdo Bajrami — ndiqni lajmet tona.',
    de:'🎉 Das Eid-Gebet findet am Festmorgen statt. Genaue Daten und Zeiten geben wir vor jedem Eid bekannt — folgen Sie unseren Nachrichten.',
@@ -2202,7 +2202,7 @@ const CHAT_INTENTS=[
   {id:'location',k:['address','adres','location','lokacion','where','ku jeni','ku ndodh','map','hart','parking','park','bus','tram','transport','standort',' wo','richtung'],
    sq:'📍 Ndodhemi në <strong>Saatlenstrasse 23, 8051 Zürich</strong> (Schwamendingen). Hartën dhe udhëzimet i gjeni në faqen kryesore.',
    de:'📍 Wir befinden uns an der <strong>Saatlenstrasse 23, 8051 Zürich</strong> (Schwamendingen). Karte und Wegbeschreibung finden Sie auf der Startseite.',
-   act:{page:'home',sq:'Shiko hartën',de:'Karte ansehen'}},
+   act:{page:'home',anchor:'map-section',sq:'Shiko hartën',de:'Karte ansehen'}},
   {id:'contact',k:['contact','kontakt','phone','telefon','email','e-mail','imam','hoxh','message','mesazh','nachricht'],
    sq:'📞 Mund të na shkruani te <strong>'+CHAT_EMAIL+'</strong> ose përmes formularit të kontaktit. Imami dhe stafi ju përgjigjen sa më shpejt.',
    de:'📞 Sie können uns unter <strong>'+CHAT_EMAIL+'</strong> oder über das Kontaktformular schreiben. Imam und Team antworten so schnell wie möglich.',
@@ -2299,12 +2299,23 @@ function chatGreeting(){
   chips.forEach(([id,label])=>{const b=document.createElement('button');b.className='chat-chip';b.textContent=label;b.onclick=()=>chatQuick(id,label);wrap.appendChild(b);});
   document.getElementById('chat-body').appendChild(wrap);
 }
-function chatQuick(id,label){chatAddMsg(label,'user');const intent=CHAT_INTENTS.find(x=>x.id===id);setTimeout(()=>chatAnswer(intent),350);}
+// Typing indicator ("..." bubble) for a natural online-chat feel
+function chatShowTyping(){
+  const body=document.getElementById('chat-body');
+  const d=document.createElement('div');d.className='chat-msg bot chat-typing';
+  d.innerHTML='<span></span><span></span><span></span>';
+  body.appendChild(d);body.scrollTop=body.scrollHeight;return d;
+}
+function chatReply(fn){
+  const typing=chatShowTyping();
+  setTimeout(()=>{typing.remove();fn();},650);
+}
+function chatQuick(id,label){chatAddMsg(label,'user');const intent=CHAT_INTENTS.find(x=>x.id===id);chatReply(()=>chatAnswer(intent));}
 function chatSend(){
   const inp=document.getElementById('chat-text');const q=inp.value.trim();if(!q)return;
   chatAddMsg(q.replace(/</g,'&lt;'),'user');inp.value='';
   const intent=chatMatch(q);
-  setTimeout(()=>chatAnswer(intent),350);
+  chatReply(()=>chatAnswer(intent));
 }
 function chatAnswer(intent){
   const de=currentLang==='de';
@@ -2328,7 +2339,18 @@ function chatActionBtn(act){
   const body=document.getElementById('chat-body');
   const b=document.createElement('button');b.className='chat-action';
   b.textContent=(currentLang==='de'?act.de:act.sq)+' →';
-  b.onclick=()=>{toggleChat();if(act.page)navigate(act.page);else if(act.url)window.open(act.url,'_blank');};
+  b.onclick=()=>{
+    toggleChat();
+    if(act.url){window.open(act.url,'_blank');return;}
+    if(act.page)navigate(act.page);
+    // optionally scroll to a specific section within the page
+    if(act.anchor){
+      setTimeout(()=>{
+        const el=document.getElementById(act.anchor);
+        if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+      },400);
+    }
+  };
   body.appendChild(b);body.scrollTop=body.scrollHeight;
 }
 
