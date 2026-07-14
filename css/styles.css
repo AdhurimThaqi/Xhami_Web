@@ -913,3 +913,72 @@ body.cursor-text #cursor-mark{opacity:0}
 .cursor-burst{position:fixed;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:radial-gradient(circle,rgba(200,168,75,.7),rgba(200,168,75,0) 70%);pointer-events:none;z-index:9997;animation:cursorBurst .5s ease-out forwards}
 @keyframes cursorBurst{from{transform:scale(.4);opacity:.9}to{transform:scale(4.5);opacity:0}}
 @media(hover:none),(pointer:coarse){#cursor-mark,#cursor-ring{display:none}}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE  (toggled via data-theme="dark" on <html>)
+   ═══════════════════════════════════════════════════════════ */
+/* Theme toggle button (sun / moon) */
+.theme-toggle{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:var(--cream);border:1px solid var(--border);color:var(--ink-mid);cursor:pointer;flex-shrink:0;transition:background .25s,color .25s,border-color .25s,transform .25s}
+.theme-toggle:hover{color:var(--green);background:var(--green-lt);transform:translateY(-2px)}
+.theme-toggle svg{width:18px;height:18px;transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.theme-toggle:hover svg{transform:rotate(35deg)}
+.theme-ico-sun{display:none}
+.theme-ico-moon{display:block}
+:root[data-theme="dark"] .theme-ico-sun{display:block}
+:root[data-theme="dark"] .theme-ico-moon{display:none}
+.mob-theme-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:12px;padding:12px;border-radius:8px;border:1.5px solid var(--border);background:var(--cream);color:var(--ink);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s,color .2s}
+.mob-theme-btn:hover{border-color:var(--green);color:var(--green)}
+.mob-theme-btn svg{width:18px;height:18px}
+
+/* Smooth cross-fade when switching themes */
+body,#navbar,.news-card,.dash-card,.payment-card,.quiz-card,.staff-card,.partner-card,footer,.modal,#chat-panel,.audio-row{transition:background-color .35s ease,border-color .35s ease,color .35s ease}
+
+/* Dark palette: remap the design tokens */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --green:#57b98a;        /* brighter so it stays readable as heading text */
+  --green-mid:#6cc79a;
+  --green-lt:#17281f;     /* dark green-tinted surface (badges, hovers) */
+  --gold:#d4b155;
+  --gold-lt:#2a2517;
+  --cream:#0f1211;        /* page background */
+  --white:#191d19;        /* card / panel surface */
+  --ink:#e9e7e1;          /* primary text */
+  --ink-mid:#b6b4ac;
+  --ink-lt:#8a887f;
+  --border:#2c2f29;
+  --shadow:0 2px 20px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.6);
+}
+/* Keep foreground text white where it sits on a coloured (green/gold) fill */
+:root[data-theme="dark"] .btn-primary,
+:root[data-theme="dark"] .btn-gold,
+:root[data-theme="dark"] .tab-btn.active,
+:root[data-theme="dark"] .lang-btn.active,
+:root[data-theme="dark"] .hero-btn-gold,
+:root[data-theme="dark"] .about-image-card,
+:root[data-theme="dark"] .about-image-card .num,
+:root[data-theme="dark"] .footer-col h4,
+:root[data-theme="dark"] .membership-cta h3,
+:root[data-theme="dark"] .quran-card,
+:root[data-theme="dark"] .donation-circle strong{color:#fff}
+:root[data-theme="dark"] .about-image-card .num,
+:root[data-theme="dark"] .donation-circle strong{color:var(--gold)}
+/* Elements that are intentionally dark and must stay dark (their bg used --ink, now flipped) */
+:root[data-theme="dark"] #navbar{background:rgba(15,18,17,.97)}
+:root[data-theme="dark"] footer{background:#0a0c0a}
+:root[data-theme="dark"] .toast{background:#26292400;background:#262924}
+:root[data-theme="dark"] #hero{background:#0f1211}
+:root[data-theme="dark"] #page-splash{background:var(--cream)}
+/* Hero text stays light regardless (dark image behind) */
+:root[data-theme="dark"] #hero h1{color:#fff}
+/* Google map / iframes keep a subtle frame */
+:root[data-theme="dark"] .pdf-viewer,:root[data-theme="dark"] .article-video{border-color:var(--border)}
+/* Inputs get a darker field */
+:root[data-theme="dark"] .form-group input,
+:root[data-theme="dark"] .form-group select,
+:root[data-theme="dark"] .form-group textarea,
+:root[data-theme="dark"] .search-bar input,
+:root[data-theme="dark"] .chat-input input{background:#12150f;color:var(--ink)}
+/* News/quiz card chips + badges readable */
+:root[data-theme="dark"] .badge{background:var(--green-lt);color:var(--green)}
