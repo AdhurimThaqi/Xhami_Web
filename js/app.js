@@ -75,6 +75,7 @@ function saveState(){
       surahs,
       pages,
       staff,
+      events,
       sessionUserId:currentUser?currentUser.id:null,
       lang:currentLang
     }));
@@ -94,6 +95,7 @@ function loadState(){
   if(Array.isArray(s.surahs))surahs=s.surahs;
   if(Array.isArray(s.pages))pages=s.pages;
   if(Array.isArray(s.staff))staff=s.staff;
+  if(Array.isArray(s.events))events=s.events;
   if(s.sessionUserId!=null)currentUser=DB.users.find(u=>u.id===s.sessionUserId)||null;
   if(s.lang&&s.lang!==currentLang)setLang(s.lang);
 }
@@ -145,6 +147,10 @@ async function remoteLoadAll(){
     const {data:sf}=await sb.from('staff').select('*').order('sort_order',{ascending:true}).order('created_at',{ascending:true});
     if(sf)staff=sf.map(s=>({id:s.id,name:s.name||'',position_sq:s.position_sq||'',position_de:s.position_de||'',photo:s.photo||''}));
   }catch(e){/* staff table may not exist yet (migration 013) */}
+  try{
+    const {data:ev}=await sb.from('events').select('*').order('event_date',{ascending:true});
+    if(ev)events=ev.map(e=>({id:e.id,title_sq:e.title_sq||'',title_de:e.title_de||'',desc_sq:e.desc_sq||'',desc_de:e.desc_de||'',event_date:e.event_date,event_time:e.event_time||'',location:e.location||''}));
+  }catch(e){/* events table may not exist yet (migration 014) */}
 }
 
 let settings={};
@@ -202,6 +208,7 @@ function navigate(p){
   if(p==='quiz')renderQuizList();
   if(p==='quran')renderSurahList();
   if(p==='staff')renderStaff();
+  if(p==='events')renderEvents();
 }
 
 // ═══════════════════════════════════════
@@ -912,6 +919,8 @@ function setLang(lang){
   if(cp&&cp.classList.contains('active')){const id=+(location.hash.match(/^#faqe-(\d+)$/)||[])[1];if(id)openCustomPage(id,false);}
   const sp=document.getElementById('page-staff');
   if(sp&&sp.classList.contains('active'))setTimeout(renderStaff,400);
+  const ep=document.getElementById('page-events');
+  if(ep&&ep.classList.contains('active'))setTimeout(renderEvents,400);
   saveState();
   setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
@@ -1228,6 +1237,93 @@ async function uploadStaffPhoto(ev){
     document.getElementById('staff-photo').value=await uploadToStorage(f);
     showToast('✅ Fotografia u ngarkua!','success');
   }catch(e){showToast('Gabim: '+e.message,'error');}
+}
+
+// ── EVENTS / NGJARJET ──
+let events=[];
+
+function eventDateParts(iso){
+  // iso = "YYYY-MM-DD"; returns {day, mon} localized
+  const d=new Date(iso+'T00:00:00');
+  const loc=currentLang==='de'?'de-DE':'sq-AL';
+  return {day:d.getDate(), mon:d.toLocaleDateString(loc,{month:'short'}), full:d.toLocaleDateString(loc,{weekday:'long',day:'numeric',month:'long',year:'numeric'})};
+}
+function upcomingEvents(){
+  const today=new Date();today.setHours(0,0,0,0);
+  return events
+    .filter(e=>{const d=new Date(e.event_date+'T00:00:00');return d>=today;})
+    .sort((a,b)=>a.event_date.localeCompare(b.event_date));
+}
+function eventCard(e){
+  const title=(currentLang==='de'&&e.title_de)?e.title_de:(e.title_sq||e.title_de);
+  const desc=(currentLang==='de'&&e.desc_de)?e.desc_de:(e.desc_sq||e.desc_de||'');
+  const p=eventDateParts(e.event_date);
+  const meta=[];
+  if(e.event_time)meta.push('🕐 '+e.event_time);
+  if(e.location)meta.push('📍 '+e.location);
+  return `<div class="event-card">
+    <div class="event-date"><span class="event-day">${p.day}</span><span class="event-mon">${p.mon}</span></div>
+    <div class="event-body">
+      <h3>${title||''}</h3>
+      <div class="event-meta">${p.full}${meta.length?' · '+meta.join(' · '):''}</div>
+      ${desc?`<p>${desc}</p>`:''}
+    </div>
+  </div>`;
+}
+function renderEvents(){
+  const list=document.getElementById('events-list');if(!list)return;
+  const empty=document.getElementById('events-empty');
+  const up=upcomingEvents();
+  if(!up.length){list.innerHTML='';if(empty)empty.style.display='block';return;}
+  if(empty)empty.style.display='none';
+  list.innerHTML=up.map(eventCard).join('');
+}
+function renderEventsAdmin(){
+  const list=document.getElementById('events-admin-list');if(!list)return;
+  if(!events.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë ngjarje.</p>';return;}
+  const today=new Date();today.setHours(0,0,0,0);
+  const sorted=[...events].sort((a,b)=>a.event_date.localeCompare(b.event_date));
+  list.innerHTML=sorted.map(e=>{
+    const past=new Date(e.event_date+'T00:00:00')<today;
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px;${past?'opacity:.55':''}">
+      <div style="text-align:center;min-width:46px">
+        <div style="font-weight:800;font-size:18px;color:var(--green);line-height:1">${eventDateParts(e.event_date).day}</div>
+        <div style="font-size:11px;color:var(--ink-lt);text-transform:uppercase">${eventDateParts(e.event_date).mon}</div>
+      </div>
+      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.title_sq||e.title_de}</strong><small style="color:var(--ink-lt)">${e.event_date}${e.event_time?' · '+e.event_time:''}${past?' · (kaloi)':''}</small></div>
+      <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deleteEvent(${e.id})">🗑️</button>
+    </div>`;
+  }).join('');
+}
+async function addEvent(){
+  const title_sq=document.getElementById('event-title-sq').value.trim();
+  const title_de=document.getElementById('event-title-de').value.trim();
+  const event_date=document.getElementById('event-date').value;
+  const event_time=document.getElementById('event-time').value.trim();
+  const location=document.getElementById('event-location').value.trim();
+  const desc_sq=document.getElementById('event-desc-sq').value.trim();
+  const desc_de=document.getElementById('event-desc-de').value.trim();
+  if(!title_sq&&!title_de){showToast('Shkruani titullin e ngjarjes!','error');return;}
+  if(!event_date){showToast('Zgjidhni datën e ngjarjes!','error');return;}
+  const row={title_sq,title_de,desc_sq,desc_de,event_date,event_time,location};
+  if(REMOTE){
+    const {error}=await sb.from('events').insert(row);
+    if(error){showToast(friendlyDbError(error,'migration-014-events.sql'),'error');return;}
+    await remoteLoadAll();
+  }else{events.push({id:Date.now(),...row});saveState();}
+  ['event-title-sq','event-title-de','event-date','event-time','event-location','event-desc-sq','event-desc-de'].forEach(id=>document.getElementById(id).value='');
+  renderEventsAdmin();renderEvents();
+  showToast('📅 Ngjarja u shtua!','success');
+}
+async function deleteEvent(id){
+  if(!confirm('Fshi këtë ngjarje?'))return;
+  if(REMOTE){
+    const {error}=await sb.from('events').delete().eq('id',id);
+    if(error){showToast(friendlyDbError(error,'migration-014-events.sql'),'error');return;}
+  }
+  events=events.filter(e=>e.id!==id);saveState();
+  renderEventsAdmin();renderEvents();
+  showToast('Ngjarja u fshi.','');
 }
 
 async function uploadCondPhoto(ev){
@@ -2013,6 +2109,7 @@ function showAdminTab(name) {
   if (name === 'surahs')       renderSurahsAdmin();
   if (name === 'pages')        renderPagesAdmin();
   if (name === 'staff')        renderStaffAdmin();
+  if (name === 'events')       renderEventsAdmin();
   if (name === 'stats')        renderStats();
 }
 
@@ -2441,6 +2538,7 @@ async function initApp(){
   renderPublicGallery();
   renderPartners();
   renderStaff();
+  renderEvents();
   renderAudioList();
   updateHeroSlides();
   renderDocsList();
@@ -2503,4 +2601,29 @@ function toggleTheme(){
 }
 // sync the toggle title with whatever the head-script already applied
 applyTheme(currentTheme());
+
+// ── PWA: service worker + install prompt ──
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(()=>{});});
+}
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',(e)=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  const b=document.getElementById('pwa-install-btn');
+  if(b)b.style.display='flex';
+});
+async function pwaInstall(){
+  if(!deferredInstallPrompt)return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  const b=document.getElementById('pwa-install-btn');
+  if(b)b.style.display='none';
+}
+window.addEventListener('appinstalled',()=>{
+  const b=document.getElementById('pwa-install-btn');
+  if(b)b.style.display='none';
+  showToast('✅ Aplikacioni u instalua!','success');
+});
 
