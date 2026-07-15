@@ -76,7 +76,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=41">
+<link rel="stylesheet" href="css/styles.css?v=42">
 <script>
   // Apply saved (or system) theme before paint to avoid a flash
   (function(){
@@ -214,9 +214,10 @@
     <div class="form-group"><label>Fotografitë e artikullit</label>
       <small style="display:block;color:var(--ink-lt);font-size:12px;margin-bottom:8px">Shtoni një ose disa foto. E para është kopertina; të gjitha shfaqen si galeri me slideshow.</small>
       <div id="post-images-preview" class="post-img-thumbs"></div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <input type="text" id="post-img" placeholder="https://... foto" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostImageUrl();}">
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <input type="text" id="post-img" placeholder="https://... foto" style="flex:1;min-width:160px" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostImageUrl();}">
         <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="addPostImageUrl()">+ Shto</button>
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="openMediaPicker()">🖼️ <span data-sq="Nga galeria" data-de="Aus der Galerie">Nga galeria</span></button>
         <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="document.getElementById('post-img-file').click()">📤 Ngarko</button>
         <input type="file" id="post-img-file" accept="image/*" multiple style="display:none" onchange="uploadPostImage(event)">
       </div>
@@ -230,6 +231,24 @@
       <small style="color:var(--ink-lt);font-size:12px">Shfaqet si video-player në artikull. Pranon MP4, YouTube ose Facebook.</small>
     </div>
     <button class="btn btn-primary" onclick="savePost()">Publiko</button>
+  </div>
+</div>
+
+<!-- MEDIA PICKER (choose already-uploaded images) -->
+<div class="modal-overlay" id="media-picker-modal">
+  <div class="modal" style="max-width:760px">
+    <button class="modal-close" onclick="closeModal('media-picker-modal')">×</button>
+    <h2 data-sq="Zgjidhni nga galeria" data-de="Aus der Galerie wählen">Zgjidhni nga galeria</h2>
+    <p class="sub" data-sq="Klikoni fotot që doni të shtoni te artikulli." data-de="Klicken Sie die Fotos, die Sie hinzufügen möchten.">Klikoni fotot që doni të shtoni te artikulli.</p>
+    <div id="media-picker-grid" class="media-picker-grid"></div>
+    <div id="media-picker-empty" style="display:none;text-align:center;padding:40px;color:var(--ink-lt)">
+      <div style="font-size:40px;margin-bottom:10px">🖼️</div>
+      <p data-sq="Ende nuk keni ngarkuar foto te Media. Ngarkoni disa te tab-i 'Media'." data-de="Sie haben noch keine Fotos unter 'Media' hochgeladen.">Ende nuk keni ngarkuar foto te Media. Ngarkoni disa te tab-i "Media".</p>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px;flex-wrap:wrap">
+      <span id="media-picker-count" style="font-size:13px;color:var(--ink-lt)"></span>
+      <button class="btn btn-primary" onclick="confirmMediaPick()" data-sq="Shto të zgjedhurat" data-de="Ausgewählte hinzufügen">Shto të zgjedhurat</button>
+    </div>
   </div>
 </div>
 
@@ -1847,8 +1866,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=41"></script>
+<script src="js/config.js?v=42"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=41"></script>
+<script src="js/app.js?v=42"></script>
 </body>
 </html>

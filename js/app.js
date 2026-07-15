@@ -1825,6 +1825,48 @@ function addPostImageUrl(){
 }
 function removePostImage(i){postImages.splice(i,1);renderPostImagesPreview();}
 
+// ── Pick images from the already-uploaded Media library ──
+let mediaPickSelected=new Set();
+function openMediaPicker(){
+  mediaPickSelected=new Set();
+  const grid=document.getElementById('media-picker-grid');
+  const empty=document.getElementById('media-picker-empty');
+  const imgs=mediaItems.filter(m=>m.kind==='image'&&m.url);
+  if(!imgs.length){grid.innerHTML='';empty.style.display='block';}
+  else{
+    empty.style.display='none';
+    grid.innerHTML=imgs.map(m=>{
+      const added=postImages.includes(m.url);
+      return `<button type="button" class="media-pick${added?' already':''}" data-url="${encodeURIComponent(m.url)}" onclick="toggleMediaPick(this)">
+        <img src="${m.url}" alt="${(m.cap||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.parentNode.style.display='none'">
+        <span class="media-pick-check">✓</span>
+        ${added?'<span class="media-pick-added" data-sq="Shtuar" data-de="Hinzugefügt">Shtuar</span>':''}
+      </button>`;
+    }).join('');
+  }
+  updateMediaPickCount();
+  openModal('media-picker-modal');
+}
+function toggleMediaPick(el){
+  if(el.classList.contains('already'))return; // already in the post
+  const url=decodeURIComponent(el.dataset.url);
+  if(mediaPickSelected.has(url)){mediaPickSelected.delete(url);el.classList.remove('picked');}
+  else{mediaPickSelected.add(url);el.classList.add('picked');}
+  updateMediaPickCount();
+}
+function updateMediaPickCount(){
+  const el=document.getElementById('media-picker-count');if(!el)return;
+  const n=mediaPickSelected.size;
+  el.textContent=n?(currentLang==='de'?n+' ausgewählt':n+' të zgjedhura'):'';
+}
+function confirmMediaPick(){
+  let added=0;
+  mediaPickSelected.forEach(url=>{if(!postImages.includes(url)){postImages.push(url);added++;}});
+  renderPostImagesPreview();
+  closeModal('media-picker-modal');
+  if(added)showToast('🖼️ '+added+(currentLang==='de'?' Foto(s) hinzugefügt':' foto u shtuan'),'success');
+}
+
 async function uploadPostImage(ev){
   const files=Array.from(ev.target.files||[]);ev.target.value='';
   if(!files.length)return;
