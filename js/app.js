@@ -209,6 +209,7 @@ function navigate(p){
   if(p==='quran')renderSurahList();
   if(p==='staff')renderStaff();
   if(p==='events')renderEvents();
+  if(p==='imam')renderImam();
 }
 
 // ═══════════════════════════════════════
@@ -921,6 +922,8 @@ function setLang(lang){
   if(sp&&sp.classList.contains('active'))setTimeout(renderStaff,400);
   const ep=document.getElementById('page-events');
   if(ep&&ep.classList.contains('active'))setTimeout(renderEvents,400);
+  const ip=document.getElementById('page-imam');
+  if(ip&&ip.classList.contains('active'))setTimeout(renderImam,400);
   saveState();
   setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
@@ -1825,9 +1828,16 @@ function addPostImageUrl(){
 }
 function removePostImage(i){postImages.splice(i,1);renderPostImagesPreview();}
 
-// ── Pick images from the already-uploaded Media library ──
+// ── Reusable image picker from the already-uploaded Media library ──
+// openMediaPicker(onPick, opts)
+//   opts.single  -> click one image, calls onPick(url) and closes
+//   (default)    -> multi-select, "Shto" calls onPick([urls])
+//   opts.exclude -> array of urls shown as already-added (skipped)
 let mediaPickSelected=new Set();
-function openMediaPicker(){
+let mediaPickCfg={single:false,onPick:null,exclude:[]};
+function openMediaPicker(onPick,opts){
+  opts=opts||{};
+  mediaPickCfg={single:!!opts.single,onPick:onPick||null,exclude:opts.exclude||[]};
   mediaPickSelected=new Set();
   const grid=document.getElementById('media-picker-grid');
   const empty=document.getElementById('media-picker-empty');
@@ -1836,7 +1846,7 @@ function openMediaPicker(){
   else{
     empty.style.display='none';
     grid.innerHTML=imgs.map(m=>{
-      const added=postImages.includes(m.url);
+      const added=mediaPickCfg.exclude.includes(m.url);
       return `<button type="button" class="media-pick${added?' already':''}" data-url="${encodeURIComponent(m.url)}" onclick="toggleMediaPick(this)">
         <img src="${m.url}" alt="${(m.cap||'').replace(/"/g,'&quot;')}" loading="lazy" onerror="this.parentNode.style.display='none'">
         <span class="media-pick-check">✓</span>
@@ -1844,12 +1854,15 @@ function openMediaPicker(){
       </button>`;
     }).join('');
   }
+  const cw=document.getElementById('media-picker-confirm-wrap');
+  if(cw)cw.style.display=mediaPickCfg.single?'none':'flex';
   updateMediaPickCount();
   openModal('media-picker-modal');
 }
 function toggleMediaPick(el){
-  if(el.classList.contains('already'))return; // already in the post
+  if(el.classList.contains('already'))return;
   const url=decodeURIComponent(el.dataset.url);
+  if(mediaPickCfg.single){if(mediaPickCfg.onPick)mediaPickCfg.onPick(url);closeModal('media-picker-modal');return;}
   if(mediaPickSelected.has(url)){mediaPickSelected.delete(url);el.classList.remove('picked');}
   else{mediaPickSelected.add(url);el.classList.add('picked');}
   updateMediaPickCount();
@@ -1860,11 +1873,88 @@ function updateMediaPickCount(){
   el.textContent=n?(currentLang==='de'?n+' ausgewählt':n+' të zgjedhura'):'';
 }
 function confirmMediaPick(){
-  let added=0;
-  mediaPickSelected.forEach(url=>{if(!postImages.includes(url)){postImages.push(url);added++;}});
-  renderPostImagesPreview();
+  const urls=[...mediaPickSelected];
+  if(mediaPickCfg.onPick)mediaPickCfg.onPick(urls);
   closeModal('media-picker-modal');
-  if(added)showToast('🖼️ '+added+(currentLang==='de'?' Foto(s) hinzugefügt':' foto u shtuan'),'success');
+}
+// Helper: pick multiple photos into the news post gallery
+function pickPostImages(){
+  openMediaPicker(urls=>{
+    let added=0;urls.forEach(u=>{if(!postImages.includes(u)){postImages.push(u);added++;}});
+    renderPostImagesPreview();
+    if(added)showToast('🖼️ '+added+(currentLang==='de'?' Foto(s) hinzugefügt':' foto u shtuan'),'success');
+  },{exclude:postImages});
+}
+// Helper: pick one photo into a single text input (staff, imam, partner, ...)
+function pickImageInto(inputId){
+  openMediaPicker(url=>{const el=document.getElementById(inputId);if(el){el.value=url;el.dispatchEvent(new Event('input',{bubbles:true}));}showToast('🖼️ Fotoja u zgjodh','success');},{single:true});
+}
+
+// ── IMAM PAGE (editable photo + name + text, stored in settings) ──
+const IMAM_DEFAULTS={
+  name:'Imam Fahredin Bunjaku',
+  text_sq:'Imami i xhamisë sonë udhëheq namazet e përditshme dhe ofron udhëzim fetar për komunitetin. Çdo javë mban ligjërata mësimore dhe spirituale për xhematin.\n\nImami është i disponueshëm për këshillim fetar, ngushëllime dhe çdo shërbim tjetër fetar.',
+  text_de:'Der Imam unserer Moschee leitet die täglichen Gebete und bietet der Gemeinschaft religiöse Führung. Jede Woche hält er lehrreiche und spirituelle Vorträge für die Gemeinde.\n\nDer Imam steht für religiöse Beratung, Kondolenzen und jeden anderen religiösen Dienst zur Verfügung.'
+};
+function imamData(){
+  return {
+    name:settings['imam_name']||IMAM_DEFAULTS.name,
+    photo:settings['imam_photo']||'',
+    text_sq:settings['imam_text_sq']||IMAM_DEFAULTS.text_sq,
+    text_de:settings['imam_text_de']||IMAM_DEFAULTS.text_de
+  };
+}
+function renderImam(){
+  const d=imamData();
+  const hero=document.getElementById('imam-hero-name');if(hero)hero.textContent=d.name;
+  const nm=document.getElementById('imam-name');if(nm)nm.textContent=d.name;
+  const box=document.getElementById('imam-photo-box');
+  if(box){
+    if(d.photo)box.innerHTML=`<img src="${d.photo}" alt="${d.name.replace(/"/g,'&quot;')}" onerror="this.parentNode.textContent='🧔'">`;
+    else box.textContent='🧔';
+  }
+  const txt=document.getElementById('imam-text');
+  if(txt){
+    const t=(currentLang==='de'?d.text_de:d.text_sq)||'';
+    txt.innerHTML=t.split(/\n\n+/).map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>').join('');
+  }
+}
+function updateImamPhotoPreview(){
+  const pv=document.getElementById('imam-photo-preview');if(!pv)return;
+  const url=(document.getElementById('imam-photo').value||'').trim();
+  if(url){pv.src=url;pv.style.display='block';}else pv.style.display='none';
+}
+function renderImamAdmin(){
+  document.getElementById('imam-name-input').value=settings['imam_name']||'';
+  document.getElementById('imam-photo').value=settings['imam_photo']||'';
+  document.getElementById('imam-text-sq').value=settings['imam_text_sq']||'';
+  document.getElementById('imam-text-de').value=settings['imam_text_de']||'';
+  updateImamPhotoPreview();
+}
+async function saveImam(){
+  const name=document.getElementById('imam-name-input').value.trim();
+  const photo=document.getElementById('imam-photo').value.trim();
+  const text_sq=document.getElementById('imam-text-sq').value.trim();
+  const text_de=document.getElementById('imam-text-de').value.trim();
+  await Promise.all([
+    saveSetting('imam_name',name),
+    saveSetting('imam_photo',photo),
+    saveSetting('imam_text_sq',text_sq),
+    saveSetting('imam_text_de',text_de)
+  ]);
+  renderImam();
+  showToast('✅ Faqja e Imamit u ruajt!','success');
+}
+async function uploadImamPhoto(ev){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  showToast('⏳ Duke ngarkuar foton...','');
+  try{
+    document.getElementById('imam-photo').value=await uploadToStorage(f);
+    updateImamPhotoPreview();
+    showToast('✅ Fotografia u ngarkua!','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
 async function uploadPostImage(ev){
@@ -2209,6 +2299,7 @@ function showAdminTab(name) {
   if (name === 'pages')        renderPagesAdmin();
   if (name === 'staff')        renderStaffAdmin();
   if (name === 'events')       renderEventsAdmin();
+  if (name === 'imam')         renderImamAdmin();
   if (name === 'stats')        renderStats();
 }
 
@@ -2638,6 +2729,7 @@ async function initApp(){
   renderPartners();
   renderStaff();
   renderEvents();
+  renderImam();
   renderAudioList();
   updateHeroSlides();
   renderDocsList();
