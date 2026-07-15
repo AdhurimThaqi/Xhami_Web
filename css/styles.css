@@ -467,8 +467,11 @@ footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var
 .staff-position{font-size:13.5px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.5px}
 
 /* ── IMAM PAGE ── */
-.imam-photo-box{height:360px;background:var(--green-lt);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:80px;overflow:hidden}
+.imam-profile{display:flex;align-items:center;gap:24px;margin-bottom:26px;flex-wrap:wrap}
+.imam-photo-box{width:150px;height:150px;flex-shrink:0;background:var(--green-lt);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:64px;overflow:hidden;border:3px solid var(--white);box-shadow:var(--shadow)}
 .imam-photo-box img{width:100%;height:100%;object-fit:cover;display:block}
+.imam-heading h2{font-size:clamp(24px,3.4vw,34px);color:var(--green);margin-top:10px}
+.imam-text{max-width:780px}
 .imam-text p{color:var(--ink-mid);font-size:15px;margin-bottom:16px;line-height:1.75}
 
 /* ── EVENTS / NGJARJET ── */
