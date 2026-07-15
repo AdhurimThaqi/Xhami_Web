@@ -76,7 +76,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=40">
+<link rel="stylesheet" href="css/styles.css?v=41">
 <script>
   // Apply saved (or system) theme before paint to avoid a flash
   (function(){
@@ -211,11 +211,14 @@
       <select id="post-cat"><option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option></select>
     </div>
     <div class="form-group"><label>Përmbajtja</label><textarea id="post-body" rows="6"></textarea></div>
-    <div class="form-group"><label>Fotoja e artikullit</label>
-      <div style="display:flex;gap:8px">
-        <input type="text" id="post-img" placeholder="https://... ose ngarko →" style="flex:1">
-        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 16px" onclick="document.getElementById('post-img-file').click()">📤 Ngarko</button>
-        <input type="file" id="post-img-file" accept="image/*" style="display:none" onchange="uploadPostImage(event)">
+    <div class="form-group"><label>Fotografitë e artikullit</label>
+      <small style="display:block;color:var(--ink-lt);font-size:12px;margin-bottom:8px">Shtoni një ose disa foto. E para është kopertina; të gjitha shfaqen si galeri me slideshow.</small>
+      <div id="post-images-preview" class="post-img-thumbs"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input type="text" id="post-img" placeholder="https://... foto" style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addPostImageUrl();}">
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="addPostImageUrl()">+ Shto</button>
+        <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="document.getElementById('post-img-file').click()">📤 Ngarko</button>
+        <input type="file" id="post-img-file" accept="image/*" multiple style="display:none" onchange="uploadPostImage(event)">
       </div>
     </div>
     <div class="form-group"><label>Video e artikullit (opsionale)</label>
@@ -677,7 +680,7 @@
   </div></div>
   <div class="page-content"><div class="container">
     <div class="article-body-wrap">
-      <img id="article-img" class="article-img" alt="" style="display:none">
+      <div id="article-gallery" class="article-gallery"></div>
       <div class="prose" id="article-body" style="font-size:16px"></div>
       <button class="btn btn-outline" style="margin-top:36px" onclick="navigate('news')" data-sq="← Kthehu te lajmet" data-de="← Zurück zu den Nachrichten">← Kthehu te lajmet</button>
     </div>
@@ -1844,8 +1847,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=40"></script>
+<script src="js/config.js?v=41"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=40"></script>
+<script src="js/app.js?v=41"></script>
 </body>
 </html>

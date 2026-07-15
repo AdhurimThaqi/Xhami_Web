@@ -120,7 +120,7 @@ async function remoteLoadAll(){
     sb.from('media').select('*').order('created_at',{ascending:true}),
   ]);
   if(posts.error)throw posts.error;
-  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',video:p.video||'',date:fmtDateEn(p.created_at)}));
+  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',images:Array.isArray(p.images)?p.images:[],video:p.video||'',date:fmtDateEn(p.created_at)}));
   condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',photo:c.photo||'',postedAt:fmtDateSq(c.created_at)}));
   mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption,kind:m.kind||'image',featured:!!m.featured}));
   try{
@@ -1054,14 +1054,46 @@ function videoEmbedHtml(url){
 }
 
 // ── SINGLE ARTICLE PAGE (own URL via #lajmi-<id>) ──
+// Combined image list for an article: gallery images, or the cover as fallback.
+function articleImages(p){
+  const list=(Array.isArray(p.images)?p.images:[]).filter(Boolean);
+  if(list.length)return list;
+  return p.img?[p.img]:[];
+}
+// Render the article photos as a stacked deck (+ thumbnail strip) that opens
+// the fullscreen slideshow. Closing the slideshow returns to the article.
+let articleGalleryImages=[];
+function renderArticleGallery(images,title){
+  const wrap=document.getElementById('article-gallery');if(!wrap)return;
+  articleGalleryImages=images;
+  if(!images.length){wrap.innerHTML='';wrap.style.display='none';return;}
+  wrap.style.display='block';
+  const alt=(title||'').replace(/"/g,'&quot;');
+  if(images.length===1){
+    wrap.innerHTML=`<img class="article-img" src="${images[0]}" alt="${alt}" onerror="this.style.display='none'" onclick="openArticleLightbox(0)" style="cursor:zoom-in">`;
+    return;
+  }
+  const peek=images.slice(0,3).map((src,i)=>
+    `<div class="stack-card stack-card-${i}"><img src="${src}" alt="${alt}" loading="lazy" onerror="this.style.opacity=0"></div>`
+  ).join('');
+  const thumbs=images.map((src,i)=>
+    `<button class="gallery-thumb" onclick="openArticleLightbox(${i})" aria-label="Foto ${i+1}"><img src="${src}" alt="${alt} ${i+1}" loading="lazy" onerror="this.parentNode.style.display='none'"></button>`
+  ).join('');
+  wrap.innerHTML=`
+    <div class="photo-stack" onclick="openArticleLightbox(0)" title="Kliko për slideshow">
+      ${peek}
+      <span class="photo-stack-badge">📷 ${images.length} ${currentLang==='de'?'Fotos':'foto'}</span>
+    </div>
+    <div class="gallery-thumbs">${thumbs}</div>`;
+}
+function openArticleLightbox(i){openLightbox(articleGalleryImages,i);}
+
 function openArticle(id,pushHash=true){
   const p=DB.posts.find(x=>x.id===id);if(!p)return;
   document.getElementById('article-cat').textContent=p.category;
   document.getElementById('article-date').textContent=p.date;
   document.getElementById('article-title').textContent=p.title;
-  const img=document.getElementById('article-img');
-  if(p.img){img.src=p.img;img.alt=p.title;img.style.display='block';img.onerror=()=>img.style.display='none';}
-  else img.style.display='none';
+  renderArticleGallery(articleImages(p), p.title);
   const body='<p>'+p.body.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
   document.getElementById('article-body').innerHTML=body+videoEmbedHtml(p.video);
   if(pushHash){try{history.pushState(null,'','#lajmi-'+id);}catch(e){}}
@@ -1773,16 +1805,36 @@ async function deleteMediaItem(i){
 }
 
 // Upload an image straight from the post editor
+// ── Post gallery images (managed while editing a post) ──
+let postImages=[];
+function renderPostImagesPreview(){
+  const box=document.getElementById('post-images-preview');if(!box)return;
+  if(!postImages.length){box.innerHTML='<span style="color:var(--ink-lt);font-size:12.5px">Ende asnjë foto.</span>';return;}
+  box.innerHTML=postImages.map((src,i)=>`
+    <div class="post-img-thumb">
+      <img src="${src}" alt="" onerror="this.style.opacity=.2">
+      ${i===0?'<span class="cover-tag">Kopertina</span>':''}
+      <button class="thumb-x" onclick="removePostImage(${i})" title="Hiqe">×</button>
+    </div>`).join('');
+}
+function addPostImageUrl(){
+  const inp=document.getElementById('post-img');const url=(inp.value||'').trim();
+  if(!url)return;
+  postImages.push(url);inp.value='';
+  renderPostImagesPreview();
+}
+function removePostImage(i){postImages.splice(i,1);renderPostImagesPreview();}
+
 async function uploadPostImage(ev){
-  const f=(ev.target.files||[])[0];ev.target.value='';
-  if(!f)return;
+  const files=Array.from(ev.target.files||[]);ev.target.value='';
+  if(!files.length)return;
   if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
-  if(!/^image\//.test(f.type)){showToast('Zgjidhni një foto!','error');return;}
-  showToast('⏳ Duke ngarkuar foton...','');
+  const imgs=files.filter(f=>/^image\//.test(f.type));
+  if(!imgs.length){showToast('Zgjidhni foto!','error');return;}
+  showToast('⏳ Duke ngarkuar '+imgs.length+' foto...','');
   try{
-    const url=await uploadToStorage(f);
-    document.getElementById('post-img').value=url;
-    showToast('✅ Fotoja u ngarkua! Tani klikoni Publiko.','success');
+    for(const f of imgs){const url=await uploadToStorage(f);postImages.push(url);renderPostImagesPreview();}
+    showToast('✅ Fotot u ngarkuan! Tani klikoni Publiko.','success');
   }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 
@@ -1812,27 +1864,32 @@ function openPostModal(postId){
   editingPostId=postId;
   const isEdit=postId!==null;
   document.getElementById('post-modal-title').textContent=isEdit?'✏️ Edito Artikullin':'✍️ Artikull i ri';
-  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-img').value=p.img||'';document.getElementById('post-video').value=p.video||'';}
-  else{['post-title','post-body','post-img','post-video'].forEach(id=>document.getElementById(id).value='');}
+  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-video').value=p.video||'';postImages=articleImages(p).slice();}
+  else{['post-title','post-body','post-img','post-video'].forEach(id=>document.getElementById(id).value='');postImages=[];}
+  renderPostImagesPreview();
   openModal('post-modal');
 }
 async function savePost(){
   const title=document.getElementById('post-title').value.trim(),body=document.getElementById('post-body').value.trim();
   if(!title||!body){showToast('Plotësoni titullin dhe përmbajtjen!','error');return;}
-  const category=document.getElementById('post-cat').value,img=document.getElementById('post-img').value.trim();
+  const category=document.getElementById('post-cat').value;
+  const pending=document.getElementById('post-img').value.trim();
+  if(pending){postImages.push(pending);document.getElementById('post-img').value='';}
+  const images=postImages.slice();
+  const img=images[0]||'';
   const video=document.getElementById('post-video').value.trim();
   if(REMOTE){
     const q=editingPostId!==null
-      ?sb.from('posts').update({title,category,body,img,video}).eq('id',editingPostId)
-      :sb.from('posts').insert({title,category,body,img,video});
+      ?sb.from('posts').update({title,category,body,img,images,video}).eq('id',editingPostId)
+      :sb.from('posts').insert({title,category,body,img,images,video});
     const {error}=await q;
-    if(error){showToast('Gabim: '+error.message,'error');return;}
+    if(error){showToast(friendlyDbError(error,'migration-015-post-images.sql'),'error');return;}
     await remoteLoadAll();
     closeModal('post-modal');renderAdminNews();renderHomeNews();renderDashboard();
     showToast(editingPostId!==null?'✅ Artikulli u përditësua!':'🎉 Artikulli u publikua!','success');
     return;
   }
-  const data={title,category,body,img,video,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
+  const data={title,category,body,img,images,video,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
   if(editingPostId!==null){const i=DB.posts.findIndex(p=>p.id===editingPostId);DB.posts[i]={...DB.posts[i],...data};showToast('✅ Artikulli u përditësua!','success');}
   else{DB.posts.unshift({id:DB.nextPostId++,...data});showToast('🎉 Artikulli u publikua!','success');}
   closeModal('post-modal');saveState();renderAdminNews();renderHomeNews();renderDashboard();
