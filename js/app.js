@@ -137,7 +137,7 @@ async function remoteLoadAll(){
   }catch(e){/* quizzes table may not exist yet (migration 010) */}
   try{
     const {data:sr}=await sb.from('surahs').select('*').order('number',{ascending:true});
-    if(sr)surahs=sr.map(s=>({id:s.id,number:s.number||0,name_sq:s.name_sq||'',name_de:s.name_de||'',url:s.url||''}));
+    if(sr)surahs=sr.map(s=>({id:s.id,number:s.number||0,name_sq:s.name_sq||'',name_de:s.name_de||'',url:s.url||'',category:s.category||'quran'}));
   }catch(e){/* surahs table may not exist yet (migration 011) */}
   try{
     const {data:pg}=await sb.from('pages').select('*').order('nav_order',{ascending:true});
@@ -369,24 +369,43 @@ async function deletePage(id){
 let surahs=[];
 function surahLabel(s){return (s.number?s.number+'. ':'')+((currentLang==='de'&&s.name_de)?s.name_de:s.name_sq);}
 
+// Audio categories shown on the Kurani page (Quran first, then the rest).
+const AUDIO_CATS=[
+  {key:'quran',    icon:'📖', sq:'Sûret e Kuranit',  de:'Die Suren des Korans', sub_sq:'Kurani i Shenjtë', sub_de:'Der Heilige Koran'},
+  {key:'hadith',   icon:'📜', sq:'Hadithe',          de:'Hadithe',              sub_sq:'Hadith',          sub_de:'Hadith'},
+  {key:'audiobook',icon:'🎧', sq:'Libra Audio',      de:'Hörbücher',            sub_sq:'Libër audio',     sub_de:'Hörbuch'},
+  {key:'other',    icon:'🔊', sq:'Të tjera',         de:'Weitere',              sub_sq:'Audio',           sub_de:'Audio'}
+];
+function audioCatOf(s){return s.category||'quran';}
+function audioCatMeta(key){return AUDIO_CATS.find(c=>c.key===key)||AUDIO_CATS[3];}
+
 function renderSurahList(){
   const list=document.getElementById('surah-list');if(!list)return;
   const empty=document.getElementById('surah-empty');
   const searchWrap=document.getElementById('surah-search-wrap');
   if(searchWrap)searchWrap.style.display=surahs.length>6?'flex':'none';
   const q=((document.getElementById('surah-search')||{}).value||'').toLowerCase();
-  const rows=surahs.filter(s=>!q||surahLabel(s).toLowerCase().includes(q));
   if(empty)empty.style.display=surahs.length?'none':'block';
   const playing=!pAudio().paused;
-  list.innerHTML=rows.map(s=>{
-    const i=surahs.indexOf(s);
-    const active=audioQueueType==='surah'&&audioIndex===i;
-    return `<div class="audio-row${active?' playing':''}" onclick="playSurah(${i})">
-      <div class="audio-row-btn">${active&&playing?'⏸':'▶'}</div>
-      <div class="audio-row-info"><strong>${surahLabel(s)}</strong><small>Kurani i Shenjtë</small></div>
-      ${active&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
-    </div>`;
-  }).join('');
+  const usedCats=AUDIO_CATS.filter(c=>surahs.some(s=>audioCatOf(s)===c.key));
+  const showHeaders=usedCats.length>1; // only label sections when there's more than one kind
+  let html='';
+  usedCats.forEach(cat=>{
+    const items=surahs.filter(s=>audioCatOf(s)===cat.key && (!q||surahLabel(s).toLowerCase().includes(q)));
+    if(!items.length)return;
+    if(showHeaders)html+=`<h3 class="audio-cat-title">${cat.icon} ${currentLang==='de'?cat.de:cat.sq}</h3>`;
+    html+=items.map(s=>{
+      const i=surahs.indexOf(s);
+      const active=audioQueueType==='surah'&&audioIndex===i;
+      const sub=currentLang==='de'?cat.sub_de:cat.sub_sq;
+      return `<div class="audio-row${active?' playing':''}" onclick="playSurah(${i})">
+        <div class="audio-row-btn">${active&&playing?'⏸':'▶'}</div>
+        <div class="audio-row-info"><strong>${surahLabel(s)}</strong><small>${sub}</small></div>
+        ${active&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
+      </div>`;
+    }).join('');
+  });
+  list.innerHTML=html;
 }
 
 // Turn an archive.org page link into a playable direct audio URL.
@@ -442,12 +461,16 @@ async function playSurah(i){
 function renderSurahsAdmin(){
   const list=document.getElementById('surahs-admin-list');if(!list)return;
   if(!surahs.length){list.innerHTML='<p style="color:var(--ink-lt)">Ende asnjë sûre.</p>';return;}
-  list.innerHTML=surahs.map(s=>`
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
-      <span style="width:30px;height:30px;border-radius:8px;background:var(--green-lt);color:var(--green);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0">${s.number||'-'}</span>
-      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.name_sq}${s.name_de?' / '+s.name_de:''}</strong><small style="color:var(--ink-lt)">${s.url?'🔗 '+s.url.slice(0,42):'pa audio'}</small></div>
+  const order={quran:0,hadith:1,audiobook:2,other:3};
+  const sorted=[...surahs].sort((a,b)=>(order[audioCatOf(a)]-order[audioCatOf(b)])||(a.number-b.number));
+  list.innerHTML=sorted.map(s=>{
+    const cat=audioCatMeta(audioCatOf(s));
+    return `<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--white);border:1px solid var(--border);border-radius:10px">
+      <span style="width:30px;height:30px;border-radius:8px;background:var(--green-lt);color:var(--green);font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0" title="${currentLang==='de'?cat.de:cat.sq}">${cat.icon}</span>
+      <div style="flex:1;min-width:0"><strong style="font-size:13.5px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.number?s.number+'. ':''}${s.name_sq}${s.name_de?' / '+s.name_de:''}</strong><small style="color:var(--ink-lt)">${currentLang==='de'?cat.de:cat.sq}${s.url?' · 🔗':' · pa audio'}</small></div>
       <button class="btn-del" style="padding:7px 12px;font-size:12px;font-weight:700;border-radius:8px;border:none" onclick="deleteSurah(${s.id})">🗑️</button>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function uploadSurahAudio(ev){
@@ -477,17 +500,18 @@ async function addSurah(){
   const name_sq=document.getElementById('surah-name-sq').value.trim();
   const name_de=document.getElementById('surah-name-de').value.trim();
   const url=document.getElementById('surah-url').value.trim();
-  if(!name_sq){showToast('Shkruani emrin e sûres!','error');return;}
+  const category=(document.getElementById('surah-category')||{}).value||'quran';
+  if(!name_sq){showToast('Shkruani emrin!','error');return;}
   if(!url){showToast('Shtoni linkun e audios!','error');return;}
-  const row={number,name_sq,name_de,url};
+  const row={number,name_sq,name_de,url,category};
   if(REMOTE){
     const {error}=await sb.from('surahs').insert(row);
-    if(error){showToast(friendlyDbError(error,'migration-011-surahs.sql'),'error');return;}
+    if(error){showToast(friendlyDbError(error,'migration-016-audio-category.sql'),'error');return;}
     await remoteLoadAll();
   }else{surahs.push({id:Date.now(),...row});surahs.sort((a,b)=>a.number-b.number);saveState();}
   ['surah-num','surah-name-sq','surah-name-de','surah-url'].forEach(id=>document.getElementById(id).value='');
   renderSurahsAdmin();renderSurahList();
-  showToast('📖 Sûrja u shtua!','success');
+  showToast('🎧 Audio u shtua!','success');
 }
 
 async function deleteSurah(id){

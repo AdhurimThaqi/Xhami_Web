@@ -763,6 +763,10 @@ body.player-open #chat-panel{bottom:168px}
 .lb-counter{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.85);font-size:13px;font-weight:600;background:rgba(0,0,0,.4);padding:6px 16px;border-radius:20px}
 @media(max-width:640px){.lb-arrow{width:42px;height:42px;font-size:24px}.lb-prev{left:8px}.lb-next{right:8px}}
 
+/* Audio library category section titles */
+.audio-cat-title{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:var(--green);margin:22px 0 4px;padding-bottom:6px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px}
+.audio-cat-title:first-child{margin-top:0}
+
 /* ── AUDIO ROWS + PLAYER BAR ── */
 .audio-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}
 .audio-row:hover{border-color:var(--green);box-shadow:var(--shadow);transform:translateX(4px)}
