@@ -389,16 +389,53 @@ function renderSurahList(){
   }).join('');
 }
 
-function playSurah(i){
+// Turn an archive.org page link into a playable direct audio URL.
+// - direct file (…/file.mp3)                    -> used as-is
+// - archive.org/details|download/<id>/<file.mp3> -> /download/<id>/<file.mp3>
+// - archive.org/details/<id> (no file)           -> looks up the item's mp3
+const archiveResolveCache={};
+async function resolveAudioUrl(url){
+  if(!url)return url;
+  url=url.trim();
+  // Archive.org links must be handled first: a /details/ URL can end in .mp3
+  // yet still be a web page - the real file lives under /download/.
+  const m=url.match(/archive\.org\/(?:details|download|stream|embed)\/([^\/?#]+)(?:\/([^?#]+))?/i);
+  if(m){
+    const id=m[1];
+    const file=m[2]?decodeURIComponent(m[2]):'';
+    if(file&&/\.(mp3|ogg|m4a|aac|wav)$/i.test(file))
+      return 'https://archive.org/download/'+id+'/'+encodeURIComponent(file);
+    if(archiveResolveCache[id])return archiveResolveCache[id];
+    try{
+      const r=await fetch('https://archive.org/metadata/'+id);
+      if(r.ok){
+        const d=await r.json();
+        const files=(d.files||[]).filter(f=>/\.mp3$/i.test(f.name||''));
+        if(files.length){
+          const direct='https://archive.org/download/'+id+'/'+encodeURIComponent(files[0].name);
+          archiveResolveCache[id]=direct;
+          return direct;
+        }
+      }
+    }catch(e){/* CORS/offline -> fall through, the <audio> error handler will guide */}
+    return url;
+  }
+  return url; // non-archive links (direct .mp3, Supabase, R2, ...) used as-is
+}
+
+async function playSurah(i){
   audioQueue=surahs.map(s=>({url:s.url,cap:surahLabel(s)}));
   if(!audioQueue[i]||!audioQueue[i].url){showToast('Kjo sûre nuk ka audio.','error');return;}
   const a=pAudio();
   if(audioQueueType==='surah'&&audioIndex===i){a.paused?a.play():a.pause();return;}
   audioQueueType='surah';audioIndex=i;
-  a.src=audioQueue[i].url;a.play();
   document.getElementById('player-bar').classList.add('open');document.body.classList.add('player-open');
   setMediaSession(audioQueue[i]);
   renderSurahList();
+  const src=await resolveAudioUrl(audioQueue[i].url);
+  if(audioQueueType!=='surah'||audioIndex!==i)return; // user changed track while resolving
+  a.src=src;
+  try{await a.play();}catch(e){}
 }
 
 // ── ADMIN: surah management ──
@@ -1743,7 +1780,8 @@ function playerNext(){if(audioQueue.length)playTrackByStep(1);}
 function playerPrev(){if(audioQueue.length)playTrackByStep(-1);}
 function playTrackByStep(d){
   const n=(audioIndex+d+audioQueue.length)%audioQueue.length;
-  audioIndex=-1;playTrack(n);
+  audioIndex=-1;
+  if(audioQueueType==='surah')playSurah(n);else playTrack(n);
 }
 function playerSeek(v){const a=pAudio();if(isFinite(a.duration))a.currentTime=a.duration*v/100;}
 function playerClose(){
@@ -1773,6 +1811,13 @@ function setMediaSession(t){
 ['play','pause'].forEach(ev=>pAudio().addEventListener(ev,()=>{updatePlayerBar();renderAudioList();renderSurahList();}));
 pAudio().addEventListener('timeupdate',updatePlayerBar);
 pAudio().addEventListener('ended',playerNext);
+pAudio().addEventListener('error',()=>{
+  const a=pAudio();
+  if(!a.src)return; // ignore the error fired when we clear the source on close
+  showToast(currentLang==='de'
+    ?'Audio kann nicht abgespielt werden. Bitte den direkten MP3-Link verwenden (z.B. archive.org/download/…/datei.mp3).'
+    :'Audio nuk mund të luhet. Përdorni linkun direkt të MP3 (p.sh. archive.org/download/…/skedari.mp3).','error');
+});
 
 async function addMediaItem(){
   const url=document.getElementById('media-url-input').value.trim();
