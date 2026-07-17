@@ -76,7 +76,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=48">
+<link rel="stylesheet" href="css/styles.css?v=49">
 <script>
   // Apply saved (or system) theme before paint to avoid a flash
   (function(){
@@ -716,7 +716,14 @@
   <div class="page-content"><div class="container">
     <div class="payments-grid">
       <div class="payment-card">
-        <div class="payment-icon" style="background:var(--green-lt)">🤲</div>
+        <div class="payment-icon" style="background:var(--green-lt)">
+          <svg class="pay-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="32" cy="13" r="5" style="stroke:var(--gold)"/>
+            <path d="M32 10.5v5" style="stroke:var(--gold)"/>
+            <path d="M14 28h36l-4 24H18z"/>
+            <path d="M25 28h14"/>
+          </svg>
+        </div>
         <h3 data-sq="Sadaka për Xhami" data-de="Sadaqa für die Moschee">Sadaka për Xhami</h3>
         <p data-sq="Kontributi juaj vullnetar për xhaminë" data-de="Ihr freiwilliger Beitrag für die Moschee">Kontributi juaj vullnetar për xhaminë</p>
         <a class="btn btn-gold" href="https://donate.raisenow.io/nbggb" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
@@ -728,13 +735,26 @@
         <a class="btn btn-gold" href="https://pay.raisenow.io/hdsyc" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
       </div>
       <div class="payment-card">
-        <div class="payment-icon" style="background:#e8e4ff">🌙</div>
+        <div class="payment-icon" style="background:var(--gold-lt)">
+          <svg class="pay-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="32" cy="22" rx="15" ry="6" style="stroke:var(--gold)"/>
+            <path d="M17 22v9c0 3.3 6.7 6 15 6s15-2.7 15-6v-9"/>
+            <path d="M17 31c0 3.3 6.7 6 15 6s15-2.7 15-6"/>
+          </svg>
+        </div>
         <h3 data-sq="Fitri (Zekatul-Fitr)" data-de="Fitr (Zakat al-Fitr)">Fitri (Zekatul-Fitr)</h3>
         <p data-sq="Pagesa e Fitrave gjatë muajit të Ramazanit" data-de="Fitr-Zahlung während des Ramadans">Pagesa e Fitrave gjatë muajit të Ramazanit</p>
         <a class="btn btn-gold" href="https://donate.raisenow.io/xcqws" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
       </div>
       <div class="payment-card">
-        <div class="payment-icon" style="background:#e8f5ee">💰</div>
+        <div class="payment-icon" style="background:var(--green-lt)">
+          <svg class="pay-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M25 12h14l-3.5 6h-7z" style="stroke:var(--gold)"/>
+            <path d="M28 18C20.5 22 15 30.5 15 39a13 13 0 0 0 13 13h8a13 13 0 0 0 13-13c0-8.5-5.5-17-13-21"/>
+            <circle cx="32" cy="37" r="5.5" style="stroke:var(--gold)"/>
+            <path d="M32 34v6" style="stroke:var(--gold)"/>
+          </svg>
+        </div>
         <h3 data-sq="Pagesa për Zekat" data-de="Zakat-Zahlung">Pagesa për Zekat</h3>
         <p data-sq="Zekati - shtylla e tretë e Islamit" data-de="Zakat - die dritte Säule des Islams">Zekati - shtylla e tretë e Islamit</p>
         <a class="btn btn-gold" href="https://donate.raisenow.io/qhkqy" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
@@ -1897,8 +1917,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=48"></script>
+<script src="js/config.js?v=49"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=48"></script>
+<script src="js/app.js?v=49"></script>
 </body>
 </html>
