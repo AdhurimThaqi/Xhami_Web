@@ -120,7 +120,7 @@ async function remoteLoadAll(){
     sb.from('media').select('*').order('created_at',{ascending:true}),
   ]);
   if(posts.error)throw posts.error;
-  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,category:p.category,body:p.body,img:p.img||'',images:Array.isArray(p.images)?p.images:[],video:p.video||'',date:fmtDateEn(p.created_at)}));
+  DB.posts=(posts.data||[]).map(p=>({id:p.id,title:p.title,title_de:p.title_de||'',category:p.category,body:p.body,body_de:p.body_de||'',img:p.img||'',images:Array.isArray(p.images)?p.images:[],video:p.video||'',date:fmtDateEn(p.created_at)}));
   condolences=(conds.data||[]).map(c=>({id:c.id,name:c.name,born:c.born||'',date:c.died_on||'',city:c.city||'',msg:c.msg||'',funeral:c.funeral||'',photo:c.photo||'',postedAt:fmtDateSq(c.created_at)}));
   mediaItems=(media.data||[]).map(m=>({id:m.id,url:m.url,cap:m.caption,kind:m.kind||'image',featured:!!m.featured}));
   try{
@@ -985,6 +985,8 @@ function setLang(lang){
   if(ep&&ep.classList.contains('active'))setTimeout(renderEvents,400);
   const ip=document.getElementById('page-imam');
   if(ip&&ip.classList.contains('active'))setTimeout(renderImam,400);
+  // news cards + an open article follow the language too
+  setTimeout(()=>{renderHomeNews();if(document.getElementById('page-news').classList.contains('active'))renderNewsPage();if(document.getElementById('page-article').classList.contains('active')&&currentArticleId!=null)openArticle(currentArticleId,false);},400);
   saveState();
   setTimeout(()=>{document.body.classList.remove('lang-switching');langSwitching=false;},1000);
 }
@@ -1074,18 +1076,23 @@ function updateAuthUI(){
 }
 
 // NEWS
+// Language-aware title/body for a news article (falls back to Albanian)
+function postTitle(p){return (currentLang==='de'&&p.title_de)?p.title_de:p.title;}
+function postBody(p){return (currentLang==='de'&&p.body_de)?p.body_de:p.body;}
+
 function newsCard(p){
+  const title=postTitle(p),body=postBody(p);
   return `<div class="news-card" onclick="openArticle(${p.id})">
     <div class="news-card-img">
       <div class="news-card-img-placeholder">📰</div>
-      ${p.img?`<img src="${p.img}" alt="${p.title}" loading="lazy" onerror="this.style.display='none'">`:''}
+      ${p.img?`<img src="${p.img}" alt="${title}" loading="lazy" onerror="this.style.display='none'">`:''}
       <span class="news-card-chip">${p.category}</span>
       ${p.video?'<span class="news-card-play">▶</span>':''}
     </div>
     <div class="news-card-body">
       <div class="news-card-meta"><span class="news-card-date">📅 ${p.date}</span></div>
-      <h3>${p.title}</h3>
-      <p>${p.body.substring(0,110)}${p.body.length>110?'...':''}</p>
+      <h3>${title}</h3>
+      <p>${body.substring(0,110)}${body.length>110?'...':''}</p>
       <div class="news-card-footer"><span class="read-more">${currentLang==='de'?'Weiterlesen →':'Lexo më shumë →'}</span></div>
     </div>
   </div>`;
@@ -1095,7 +1102,7 @@ function renderNewsPage(){
   const g=document.getElementById('news-grid');if(!g)return;
   const q=(document.getElementById('news-search')||{}).value||'';
   let posts=DB.posts;
-  if(q)posts=posts.filter(p=>p.title.toLowerCase().includes(q.toLowerCase())||p.body.toLowerCase().includes(q.toLowerCase()));
+  if(q){const ql=q.toLowerCase();posts=posts.filter(p=>(p.title+' '+p.body+' '+(p.title_de||'')+' '+(p.body_de||'')).toLowerCase().includes(ql));}
   if(currentFilter!=='ALL')posts=posts.filter(p=>p.category===currentFilter);
   g.innerHTML=posts.length?posts.map(newsCard).join(''):`<p style="color:var(--ink-lt);grid-column:1/-1;text-align:center;padding:40px 0">${currentLang==='de'?'Keine Artikel gefunden.':'Nuk u gjetën artikuj.'}</p>`;
 }
@@ -1152,13 +1159,16 @@ function renderArticleGallery(images,title){
 }
 function openArticleLightbox(i){openLightbox(articleGalleryImages,i);}
 
+let currentArticleId=null;
 function openArticle(id,pushHash=true){
   const p=DB.posts.find(x=>x.id===id);if(!p)return;
+  currentArticleId=id;
+  const title=postTitle(p),bodyText=postBody(p);
   document.getElementById('article-cat').textContent=p.category;
   document.getElementById('article-date').textContent=p.date;
-  document.getElementById('article-title').textContent=p.title;
-  renderArticleGallery(articleImages(p), p.title);
-  const body='<p>'+p.body.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
+  document.getElementById('article-title').textContent=title;
+  renderArticleGallery(articleImages(p), title);
+  const body='<p>'+bodyText.replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
   document.getElementById('article-body').innerHTML=body+videoEmbedHtml(p.video);
   if(pushHash){try{history.pushState(null,'','#lajmi-'+id);}catch(e){}}
   navigate('article');
@@ -1172,11 +1182,12 @@ window.addEventListener('hashchange',()=>{
 
 function openNewsModal(id){
   const p=DB.posts.find(x=>x.id===id);if(!p)return;
+  const title=postTitle(p),body=postBody(p);
   document.getElementById('news-modal-content').innerHTML=`
-    ${p.img?`<img src="${p.img}" alt="${p.title}" style="width:100%;height:260px;object-fit:cover;border-radius:10px;margin-bottom:20px" onerror="this.style.display='none'">`:''}
+    ${p.img?`<img src="${p.img}" alt="${title}" style="width:100%;height:260px;object-fit:cover;border-radius:10px;margin-bottom:20px" onerror="this.style.display='none'">`:''}
     <div class="news-card-meta" style="margin-bottom:10px"><span class="news-card-cat">${p.category}</span><span class="news-card-date">${p.date}</span></div>
-    <h2 style="font-size:22px;color:var(--green);margin-bottom:14px">${p.title}</h2>
-    <div style="color:var(--ink-mid);font-size:15px;line-height:1.8">${p.body.replace(/\n/g,'<br>')}</div>`;
+    <h2 style="font-size:22px;color:var(--green);margin-bottom:14px">${title}</h2>
+    <div style="color:var(--ink-mid);font-size:15px;line-height:1.8">${body.replace(/\n/g,'<br>')}</div>`;
   openModal('news-modal');
 }
 
@@ -2065,15 +2076,44 @@ function openPostModal(postId){
   editingPostId=postId;
   const isEdit=postId!==null;
   document.getElementById('post-modal-title').textContent=isEdit?'✏️ Edito Artikullin':'✍️ Artikull i ri';
-  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-video').value=p.video||'';postImages=articleImages(p).slice();}
-  else{['post-title','post-body','post-img','post-video'].forEach(id=>document.getElementById(id).value='');postImages=[];}
+  if(isEdit){const p=DB.posts.find(x=>x.id===postId);document.getElementById('post-title').value=p.title;document.getElementById('post-cat').value=p.category;document.getElementById('post-body').value=p.body;document.getElementById('post-title-de').value=p.title_de||'';document.getElementById('post-body-de').value=p.body_de||'';document.getElementById('post-video').value=p.video||'';postImages=articleImages(p).slice();}
+  else{['post-title','post-body','post-title-de','post-body-de','post-img','post-video'].forEach(id=>document.getElementById(id).value='');postImages=[];}
   renderPostImagesPreview();
   openModal('post-modal');
+}
+
+// ── Free machine translation (Albanian -> German) for news ──
+async function translateText(text,sl,tl){
+  if(!text||!text.trim())return '';
+  const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+sl+'&tl='+tl+'&dt=t&q='+encodeURIComponent(text);
+  const r=await fetch(url);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const data=await r.json();
+  return (data[0]||[]).map(x=>x[0]).join('');
+}
+async function autoTranslatePost(){
+  const title=document.getElementById('post-title').value.trim();
+  const body=document.getElementById('post-body').value.trim();
+  if(!title&&!body){showToast('Shkruani fillimisht tekstin në shqip!','error');return;}
+  const btn=document.getElementById('post-translate-btn');
+  const label=btn.querySelector('span'),old=label?label.textContent:'';
+  btn.disabled=true;if(label)label.textContent=(currentLang==='de'?'Übersetze...':'Duke përkthyer...');
+  try{
+    const paras=body.split(/\n\n+/);
+    const results=await Promise.all([translateText(title,'sq','de'),...paras.map(p=>translateText(p,'sq','de'))]);
+    document.getElementById('post-title-de').value=results[0];
+    document.getElementById('post-body-de').value=results.slice(1).join('\n\n');
+    showToast('✅ U përkthye! Kontrolloni tekstin gjerman.','success');
+  }catch(e){
+    showToast('Përkthimi automatik dështoi. Provoni sërish ose shkruani manualisht.','error');
+  }finally{btn.disabled=false;if(label)label.textContent=old;}
 }
 async function savePost(){
   const title=document.getElementById('post-title').value.trim(),body=document.getElementById('post-body').value.trim();
   if(!title||!body){showToast('Plotësoni titullin dhe përmbajtjen!','error');return;}
   const category=document.getElementById('post-cat').value;
+  const title_de=document.getElementById('post-title-de').value.trim();
+  const body_de=document.getElementById('post-body-de').value.trim();
   const pending=document.getElementById('post-img').value.trim();
   if(pending){postImages.push(pending);document.getElementById('post-img').value='';}
   const images=postImages.slice();
@@ -2081,16 +2121,16 @@ async function savePost(){
   const video=document.getElementById('post-video').value.trim();
   if(REMOTE){
     const q=editingPostId!==null
-      ?sb.from('posts').update({title,category,body,img,images,video}).eq('id',editingPostId)
-      :sb.from('posts').insert({title,category,body,img,images,video});
+      ?sb.from('posts').update({title,title_de,category,body,body_de,img,images,video}).eq('id',editingPostId)
+      :sb.from('posts').insert({title,title_de,category,body,body_de,img,images,video});
     const {error}=await q;
-    if(error){showToast(friendlyDbError(error,'migration-015-post-images.sql'),'error');return;}
+    if(error){showToast(friendlyDbError(error,'migration-017-post-german.sql'),'error');return;}
     await remoteLoadAll();
     closeModal('post-modal');renderAdminNews();renderHomeNews();renderDashboard();
     showToast(editingPostId!==null?'✅ Artikulli u përditësua!':'🎉 Artikulli u publikua!','success');
     return;
   }
-  const data={title,category,body,img,images,video,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
+  const data={title,title_de,category,body,body_de,img,images,video,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})};
   if(editingPostId!==null){const i=DB.posts.findIndex(p=>p.id===editingPostId);DB.posts[i]={...DB.posts[i],...data};showToast('✅ Artikulli u përditësua!','success');}
   else{DB.posts.unshift({id:DB.nextPostId++,...data});showToast('🎉 Artikulli u publikua!','success');}
   closeModal('post-modal');saveState();renderAdminNews();renderHomeNews();renderDashboard();

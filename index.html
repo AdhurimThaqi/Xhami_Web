@@ -76,7 +76,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=49">
+<link rel="stylesheet" href="css/styles.css?v=50">
 <script>
   // Apply saved (or system) theme before paint to avoid a flash
   (function(){
@@ -206,11 +206,23 @@
     <button class="modal-close" onclick="closeModal('post-modal')">×</button>
     <h2 id="post-modal-title">Artikull i ri</h2>
     <p class="sub">Shkruani dhe publikoni artikullin</p>
-    <div class="form-group"><label>Titulli</label><input type="text" id="post-title"></div>
+    <div class="form-group"><label>🇦🇱 Titulli (Shqip)</label><input type="text" id="post-title" placeholder="Titulli i artikullit"></div>
     <div class="form-group"><label>Kategoria</label>
       <select id="post-cat"><option>Lajme</option><option>Aktivitete</option><option>Festat Islame</option><option>Bashkëpunimi</option><option>Tjera</option></select>
     </div>
-    <div class="form-group"><label>Përmbajtja</label><textarea id="post-body" rows="6"></textarea></div>
+    <div class="form-group"><label>🇦🇱 Përmbajtja (Shqip)</label><textarea id="post-body" rows="6"></textarea></div>
+
+    <!-- German version (auto-translate or manual) -->
+    <div style="background:var(--green-lt);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <strong style="font-size:13.5px;color:var(--green)">🇩🇪 Versioni gjerman</strong>
+        <button type="button" class="btn btn-outline" id="post-translate-btn" style="padding:8px 14px;font-size:13px" onclick="autoTranslatePost()">🌐 <span data-sq="Përkthe automatikisht" data-de="Automatisch übersetzen">Përkthe automatikisht</span></button>
+      </div>
+      <small style="display:block;color:var(--ink-lt);font-size:12px;margin-bottom:10px">Shkruani artikullin në shqip lart, pastaj klikoni "Përkthe automatikisht". Mund ta rregulloni tekstin gjerman më pas.</small>
+      <div class="form-group" style="margin-bottom:10px"><label>Titel (Deutsch)</label><input type="text" id="post-title-de" placeholder="Titel auf Deutsch"></div>
+      <div class="form-group" style="margin:0"><label>Inhalt (Deutsch)</label><textarea id="post-body-de" rows="6" placeholder="Inhalt auf Deutsch"></textarea></div>
+    </div>
+
     <div class="form-group"><label>Fotografitë e artikullit</label>
       <small style="display:block;color:var(--ink-lt);font-size:12px;margin-bottom:8px">Shtoni një ose disa foto. E para është kopertina; të gjitha shfaqen si galeri me slideshow.</small>
       <div id="post-images-preview" class="post-img-thumbs"></div>
@@ -1917,8 +1929,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=49"></script>
+<script src="js/config.js?v=50"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=49"></script>
+<script src="js/app.js?v=50"></script>
 </body>
 </html>
