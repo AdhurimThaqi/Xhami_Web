@@ -2091,6 +2091,18 @@ async function translateText(text,sl,tl){
   const data=await r.json();
   return (data[0]||[]).map(x=>x[0]).join('');
 }
+// Fill missing German title/body by translating the Albanian (best-effort).
+async function autoFillGerman(title,body,title_de,body_de){
+  try{
+    if(title&&!title_de)title_de=await translateText(title,'sq','de');
+    if(body&&!body_de){
+      const paras=body.split(/\n\n+/);
+      const t=await Promise.all(paras.map(p=>translateText(p,'sq','de')));
+      body_de=t.join('\n\n');
+    }
+  }catch(e){/* offline / blocked -> publish as-is; article falls back to Albanian */}
+  return {title_de,body_de};
+}
 async function autoTranslatePost(){
   const title=document.getElementById('post-title').value.trim();
   const body=document.getElementById('post-body').value.trim();
@@ -2112,8 +2124,14 @@ async function savePost(){
   const title=document.getElementById('post-title').value.trim(),body=document.getElementById('post-body').value.trim();
   if(!title||!body){showToast('Plotësoni titullin dhe përmbajtjen!','error');return;}
   const category=document.getElementById('post-cat').value;
-  const title_de=document.getElementById('post-title-de').value.trim();
-  const body_de=document.getElementById('post-body-de').value.trim();
+  let title_de=document.getElementById('post-title-de').value.trim();
+  let body_de=document.getElementById('post-body-de').value.trim();
+  // Auto-translate to German on publish when no German version was provided.
+  if(!title_de||!body_de){
+    showToast('🌐 Duke përkthyer në gjermanisht...','');
+    const auto=await autoFillGerman(title,body,title_de,body_de);
+    title_de=auto.title_de;body_de=auto.body_de;
+  }
   const pending=document.getElementById('post-img').value.trim();
   if(pending){postImages.push(pending);document.getElementById('post-img').value='';}
   const images=postImages.slice();

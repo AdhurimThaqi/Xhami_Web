@@ -2,13 +2,13 @@
    - Precaches the app shell so the site opens instantly and works offline.
    - Never caches Supabase / cross-origin API calls (dynamic data stays live).
    - Bump CACHE version to invalidate old caches on deploy. */
-const CACHE = 'hdf-v50';
+const CACHE = 'hdf-v51';
 const SHELL = [
   '/',
   '/index.html',
-  '/css/styles.css?v=50',
-  '/js/config.js?v=50',
-  '/js/app.js?v=50',
+  '/css/styles.css?v=51',
+  '/js/config.js?v=51',
+  '/js/app.js?v=51',
   '/og-image.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
