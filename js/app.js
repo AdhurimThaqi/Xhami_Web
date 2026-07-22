@@ -210,6 +210,7 @@ function navigate(p){
   if(p==='staff')renderStaff();
   if(p==='events')renderEvents();
   if(p==='imam')renderImam();
+  if(p==='history')renderHistorikuPhoto();
 }
 
 // ═══════════════════════════════════════
@@ -1653,6 +1654,13 @@ function renderDocsList(){
 }
 
 // ── ACTIVITY SECTION PHOTOS (admin-assigned backgrounds) ──
+function renderHistorikuPhoto(){
+  const img=document.getElementById('historiku-img');if(!img)return;
+  const ph=document.getElementById('historiku-ph');
+  const url=settings['historiku_photo'];
+  if(url){img.src=url;img.style.display='block';if(ph)ph.style.display='none';}
+  else{img.style.display='none';if(ph)ph.style.display='flex';}
+}
 function applyActivityPhotos(){
   document.querySelectorAll('#page-home .activities-grid .activity-card').forEach((card,i)=>{
     const url=settings['act_photo_'+i];
@@ -1694,7 +1702,7 @@ async function pickPhoto(url){
   if(!pickerTargetKey)return;
   if(await saveSetting(pickerTargetKey,url)){
     closeModal('photo-picker-modal');
-    applyActivityPhotos();renderActivityPhotosAdmin();
+    applyActivityPhotos();renderActivityPhotosAdmin();renderHistorikuPhoto();
     showToast('✅ Fotoja u caktua!','success');
   }
 }
@@ -2857,6 +2865,7 @@ async function initApp(){
   renderStaff();
   renderEvents();
   renderImam();
+  renderHistorikuPhoto();
   renderAudioList();
   updateHeroSlides();
   renderDocsList();
