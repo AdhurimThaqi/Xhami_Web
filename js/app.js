@@ -1638,12 +1638,37 @@ function renderMediaTab(){
 
 // Public homepage gallery mirrors the media library once it has content
 function renderPublicGallery(){
-  const g=document.querySelector('#page-home .gallery-grid');if(!g)return;
+  const g=document.getElementById('gallery-track');if(!g)return;
   // Homepage gallery shows photos only - no video, no Facebook, no PDF/audio
   const items=mediaItems.filter(m=>m.kind==='image');
-  if(!REMOTE||!items.length)return; // keep the static fallback gallery
+  if(!REMOTE||!items.length){initGalleryCarousel();return;} // keep the static fallback gallery
   const zoomSvg='<div class="g-overlay"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>';
   g.innerHTML=items.map(m=>`<div class="g-item"><img src="${m.url}" alt="${m.cap||'Foto'}" loading="lazy">${zoomSvg}</div>`).join('');
+  initGalleryCarousel();
+}
+
+// ── GALLERY CAROUSEL (arrows + gentle auto-swipe) ──
+let galleryTimer=null;
+function galleryStep(dir){
+  const track=document.getElementById('gallery-track');if(!track)return;
+  const item=track.querySelector('.g-item');if(!item)return;
+  const gap=parseFloat(getComputedStyle(track).columnGap||getComputedStyle(track).gap)||18;
+  const step=item.getBoundingClientRect().width+gap;
+  const max=track.scrollWidth-track.clientWidth-2;
+  if(dir>0&&track.scrollLeft>=max){track.scrollTo({left:0,behavior:'smooth'});}
+  else if(dir<0&&track.scrollLeft<=2){track.scrollTo({left:max,behavior:'smooth'});}
+  else{track.scrollBy({left:step*dir,behavior:'smooth'});}
+}
+function galleryScroll(dir){galleryStep(dir);startGalleryAuto();}
+function startGalleryAuto(){stopGalleryAuto();galleryTimer=setInterval(()=>galleryStep(1),5000);}
+function stopGalleryAuto(){if(galleryTimer){clearInterval(galleryTimer);galleryTimer=null;}}
+function initGalleryCarousel(){
+  const track=document.getElementById('gallery-track');if(!track||track.dataset.wired)return;
+  track.dataset.wired='1';
+  track.addEventListener('mouseenter',stopGalleryAuto);
+  track.addEventListener('mouseleave',startGalleryAuto);
+  track.addEventListener('touchstart',stopGalleryAuto,{passive:true});
+  startGalleryAuto();
 }
 
 // ── PDF DOCUMENTS LIST (public) ──
@@ -1662,6 +1687,12 @@ function renderHistorikuPhoto(){
   const url=settings['historiku_photo'];
   if(url){img.src=url;img.style.display='block';if(ph)ph.style.display='none';}
   else{img.style.display='none';if(ph)ph.style.display='flex';}
+}
+// About section photo - editable; falls back to the historiku mosque photo, then default
+const ABOUT_PHOTO_DEFAULT='https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg';
+function renderAboutPhoto(){
+  const img=document.getElementById('about-img');if(!img)return;
+  img.src=settings['about_photo']||settings['historiku_photo']||ABOUT_PHOTO_DEFAULT;
 }
 function applyActivityPhotos(){
   document.querySelectorAll('#page-home .activities-grid .activity-card').forEach((card,i)=>{
@@ -1704,7 +1735,7 @@ async function pickPhoto(url){
   if(!pickerTargetKey)return;
   if(await saveSetting(pickerTargetKey,url)){
     closeModal('photo-picker-modal');
-    applyActivityPhotos();renderActivityPhotosAdmin();renderHistorikuPhoto();
+    applyActivityPhotos();renderActivityPhotosAdmin();renderHistorikuPhoto();renderAboutPhoto();
     showToast('✅ Fotoja u caktua!','success');
   }
 }
@@ -1736,8 +1767,10 @@ function updateHeroSlides(){
   const imgs=mediaItems.filter(m=>m.kind==='image');
   if(!REMOTE||!imgs.length)return; // keep the static fallback slides
   const feat=imgs.filter(m=>m.featured);
-  const about=document.querySelector('.about-image-main');
-  if(about)about.src=(feat[0]||imgs[0]).url;
+  if(!settings['about_photo']&&!settings['historiku_photo']){
+    const about=document.querySelector('.about-image-main');
+    if(about)about.src=(feat[0]||imgs[0]).url;
+  }
   if(imgs.length<2)return;
   let chosen;
   if(feat.length){
@@ -1780,9 +1813,9 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft')lbNav(-1);
 });
 document.addEventListener('click',e=>{
-  const item=e.target.closest('.gallery-grid .g-item');
+  const item=e.target.closest('.gallery-track .g-item');
   if(!item||item.classList.contains('g-media'))return;
-  const grid=item.closest('.gallery-grid');
+  const grid=item.closest('.gallery-track');
   const imgs=Array.from(grid.querySelectorAll('.g-item:not(.g-media) img')).filter(im=>im.src&&im.style.display!=='none');
   const idx=imgs.indexOf(item.querySelector('img'));
   if(idx>=0)openLightbox(imgs.map(im=>im.src),idx);
@@ -2490,7 +2523,7 @@ function initScrollReveal() {
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, { threshold: 0.07 });
-  document.querySelectorAll('.news-card,.activity-card,.acc-item,.g-item,.contact-item,.about-grid,.donations-inner,.partner-card').forEach(el => {
+  document.querySelectorAll('.news-card,.activity-card,.acc-item,.contact-item,.about-grid,.donations-inner,.partner-card').forEach(el => {
     el.classList.add('reveal'); obs.observe(el);
   });
 }
@@ -2868,6 +2901,7 @@ async function initApp(){
   renderEvents();
   renderImam();
   renderHistorikuPhoto();
+  renderAboutPhoto();
   renderAudioList();
   updateHeroSlides();
   renderDocsList();
