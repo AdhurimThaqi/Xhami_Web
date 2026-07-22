@@ -2,13 +2,13 @@
    - Precaches the app shell so the site opens instantly and works offline.
    - Never caches Supabase / cross-origin API calls (dynamic data stays live).
    - Bump CACHE version to invalidate old caches on deploy. */
-const CACHE = 'hdf-v51';
+const CACHE = 'hdf-v52';
 const SHELL = [
   '/',
   '/index.html',
-  '/css/styles.css?v=51',
-  '/js/config.js?v=51',
-  '/js/app.js?v=51',
+  '/css/styles.css?v=52',
+  '/js/config.js?v=52',
+  '/js/app.js?v=52',
   '/og-image.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
@@ -38,10 +38,11 @@ self.addEventListener('fetch', (e) => {
   // straight to the network so live data and third parties are never cached.
   if (url.origin !== self.location.origin) return;
 
-  // Navigations: network-first, fall back to the cached shell when offline.
+  // Navigations: always fetch a fresh page (bypass the HTTP cache so new
+  // deploys show up immediately); fall back to the cached shell when offline.
   if (req.mode === 'navigate') {
     e.respondWith(
-      fetch(req).catch(() => caches.match('/index.html').then((r) => r || caches.match('/')))
+      fetch(req, { cache: 'reload' }).catch(() => caches.match('/index.html').then((r) => r || caches.match('/')))
     );
     return;
   }
