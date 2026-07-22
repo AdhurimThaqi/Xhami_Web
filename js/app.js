@@ -211,6 +211,7 @@ function navigate(p){
   if(p==='events')renderEvents();
   if(p==='imam')renderImam();
   if(p==='history')renderHistorikuPhoto();
+  if(p==='ramadan'){renderRamadanDate();updateRamadanCountdown();}
 }
 
 // ═══════════════════════════════════════
@@ -986,6 +987,7 @@ function setLang(lang){
   if(ep&&ep.classList.contains('active'))setTimeout(renderEvents,400);
   const ip=document.getElementById('page-imam');
   if(ip&&ip.classList.contains('active'))setTimeout(renderImam,400);
+  setTimeout(renderRamadanDate,400); // localize the Ramadan date on lang switch
   // news cards + an open article follow the language too
   setTimeout(()=>{renderHomeNews();if(document.getElementById('page-news').classList.contains('active'))renderNewsPage();if(document.getElementById('page-article').classList.contains('active')&&currentArticleId!=null)openArticle(currentArticleId,false);},400);
   saveState();
@@ -2911,6 +2913,45 @@ function updateClock(){
 }
 updateClock();
 setInterval(updateClock,1000);
+
+// ── RAMADAN 2027 COUNTDOWN ──
+// Estimated first day of Ramadan 1448 AH (subject to moon sighting).
+const RAMADAN_START=new Date('2027-02-08T00:00:00');
+const SQ_MONTHS=['janar','shkurt','mars','prill','maj','qershor','korrik','gusht','shtator','tetor','nëntor','dhjetor'];
+const SQ_DAYS=['e diel','e hënë','e martë','e mërkurë','e enjte','e premte','e shtunë'];
+function renderRamadanDate(){
+  const el=document.getElementById('ramadan-date');if(!el)return;
+  const d=RAMADAN_START;
+  if(currentLang==='de'){
+    el.textContent=d.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }else{
+    el.textContent=SQ_DAYS[d.getDay()]+', '+d.getDate()+' '+SQ_MONTHS[d.getMonth()]+' '+d.getFullYear();
+  }
+}
+function updateRamadanCountdown(){
+  const daysEl=document.getElementById('rc-days');if(!daysEl)return;
+  const diff=RAMADAN_START-new Date();
+  const grid=document.getElementById('ramadan-countdown');
+  const live=document.getElementById('ramadan-live');
+  if(diff<=0){
+    if(grid)grid.style.display='none';
+    if(live)live.style.display='block';
+    return;
+  }
+  if(grid)grid.style.display='';
+  if(live)live.style.display='none';
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff%86400000/3600000);
+  const m=Math.floor(diff%3600000/60000);
+  const s=Math.floor(diff%60000/1000);
+  daysEl.textContent=d;
+  document.getElementById('rc-hours').textContent=String(h).padStart(2,'0');
+  document.getElementById('rc-mins').textContent=String(m).padStart(2,'0');
+  document.getElementById('rc-secs').textContent=String(s).padStart(2,'0');
+}
+renderRamadanDate();
+updateRamadanCountdown();
+setInterval(updateRamadanCountdown,1000);
 
 // ── DARK / LIGHT THEME ──
 function currentTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
