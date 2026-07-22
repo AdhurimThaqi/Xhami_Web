@@ -988,6 +988,7 @@ function setLang(lang){
   const ip=document.getElementById('page-imam');
   if(ip&&ip.classList.contains('active'))setTimeout(renderImam,400);
   setTimeout(renderRamadanDate,400); // localize the Ramadan date on lang switch
+  setTimeout(renderHistoriku,400); // historiku body follows the language too
   // news cards + an open article follow the language too
   setTimeout(()=>{renderHomeNews();if(document.getElementById('page-news').classList.contains('active'))renderNewsPage();if(document.getElementById('page-article').classList.contains('active')&&currentArticleId!=null)openArticle(currentArticleId,false);},400);
   saveState();
@@ -1693,6 +1694,120 @@ const ABOUT_PHOTO_DEFAULT='https://hausdesfriedens.ch/wp-content/uploads/2026/03
 function renderAboutPhoto(){
   const img=document.getElementById('about-img');if(!img)return;
   img.src=settings['about_photo']||settings['historiku_photo']||ABOUT_PHOTO_DEFAULT;
+}
+
+// ── Light text markup for editable pages: "## " heading, "- " list, **bold** ──
+function renderMarkup(t){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const bold=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  const lines=(t||'').replace(/\r/g,'').split('\n');
+  let html='',list=[],para=[];
+  const flushList=()=>{if(list.length){html+='<ul>'+list.map(li=>'<li>'+bold(li)+'</li>').join('')+'</ul>';list=[];}};
+  const flushPara=()=>{if(para.length){html+='<p>'+para.map(bold).join('<br>')+'</p>';para=[];}};
+  for(const raw of lines){
+    const line=raw.trim();
+    if(!line){flushList();flushPara();continue;}
+    if(line.startsWith('## ')){flushList();flushPara();html+='<h2>'+bold(line.slice(3))+'</h2>';}
+    else if(line.startsWith('- ')){flushPara();list.push(line.slice(2));}
+    else{flushList();para.push(line);}
+  }
+  flushList();flushPara();
+  return html;
+}
+
+// ── About ("Rreth Nesh") editable title + text: override the i18n table so
+//    the language switch keeps using the admin's content ──
+function applyAboutOverrides(){
+  if(typeof T==='undefined')return;
+  const set=(lang,tKey,bKey)=>{
+    const title=settings[tKey.title], body=settings[bKey.body];
+    if(title)T[lang]['about-h2']=title.replace(/\n/g,'<br>');
+    if(body&&body.trim()){
+      const p=body.replace(/\r/g,'').split(/\n\n+/).map(x=>x.trim()).filter(Boolean);
+      T[lang]['about-p1']=p[0]||'';
+      T[lang]['about-p2']=p.slice(1).join(' ')||'';
+    }
+  };
+  set('sq',{title:'about_title_sq'},{body:'about_text_sq'});
+  set('de',{title:'about_title_de'},{body:'about_text_de'});
+}
+function renderAboutContent(){
+  applyAboutOverrides();
+  if(typeof T!=='undefined'&&T[currentLang]){
+    const h=document.getElementById('about-h2');if(h)h.innerHTML=T[currentLang]['about-h2'];
+    const p1=document.getElementById('about-p1');if(p1)p1.textContent=T[currentLang]['about-p1'];
+    const p2=document.getElementById('about-p2');if(p2)p2.textContent=T[currentLang]['about-p2'];
+  }
+  renderAboutPhoto();
+}
+
+// ── Historiku page editable body (falls back to the default HTML in the page) ──
+let historikuDefaultHTML=null;
+function renderHistoriku(){
+  renderHistorikuPhoto();
+  const box=document.getElementById('historiku-body');if(!box)return;
+  if(historikuDefaultHTML===null)historikuDefaultHTML=box.innerHTML;
+  const sq=settings['historiku_body_sq'], de=settings['historiku_body_de'];
+  const txt=currentLang==='de'?(de&&de.trim()?de:sq):sq;
+  if(txt&&txt.trim())box.innerHTML=renderMarkup(txt);
+  else box.innerHTML=historikuDefaultHTML;
+}
+
+// ── Admin: "Rreth Nesh & Historiku" tab ──
+function updateAboutPhotoPreview(){
+  const pv=document.getElementById('about-photo-preview');if(!pv)return;
+  const url=(document.getElementById('about-photo-input').value||'').trim();
+  if(url){pv.src=url;pv.style.display='block';}else pv.style.display='none';
+}
+function updateHistorikuPhotoPreview(){
+  const pv=document.getElementById('historiku-photo-preview');if(!pv)return;
+  const url=(document.getElementById('historiku-photo-input').value||'').trim();
+  if(url){pv.src=url;pv.style.display='block';}else pv.style.display='none';
+}
+function renderSitePagesAdmin(){
+  const g=id=>document.getElementById(id);
+  if(g('about-photo-input'))g('about-photo-input').value=settings['about_photo']||'';
+  if(g('about-title-sq'))g('about-title-sq').value=settings['about_title_sq']||'';
+  if(g('about-title-de'))g('about-title-de').value=settings['about_title_de']||'';
+  if(g('about-text-sq'))g('about-text-sq').value=settings['about_text_sq']||'';
+  if(g('about-text-de'))g('about-text-de').value=settings['about_text_de']||'';
+  if(g('historiku-photo-input'))g('historiku-photo-input').value=settings['historiku_photo']||'';
+  if(g('historiku-text-sq'))g('historiku-text-sq').value=settings['historiku_body_sq']||'';
+  if(g('historiku-text-de'))g('historiku-text-de').value=settings['historiku_body_de']||'';
+  updateAboutPhotoPreview();updateHistorikuPhotoPreview();
+}
+async function saveAboutContent(){
+  const v=id=>document.getElementById(id).value.trim();
+  await Promise.all([
+    saveSetting('about_photo',v('about-photo-input')),
+    saveSetting('about_title_sq',v('about-title-sq')),
+    saveSetting('about_title_de',v('about-title-de')),
+    saveSetting('about_text_sq',v('about-text-sq')),
+    saveSetting('about_text_de',v('about-text-de'))
+  ]);
+  renderAboutContent();
+  showToast('✅ Seksioni "Rreth Nesh" u ruajt!','success');
+}
+async function saveHistorikuContent(){
+  const v=id=>document.getElementById(id).value.trim();
+  await Promise.all([
+    saveSetting('historiku_photo',v('historiku-photo-input')),
+    saveSetting('historiku_body_sq',v('historiku-text-sq')),
+    saveSetting('historiku_body_de',v('historiku-text-de'))
+  ]);
+  renderHistoriku();renderAboutPhoto();
+  showToast('✅ Faqja "Historiku" u ruajt!','success');
+}
+async function uploadSitePhoto(ev,inputId,previewFn){
+  const f=(ev.target.files||[])[0];ev.target.value='';
+  if(!f)return;
+  if(!REMOTE){showToast('Ngarkimi kërkon lidhje me serverin!','error');return;}
+  showToast('⏳ Duke ngarkuar foton...','');
+  try{
+    document.getElementById(inputId).value=await uploadToStorage(f);
+    if(typeof window[previewFn]==='function')window[previewFn]();
+    showToast('✅ Fotografia u ngarkua!','success');
+  }catch(e){showToast('Gabim: '+e.message,'error');}
 }
 function applyActivityPhotos(){
   document.querySelectorAll('#page-home .activities-grid .activity-card').forEach((card,i)=>{
@@ -2470,6 +2585,7 @@ function showAdminTab(name) {
   if (name === 'staff')        renderStaffAdmin();
   if (name === 'events')       renderEventsAdmin();
   if (name === 'imam')         renderImamAdmin();
+  if (name === 'sitepages')    renderSitePagesAdmin();
   if (name === 'stats')        renderStats();
 }
 
@@ -2888,6 +3004,7 @@ async function initApp(){
   }else{
     loadState();
   }
+  applyAboutOverrides();
   try{
     const l=localStorage.getItem('hdf_lang');
     if(l&&l!==currentLang)setLang(l);
@@ -2900,8 +3017,8 @@ async function initApp(){
   renderStaff();
   renderEvents();
   renderImam();
-  renderHistorikuPhoto();
-  renderAboutPhoto();
+  renderHistoriku();
+  renderAboutContent();
   renderAudioList();
   updateHeroSlides();
   renderDocsList();

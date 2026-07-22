@@ -76,7 +76,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpolygon points='6,20 26,28 26,58 6,50' fill='%23161616'/%3E%3Cpolygon points='26,28 58,18 58,46 26,58' fill='%23161616'/%3E%3Cpolygon points='6,26 26,34 26,40 6,32' fill='%234a8a2f'/%3E%3Cpolygon points='26,34 58,24 58,30 26,40' fill='%234a8a2f'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=56">
+<link rel="stylesheet" href="css/styles.css?v=57">
 </head>
 <body>
 <div id="toast-container"></div>
@@ -481,7 +481,6 @@
       <div class="about-image">
         <img id="about-img" src="https://hausdesfriedens.ch/wp-content/uploads/2026/03/DSC_4697-scaled.jpg" alt="Xhamia jonë" class="about-image-main" onerror="this.style.minHeight='300px'">
         <div class="about-image-card"><div class="num">2013</div><div class="lbl" id="about-card-lbl">Adresa e re<br>Saatlenstr. 23</div></div>
-        <button class="hp-edit admin-only-el" onclick="openPhotoPicker('about_photo')" style="display:none">🖼️ <span data-sq="Ndrysho foton" data-de="Foto ändern">Ndrysho foton</span></button>
       </div>
       <div class="about-content">
         <div class="badge"><span id="about-badge">🕌 Rreth Nesh</span></div>
@@ -720,13 +719,21 @@
   <div class="page-content"><div class="container">
     <div class="payments-grid">
       <div class="payment-card">
-        <div class="payment-icon" style="background:var(--green-lt)">
-          <svg class="pay-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="32" cy="18" r="5" style="stroke:var(--gold)"/>
-            <path d="M15 32h34l-3.5 22H18.5z"/>
-            <path d="M26 32h12" style="stroke:var(--gold)"/>
-            <path d="M41 10c4-1 7 2.5 5.5 6.5"/>
-            <path d="M47 17l-1.5-4-4 1.5"/>
+        <div class="pay-arch">
+          <svg viewBox="0 0 96 112" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="pgGold1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3c877"/><stop offset="1" stop-color="#c8a24b"/></linearGradient>
+              <clipPath id="pArch1"><path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z"/></clipPath>
+            </defs>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="#f4eedd"/>
+            <g clip-path="url(#pArch1)">
+              <g fill="#1a6b3f" opacity=".14"><ellipse cx="48" cy="40" rx="13" ry="15"/><rect x="35" y="40" width="26" height="40"/><rect x="20" y="52" width="8" height="30"/><rect x="68" y="52" width="8" height="30"/><circle cx="24" cy="48" r="4"/><circle cx="72" cy="48" r="4"/></g>
+              <path d="M48 58 C44 50 33 51 33 61 C33 69 44 75 48 79 C52 75 63 69 63 61 C63 51 52 50 48 58 Z" fill="#1a6b3f"/>
+              <path d="M26 84 C30 94 40 99 52 99 C66 99 76 92 78 82 C79 78 75 75 72 78 C68 81 60 84 52 84 C44 84 34 82 30 78 C27 75 24 79 26 84 Z" fill="url(#pgGold1)"/>
+              <path d="M31 80 l-8 -4 M40 79 l-4 -7 M52 79 l0 -8 M64 78 l5 -6" stroke="url(#pgGold1)" stroke-width="4" stroke-linecap="round" fill="none"/>
+            </g>
+            <path d="M62 18 a7 7 0 1 0 4 12 a9 9 0 1 1 -4 -12 Z" fill="#c8a24b"/>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="none" stroke="#c8a24b" stroke-width="2.5"/>
           </svg>
         </div>
         <h3 data-sq="Sadaka për Xhami" data-de="Sadaqa für die Moschee">Sadaka për Xhami</h3>
@@ -734,19 +741,39 @@
         <a class="btn btn-gold" href="https://donate.raisenow.io/nbggb" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
       </div>
       <div class="payment-card">
-        <div class="payment-icon" style="background:#fdf6e3">🐑</div>
+        <div class="pay-arch">
+          <svg viewBox="0 0 96 112" xmlns="http://www.w3.org/2000/svg">
+            <defs><clipPath id="pArch4"><path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z"/></clipPath></defs>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="#f4eedd"/>
+            <g clip-path="url(#pArch4)">
+              <g fill="#1a6b3f" opacity=".13"><ellipse cx="48" cy="40" rx="12" ry="14"/><rect x="36" y="40" width="24" height="42"/><rect x="22" y="52" width="7" height="30"/><rect x="67" y="52" width="7" height="30"/></g>
+              <text x="48" y="86" font-size="42" text-anchor="middle">🐑</text>
+            </g>
+            <path d="M60 18 a7 7 0 1 0 4 12 a9 9 0 1 1 -4 -12 Z" fill="#c8a24b"/>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="none" stroke="#c8a24b" stroke-width="2.5"/>
+          </svg>
+        </div>
         <h3 data-sq="Pagesa për Kurban" data-de="Kurban-Zahlung">Pagesa për Kurban</h3>
         <p data-sq="Pagesa e Kurbanit për Kurban Bajram" data-de="Kurban-Zahlung für das Opferfest">Pagesa e Kurbanit për Kurban Bajram</p>
         <a class="btn btn-gold" href="https://pay.raisenow.io/hdsyc" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
       </div>
       <div class="payment-card">
-        <div class="payment-icon" style="background:var(--gold-lt)">
-          <svg class="pay-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="32" cy="20" r="7" style="stroke:var(--gold)"/>
-            <path d="M32 15v10M28.5 18.5h7" style="stroke:var(--gold)"/>
-            <path d="M10 44c0 6 4.5 10 12 10h20c8 0 13-4.5 12-11"/>
-            <path d="M10 44c-2-2-2-5-1-7"/>
-            <path d="M18 42v-4M25 41v-5M33 41v-6M41 41v-5"/>
+        <div class="pay-arch">
+          <svg viewBox="0 0 96 112" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="pgGold2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3c877"/><stop offset="1" stop-color="#c8a24b"/></linearGradient>
+              <clipPath id="pArch2"><path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z"/></clipPath>
+            </defs>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="#12502f"/>
+            <g clip-path="url(#pArch2)">
+              <g fill="#ffffff" opacity=".08"><ellipse cx="30" cy="46" rx="9" ry="11"/><rect x="21" y="46" width="18" height="34"/><ellipse cx="66" cy="46" rx="9" ry="11"/><rect x="57" y="46" width="18" height="34"/></g>
+              <g fill="url(#pgGold2)" stroke="#b58f3c" stroke-width="1.5"><ellipse cx="42" cy="88" rx="20" ry="7"/><rect x="22" y="80" width="40" height="8" stroke="none"/><ellipse cx="42" cy="80" rx="20" ry="7"/><rect x="22" y="72" width="40" height="8" stroke="none"/><ellipse cx="42" cy="72" rx="20" ry="7"/></g>
+              <circle cx="66" cy="82" r="15" fill="url(#pgGold2)" stroke="#b58f3c" stroke-width="1.5"/>
+              <g fill="none" stroke="#b58f3c" stroke-width="2"><circle cx="66" cy="82" r="9"/><path d="M66 74 v4 M66 86 v4 M58 82 h4 M70 82 h4"/></g>
+            </g>
+            <path d="M40 20 a7 7 0 1 0 4 12 a9 9 0 1 1 -4 -12 Z" fill="#e3c877"/>
+            <path d="M58 20 l1.6 3.4 3.6 .4 -2.7 2.5 .8 3.6 -3.3 -1.9 -3.3 1.9 .8 -3.6 -2.7 -2.5 3.6 -.4 Z" fill="#e3c877"/>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="none" stroke="#c8a24b" stroke-width="2.5"/>
           </svg>
         </div>
         <h3 data-sq="Fitri (Zekatul-Fitr)" data-de="Fitr (Zakat al-Fitr)">Fitri (Zekatul-Fitr)</h3>
@@ -754,14 +781,24 @@
         <a class="btn btn-gold" href="https://donate.raisenow.io/xcqws" target="_blank" rel="noopener" data-sq="Paguaj Online →" data-de="Online zahlen →">Paguaj Online →</a>
       </div>
       <div class="payment-card">
-        <div class="payment-icon" style="background:var(--green-lt)">
-          <svg class="pay-ico" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M27 8h10l-2.5 5h-5z" style="stroke:var(--gold)"/>
-            <path d="M29.5 13C24 15.5 21 20 21 25c0 5 3.5 8.5 11 8.5s11-3.5 11-8.5c0-5-3-9.5-8.5-12"/>
-            <path d="M32 19v7M29.5 22h5" style="stroke:var(--gold)"/>
-            <path d="M10 45c0 6 4.5 10 12 10h20c8 0 13-4.5 12-11"/>
-            <path d="M10 45c-2-2-2-5-1-7"/>
-            <path d="M18 43v-4M25 42.5v-4M39 42.5v-4M46 43v-4"/>
+        <div class="pay-arch">
+          <svg viewBox="0 0 96 112" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="pgGold3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3c877"/><stop offset="1" stop-color="#c8a24b"/></linearGradient>
+              <clipPath id="pArch3"><path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z"/></clipPath>
+            </defs>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="#f4eedd"/>
+            <g clip-path="url(#pArch3)">
+              <g fill="#1a6b3f" opacity=".12"><ellipse cx="60" cy="42" rx="11" ry="13"/><rect x="49" y="42" width="22" height="38"/><rect x="76" y="52" width="7" height="28"/></g>
+              <path d="M34 88 C34 70 30 58 24 50" fill="none" stroke="#1a6b3f" stroke-width="4" stroke-linecap="round"/>
+              <path d="M30 66 C22 60 16 62 14 70 C22 74 30 72 30 66 Z" fill="#1a6b3f"/>
+              <path d="M34 56 C34 46 40 42 48 42 C46 52 40 58 34 56 Z" fill="#2e8b57"/>
+              <path d="M32 74 C24 70 18 73 17 81 C25 84 32 80 32 74 Z" fill="#2e8b57"/>
+              <g fill="url(#pgGold3)" stroke="#b58f3c" stroke-width="1.5"><ellipse cx="52" cy="90" rx="18" ry="6"/><rect x="34" y="83" width="36" height="7" stroke="none"/><ellipse cx="52" cy="83" rx="18" ry="6"/><rect x="34" y="76" width="36" height="7" stroke="none"/><ellipse cx="52" cy="76" rx="18" ry="6"/></g>
+              <circle cx="66" cy="84" r="14" fill="#2e8b57" stroke="#c8a24b" stroke-width="2.5"/>
+              <text x="66" y="88" font-size="10" fill="#e3c877" text-anchor="middle" font-family="serif">زكاة</text>
+            </g>
+            <path d="M12 108 V44 C12 24 28 8 48 6 C68 8 84 24 84 44 V108 Z" fill="none" stroke="#c8a24b" stroke-width="2.5"/>
           </svg>
         </div>
         <h3 data-sq="Pagesa për Zekat" data-de="Zakat-Zahlung">Pagesa për Zekat</h3>
@@ -809,9 +846,8 @@
     <div class="history-photo">
       <img id="historiku-img" alt="Xhamia - Haus des Friedens" style="display:none" onerror="this.style.display='none'">
       <div id="historiku-ph" class="hp-placeholder"><span style="font-size:52px">🕌</span><small data-sq="Foto e brendshme e xhamisë" data-de="Innenansicht der Moschee">Foto e brendshme e xhamisë</small></div>
-      <button class="hp-edit admin-only-el" onclick="openPhotoPicker('historiku_photo')" style="display:none">🖼️ <span data-sq="Ndrysho foton" data-de="Foto ändern">Ndrysho foton</span></button>
     </div>
-    <div class="prose">
+    <div class="prose" id="historiku-body">
     <h2>Themelimi i Xhamisë</h2>
     <p>Xhamia "Jugendkulturzentrum Haus des Friedens" është themeluar që nga viti 2004. Fillimisht u gjet lokali adekuat në Schwamendingenstr. 112. Falë angazhimit të besimtarëve, imamit dhe bashkatdhetarëve, anëtarët e kësaj xhamie vazhdimisht shtoheshin.</p>
     <p>Që nga viti 2013 xhamia ndryshoi adresën dhe u transferua në lokalin tjetër në <strong>Saatlenstr. 23, 8051, Zürich</strong>.</p>
@@ -1530,6 +1566,7 @@
           <button class="admin-tab-pill admin-only" id="apill-staff" onclick="showAdminTab('staff')" style="display:none">👥 Kryesia</button>
           <button class="admin-tab-pill admin-only" id="apill-events" onclick="showAdminTab('events')" style="display:none">📅 Ngjarjet</button>
           <button class="admin-tab-pill admin-only" id="apill-imam" onclick="showAdminTab('imam')" style="display:none">🧔 Imami</button>
+          <button class="admin-tab-pill admin-only" id="apill-sitepages" onclick="showAdminTab('sitepages')" style="display:none">🕌 Rreth Nesh</button>
           <button class="admin-tab-pill" id="apill-profile" onclick="showAdminTab('profile')">⚙️ Profili</button>
         </div>
       </div>
@@ -1809,6 +1846,53 @@
           </div>
         </div>
 
+        <!-- ── SITE PAGES TAB (Ballina "Rreth Nesh" + Historiku) ── -->
+        <div class="admin-panel" id="apanel-sitepages">
+          <h2 style="font-size:24px;color:var(--green);margin-bottom:8px">🕌 Rreth Nesh &amp; Historiku</h2>
+          <p style="color:var(--ink-mid);margin-bottom:24px;font-size:14px">Ndryshoni foton dhe tekstin e seksionit "Rreth Nesh" në ballinë dhe të faqes "Historiku" - të gjitha nga këtu.</p>
+
+          <div style="border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:22px">
+            <h3 style="font-size:17px;color:var(--green);margin-bottom:14px">🏠 Ballina - Seksioni "Rreth Nesh"</h3>
+            <div style="display:grid;gap:14px;max-width:660px">
+              <div class="form-group" style="margin:0"><label>Fotografia (pamja e brendshme e xhamisë)</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <img id="about-photo-preview" src="" alt="" style="width:64px;height:48px;border-radius:8px;object-fit:cover;background:var(--green-lt);display:none">
+                  <input type="text" id="about-photo-input" placeholder="https://... foto" style="flex:1;min-width:150px" oninput="updateAboutPhotoPreview()">
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="pickImageInto('about-photo-input')">🖼️ <span data-sq="Nga galeria" data-de="Galerie">Nga galeria</span></button>
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="document.getElementById('about-photo-file').click()">📤 Ngarko</button>
+                  <input type="file" id="about-photo-file" accept="image/*" style="display:none" onchange="uploadSitePhoto(event,'about-photo-input','updateAboutPhotoPreview')">
+                </div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="form-group" style="margin:0"><label>Titulli (Shqip)</label><input type="text" id="about-title-sq" placeholder="Qendra Kulturore Islame Shqiptare"></div>
+                <div class="form-group" style="margin:0"><label>Titulli (Gjermanisht)</label><input type="text" id="about-title-de" placeholder="Albanisch-Islamisches Kulturzentrum"></div>
+              </div>
+              <div class="form-group" style="margin:0"><label>Teksti (Shqip)</label><textarea id="about-text-sq" rows="4" placeholder="Ndani paragrafët me një rresht bosh."></textarea></div>
+              <div class="form-group" style="margin:0"><label>Teksti (Gjermanisht)</label><textarea id="about-text-de" rows="4" placeholder="Absätze durch eine Leerzeile trennen."></textarea></div>
+              <button class="btn btn-primary" onclick="saveAboutContent()" style="justify-self:start">💾 Ruaj Ballinën</button>
+            </div>
+          </div>
+
+          <div style="border:1.5px solid var(--border);border-radius:12px;padding:20px 24px">
+            <h3 style="font-size:17px;color:var(--green);margin-bottom:14px">📜 Faqja "Historiku"</h3>
+            <div style="display:grid;gap:14px;max-width:660px">
+              <div class="form-group" style="margin:0"><label>Fotografia</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                  <img id="historiku-photo-preview" src="" alt="" style="width:64px;height:48px;border-radius:8px;object-fit:cover;background:var(--green-lt);display:none">
+                  <input type="text" id="historiku-photo-input" placeholder="https://... foto" style="flex:1;min-width:150px" oninput="updateHistorikuPhotoPreview()">
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="pickImageInto('historiku-photo-input')">🖼️ <span data-sq="Nga galeria" data-de="Galerie">Nga galeria</span></button>
+                  <button class="btn btn-outline" style="white-space:nowrap;padding:10px 14px" onclick="document.getElementById('historiku-photo-file').click()">📤 Ngarko</button>
+                  <input type="file" id="historiku-photo-file" accept="image/*" style="display:none" onchange="uploadSitePhoto(event,'historiku-photo-input','updateHistorikuPhotoPreview')">
+                </div>
+              </div>
+              <div class="form-group" style="margin:0"><label>Teksti (Shqip)</label><textarea id="historiku-text-sq" rows="9" placeholder="Përdorni: ## Titull për tituj, - për listë. Paragrafët ndahen me rresht bosh."></textarea></div>
+              <div class="form-group" style="margin:0"><label>Teksti (Gjermanisht)</label><textarea id="historiku-text-de" rows="9" placeholder="## für Titel, - für Listen. Absätze durch Leerzeile trennen."></textarea></div>
+              <p style="font-size:12px;color:var(--ink-lt);margin:0">💡 Formatimi: rreshti që fillon me <code>## </code> bëhet titull, rreshti me <code>- </code> bëhet listë, teksti mes <code>**yjeve**</code> bëhet i trashë.</p>
+              <button class="btn btn-primary" onclick="saveHistorikuContent()" style="justify-self:start">💾 Ruaj Historikun</button>
+            </div>
+          </div>
+        </div>
+
         <!-- ── CONDOLENCES TAB ── -->
         <div class="admin-panel" id="apanel-condolences">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:8px">
@@ -1963,8 +2047,8 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=56"></script>
+<script src="js/config.js?v=57"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="js/app.js?v=56"></script>
+<script src="js/app.js?v=57"></script>
 </body>
 </html>
