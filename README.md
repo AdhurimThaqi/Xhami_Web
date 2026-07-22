@@ -1,4 +1,5 @@
 # Xhami Web — Kulturzentrum Haus des Friedens / Shtëpia e Paqës
+- Updated the readme file
 
 Redesign of [hausdesfriedens.ch](https://hausdesfriedens.ch/) — the website of the Albanian
 Islamic cultural centre "Haus des Friedens" in Zürich Schwamendingen (est. 2004).
