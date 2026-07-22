@@ -2953,23 +2953,6 @@ renderRamadanDate();
 updateRamadanCountdown();
 setInterval(updateRamadanCountdown,1000);
 
-// ── DARK / LIGHT THEME ──
-function currentTheme(){return document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';}
-function applyTheme(t){
-  if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
-  else document.documentElement.removeAttribute('data-theme');
-  const tt=document.getElementById('theme-toggle');
-  if(tt)tt.title=(currentLang==='de'?(t==='dark'?'Heller Modus':'Dunkler Modus'):(t==='dark'?'Pamja e ndritshme':'Pamja e errët'));
-}
-function toggleTheme(){
-  const next=currentTheme()==='dark'?'light':'dark';
-  applyTheme(next);
-  try{localStorage.setItem('hdf_theme',next);}catch(e){}
-  showToast(next==='dark'?'🌙 Pamja e errët':'☀️ Pamja e ndritshme','');
-}
-// sync the toggle title with whatever the head-script already applied
-applyTheme(currentTheme());
-
 // ── PWA: service worker + install prompt ──
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').catch(()=>{});});
