@@ -2016,6 +2016,40 @@ function playTrackByStep(d){
   if(audioQueueType==='surah')playSurah(n);else playTrack(n);
 }
 function playerSeek(v){const a=pAudio();if(isFinite(a.duration))a.currentTime=a.duration*v/100;}
+// ── Volume control (remembered across sessions) ──
+let lastVol=1;
+function initPlayerVolume(){
+  const a=pAudio();if(!a)return;
+  let v=1;
+  try{const s=localStorage.getItem('hdf_vol');if(s!==null&&s!=='')v=Math.min(1,Math.max(0,parseFloat(s)));}catch(e){}
+  if(!isFinite(v))v=1;
+  a.volume=v;a.muted=v===0;if(v>0)lastVol=v;
+  const r=document.getElementById('pb-vol');if(r)r.value=Math.round(v*100);
+  updateVolIcon();
+}
+function playerSetVolume(val){
+  const a=pAudio();const v=Math.min(1,Math.max(0,(+val)/100));
+  a.volume=v;a.muted=v===0;if(v>0)lastVol=v;
+  try{localStorage.setItem('hdf_vol',v);}catch(e){}
+  updateVolIcon();
+}
+function playerToggleMute(){
+  const a=pAudio(),r=document.getElementById('pb-vol');
+  if(a.muted||a.volume===0){
+    const v=lastVol>0?lastVol:1;a.muted=false;a.volume=v;
+    if(r)r.value=Math.round(v*100);
+    try{localStorage.setItem('hdf_vol',v);}catch(e){}
+  }else{
+    lastVol=a.volume;a.muted=true;
+    if(r)r.value=0;
+  }
+  updateVolIcon();
+}
+function updateVolIcon(){
+  const a=pAudio(),b=document.getElementById('pb-vol-btn');if(!b)return;
+  const v=a.muted?0:a.volume;
+  b.textContent=v===0?'🔇':(v<0.5?'🔉':'🔊');
+}
 function playerClose(){
   const a=pAudio();a.pause();a.removeAttribute('src');a.load();
   audioIndex=-1;
@@ -3088,6 +3122,7 @@ setTimeout(hideSplash,4000);
 initSlideshow();
 animateStats();
 initCursor();
+initPlayerVolume();
 initCookieBanner();
 setTimeout(initScrollReveal, 400);
 
