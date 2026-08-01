@@ -795,6 +795,17 @@ body.player-open #chat-panel{bottom:168px}
 /* Audio library category section titles */
 .audio-cat-title{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:var(--green);margin:22px 0 4px;padding-bottom:6px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px}
 .audio-cat-title:first-child{margin-top:0}
+/* Surah pagination */
+.surah-pager{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:22px;padding-top:18px;border-top:1.5px solid var(--border)}
+.sp-arrow{width:40px;height:40px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);color:var(--green);font-size:22px;line-height:1;cursor:pointer;flex:0 0 auto;transition:background .2s,border-color .2s,color .2s}
+.sp-arrow:hover:not(:disabled){background:var(--green);color:#fff;border-color:var(--green)}
+.sp-arrow:disabled{opacity:.4;cursor:default}
+.sp-pages{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 auto;min-width:0}
+.sp-page{padding:8px 12px;border-radius:9px;border:1.5px solid var(--border);background:var(--white);color:var(--ink-mid);font-size:12.5px;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.sp-page:hover{border-color:var(--gold)}
+.sp-page.active{background:var(--green);color:#fff;border-color:var(--green)}
+.sp-count{font-size:12.5px;color:var(--ink-lt);flex:0 0 auto;margin-left:auto}
+@media(max-width:560px){.sp-count{width:100%;text-align:center;margin:4px 0 0}}
 
 /* ── AUDIO ROWS + PLAYER BAR ── */
 .audio-row{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .2s}

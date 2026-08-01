@@ -381,6 +381,14 @@ const AUDIO_CATS=[
 function audioCatOf(s){return s.category||'quran';}
 function audioCatMeta(key){return AUDIO_CATS.find(c=>c.key===key)||AUDIO_CATS[3];}
 
+let surahPage=0;
+const SURAH_PAGE_SIZE=30;
+function surahGoPage(n){
+  surahPage=n;
+  renderSurahList();
+  const list=document.getElementById('surah-list');
+  if(list)list.scrollIntoView({behavior:'smooth',block:'start'});
+}
 function renderSurahList(){
   const list=document.getElementById('surah-list');if(!list)return;
   const empty=document.getElementById('surah-empty');
@@ -391,23 +399,54 @@ function renderSurahList(){
   const playing=!pAudio().paused;
   const usedCats=AUDIO_CATS.filter(c=>surahs.some(s=>audioCatOf(s)===c.key));
   const showHeaders=usedCats.length>1; // only label sections when there's more than one kind
-  let html='';
+  // Flatten all filtered items across categories, keeping the original index + category
+  const flat=[];
   usedCats.forEach(cat=>{
-    const items=surahs.filter(s=>audioCatOf(s)===cat.key && (!q||surahLabel(s).toLowerCase().includes(q)));
-    if(!items.length)return;
-    if(showHeaders)html+=`<h3 class="audio-cat-title">${cat.icon} ${currentLang==='de'?cat.de:cat.sq}</h3>`;
-    html+=items.map(s=>{
-      const i=surahs.indexOf(s);
-      const active=audioQueueType==='surah'&&audioIndex===i;
-      const sub=currentLang==='de'?cat.sub_de:cat.sub_sq;
-      return `<div class="audio-row${active?' playing':''}" onclick="playSurah(${i})">
-        <div class="audio-row-btn">${active&&playing?'⏸':'▶'}</div>
-        <div class="audio-row-info"><strong>${surahLabel(s)}</strong><small>${sub}</small></div>
-        ${active&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
-      </div>`;
-    }).join('');
+    surahs.forEach((s,i)=>{
+      if(audioCatOf(s)!==cat.key)return;
+      if(q&&!surahLabel(s).toLowerCase().includes(q))return;
+      flat.push({cat,s,i});
+    });
+  });
+  // Pagination only for long, unfiltered lists (e.g. the 114 surahs)
+  const paginate=!q&&flat.length>SURAH_PAGE_SIZE;
+  const pageCount=paginate?Math.ceil(flat.length/SURAH_PAGE_SIZE):1;
+  if(surahPage>pageCount-1)surahPage=pageCount-1;
+  if(surahPage<0)surahPage=0;
+  const shown=paginate?flat.slice(surahPage*SURAH_PAGE_SIZE,(surahPage+1)*SURAH_PAGE_SIZE):flat;
+  let html='',lastCat=null;
+  shown.forEach(({cat,s,i})=>{
+    if(showHeaders&&cat.key!==lastCat){
+      html+=`<h3 class="audio-cat-title">${cat.icon} ${currentLang==='de'?cat.de:cat.sq}</h3>`;
+      lastCat=cat.key;
+    }
+    const active=audioQueueType==='surah'&&audioIndex===i;
+    const sub=currentLang==='de'?cat.sub_de:cat.sub_sq;
+    html+=`<div class="audio-row${active?' playing':''}" onclick="playSurah(${i})">
+      <div class="audio-row-btn">${active&&playing?'⏸':'▶'}</div>
+      <div class="audio-row-info"><strong>${surahLabel(s)}</strong><small>${sub}</small></div>
+      ${active&&playing?'<div class="audio-eq"><span></span><span></span><span></span></div>':''}
+    </div>`;
   });
   list.innerHTML=html;
+  renderSurahPager(paginate?pageCount:0,flat.length);
+}
+function renderSurahPager(pageCount,total){
+  const bar=document.getElementById('surah-pager');if(!bar)return;
+  if(pageCount<2){bar.innerHTML='';bar.style.display='none';return;}
+  bar.style.display='flex';
+  const from=surahPage*SURAH_PAGE_SIZE+1;
+  const to=Math.min((surahPage+1)*SURAH_PAGE_SIZE,total);
+  const unit=currentLang==='de'?'von':'nga';
+  let pages='';
+  for(let p=0;p<pageCount;p++){
+    pages+=`<button class="sp-page${p===surahPage?' active':''}" onclick="surahGoPage(${p})">${p*SURAH_PAGE_SIZE+1}-${Math.min((p+1)*SURAH_PAGE_SIZE,total)}</button>`;
+  }
+  bar.innerHTML=`
+    <button class="sp-arrow" onclick="surahGoPage(${surahPage-1})"${surahPage===0?' disabled':''} aria-label="Mbrapa">‹</button>
+    <div class="sp-pages">${pages}</div>
+    <button class="sp-arrow" onclick="surahGoPage(${surahPage+1})"${surahPage>=pageCount-1?' disabled':''} aria-label="Para">›</button>
+    <span class="sp-count">${from}-${to} ${unit} ${total}</span>`;
 }
 
 // Turn an archive.org page link into a playable direct audio URL.
